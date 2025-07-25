@@ -1,6 +1,15 @@
+"use client";
 import Image from "next/image";
 import styles from "./page.module.css";
 
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import HomePage from "@/components/homepage";
+
 export default function Home() {
-  return <div className={styles.page}>Hello world hello!!!</div>;
+  useScrollAnimation();
+  return (
+    <div>
+      <HomePage />
+    </div>
+  );
 }

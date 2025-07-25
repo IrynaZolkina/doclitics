@@ -1,6 +1,103 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --lavende: #e6e6fa;
+
+  /* Core colors - Dark theme */
+  --background: 222 47% 8%;
+  --foreground: 210 40% 98%;
+
+  --card: 222 40% 12%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222 40% 12%;
+  --popover-foreground: 210 40% 98%;
+
+  /* Primary blue gradient - Enhanced contrast */
+  --primary: 217 91% 65%;
+  --primary-foreground: 222 47% 8%;
+  --primary-glow: 217 91% 75%;
+
+  /* Secondary with glassmorphism */
+  --secondary: 222 40% 15%;
+  --secondary-foreground: 210 40% 95%;
+
+  --muted: 222 40% 14%;
+  --muted-foreground: 215 20% 75%;
+
+  --accent: 217 91% 65%;
+  --accent-foreground: 222 47% 8%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 222 40% 18%;
+  --input: 222 40% 15%;
+  --ring: 217 91% 65%;
+
+  --radius: 1rem;
+
+  /* Custom design tokens */
+  --gradient-primary: linear-gradient(
+    135deg,
+    hsl(217 91% 65%),
+    hsl(217 91% 75%)
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    hsl(222 40% 15%),
+    hsl(222 40% 12%)
+  );
+  --gradient-hero: linear-gradient(
+    135deg,
+    hsl(222 47% 8%) 0%,
+    hsl(222 40% 12%) 50%,
+    hsl(222 47% 6%) 100%
+  );
+  --gradient-section: linear-gradient(
+    180deg,
+    hsl(222 47% 8%) 0%,
+    hsl(222 40% 6%) 100%
+  );
+  --gradient-alt: linear-gradient(
+    135deg,
+    hsl(222 40% 6%) 0%,
+    hsl(222 47% 8%) 50%,
+    hsl(222 40% 12%) 100%
+  );
+
+  --glass-bg: hsl(222 40% 15% / 0.8);
+  --glass-border: hsl(217 91% 65% / 0.3);
+
+  --shadow-glow: 0 0 40px hsl(217 91% 65% / 0.4);
+  --shadow-card: 0 8px 32px hsl(222 47% 8% / 0.3);
+
+  --blur: blur(16px);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --sidebar-background: 0 0% 98%;
+
+  --sidebar-foreground: 240 5.3% 26.1%;
+
+  --sidebar-primary: 240 5.9% 10%;
+
+  --sidebar-primary-foreground: 0 0% 98%;
+
+  --sidebar-accent: 240 4.8% 95.9%;
+
+  --sidebar-accent-foreground: 240 5.9% 10%;
+
+  --sidebar-border: 220 13% 91%;
+
+  --text-color-blue: #85b2f9;
+  --background-one: #090d15
+
+ --background-one-gradient:  linear-gradient(
+    135deg,
+    hsl(222 47% 8%) 0%,
+    hsl(222 40% 12%) 50%,
+    hsl(222 47% 6%) 100%
+  );  
 }
 
 @media (prefers-color-scheme: dark) {

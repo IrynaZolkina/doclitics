@@ -1,0 +1,122 @@
+.navbarContainer {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 50;
+
+  background: #172036cc;
+
+  /* border-bottom: 1px solid var(--color-border); */
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  /* border: 1px solid rgba(255, 255, 255, 0.2); */
+}
+
+.container {
+  max-width: 100%; /* or your preferred max width */
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flexContainer {
+  width: 1356px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+.flexLogo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logoBox {
+  width: 2rem; /* w-8 = 32px */
+  height: 2rem; /* h-8 = 32px */
+
+  border-radius: 50%; /* rounded-lg = 8px */
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  justify-content: center; /* justify-center */
+}
+.logoBigLetter {
+  color: var(--primary-foreground);
+  font-weight: 700;
+
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.75rem; /* 28px */
+}
+.logoText {
+  font-size: 1.5rem; /* 24px */
+  line-height: 2rem; /* 32px */
+
+  font-weight: 700;
+
+  background: linear-gradient(90deg, #6366f1, #60a5fa); /* example gradient */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+.navContainer {
+  width: 457px;
+  display: flex;
+  align-items: center;
+
+  justify-content: space-between;
+  /* color: hsl(var(--primary)); */
+  color: var(--text-color-blue);
+}
+.navItem {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 13.23px;
+  cursor: pointer;
+  outline: none;
+  text-decoration: none;
+  font-weight: 500;
+
+  line-height: 1.5rem; /* 24px */
+  /* background: transparent;
+    background: linear-gradient(90deg, #6366f1, #60a5fa); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text; */
+  /* color: transparent; */
+}
+.navItem:hover {
+  color: red;
+  transition: color 0.2s, background 0.2s;
+  cursor: pointer;
+}
+.navButtonContainer {
+  background: linear-gradient(110.64deg, #5593f7 0%, #85b2f9 100%);
+  width: 96px;
+  height: 36px;
+  border-radius: 14px;
+  color: var(--background-one);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.navButton {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 13.02px;
+}
+.glassCard {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
