@@ -33,6 +33,7 @@ const HeroSection = () => {
           width={892}
           height={348}
         />
+
         <div className={styles.heroBlurImage}></div>
         <Image
           className={styles.dropIcon}
@@ -42,6 +43,7 @@ const HeroSection = () => {
           height={64}
         />
         <p>Drop your document here</p>
+        <p>Or click to browse • Supports PDF, DOC, TXT, and more</p>
       </div>
     </div>
   );
