@@ -31,7 +31,7 @@ export function Navbar() {
               <Image src="Group 1.svg" alt="Logo" width={40} height={40} />
               {/* <span className={styles.logoBigLetter}>N</span> */}
             </div>
-            <span className={styles.logoText}>Noora</span>
+            <span className={styles.logoText}>Doclitics</span>
           </div>
 
           {/* Navigation Links */}

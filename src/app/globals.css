@@ -49,10 +49,10 @@
     hsl(222 40% 12%)
   );
   --gradient-hero: linear-gradient(
-    135deg,
-    hsl(222 47% 8%) 0%,
-    hsl(222 40% 12%) 50%,
-    hsl(222 47% 6%) 100%
+    180deg,
+    hsl(218, 71%, 7%) 0%,
+    hsl(224, 74%, 9%) 50%,
+    hsl(225, 40%, 14%) 100%
   );
   --gradient-section: linear-gradient(
     180deg,
@@ -90,14 +90,21 @@
   --sidebar-border: 220 13% 91%;
 
   --text-color-blue: #85b2f9;
-  --background-one: #090d15
+  --background-one: #090d15;
 
- --background-one-gradient:  linear-gradient(
-    135deg,
+  --background-one-gradient: linear-gradient(
+    90deg,
     hsl(222 47% 8%) 0%,
     hsl(222 40% 12%) 50%,
-    hsl(222 47% 6%) 100%
-  );  
+    hsl(224, 22%, 41%) 100%
+  );
+  --gradient-h: linear-gradient(
+    135deg,
+    #0b111e 0%,
+    #121a2b 16.61%,
+    #1e2635 33.21%
+  );
+  --text-white: white;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -115,7 +122,7 @@ body {
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  /* background: var(--background); */
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
