@@ -20,10 +20,10 @@ const HeroSection = () => {
       </div>
       <div className={styles.heading2}>
         <p>
-          Upload any file and let Doclitics's intelligent AI instantly create
-          the perfect summary
+          Upload any file and let Docliticss intelligent AI instantly create the
+          perfect summary
         </p>
-        <p>tailored precisely to your document's unique style and needs.</p>
+        <p>tailored precisely to your documents unique style and needs.</p>
       </div>
       <div className={styles.heroDivImage}>
         <Image
@@ -43,7 +43,7 @@ const HeroSection = () => {
           height={64}
         />
         <p>Drop your document here</p>
-        <p>Or click to browse • Supports PDF, DOC, TXT, and more</p>
+        <p>Or click to browse Supports PDF DOC TXT and more</p>
       </div>
     </div>
   );
