@@ -89,7 +89,6 @@
 
   --sidebar-border: 220 13% 91%;
 
-  --text-color-blue: #85b2f9;
   --background-one: #090d15;
 
   --background-one-gradient: linear-gradient(
@@ -104,7 +103,9 @@
     #121a2b 16.61%,
     #1e2635 33.21%
   );
-  --text-white: white;
+  --text-color-white: white;
+
+  --text-color-blue: #85b2f9;
 }
 
 @media (prefers-color-scheme: dark) {

@@ -18,6 +18,31 @@ const HeroSection = () => {
         </p>
         <p>Instantly.</p>
       </div>
+      <div className={styles.heading2}>
+        <p>
+          Upload any file and let Doclitics's intelligent AI instantly create
+          the perfect summary
+        </p>
+        <p>tailored precisely to your document's unique style and needs.</p>
+      </div>
+      <div className={styles.heroDivImage}>
+        <Image
+          className={styles.heroImage}
+          src="aiimage.svg"
+          alt="Hero Image"
+          width={892}
+          height={348}
+        />
+        <div className={styles.heroBlurImage}></div>
+        <Image
+          className={styles.dropIcon}
+          src="drop.svg"
+          alt="drop"
+          width={64}
+          height={64}
+        />
+        <p>Drop your document here</p>
+      </div>
     </div>
   );
 };
