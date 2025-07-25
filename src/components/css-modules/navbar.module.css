@@ -67,7 +67,7 @@
 
   justify-content: space-between;
   /* color: hsl(var(--primary)); */
-  color: var(--text-color-blue);
+  color: var(--text-color-white);
 }
 .navItem {
   background: none;
@@ -96,7 +96,7 @@
   cursor: pointer;
 }
 .navButtonContainer {
-  background: linear-gradient(110.64deg, #5593f7 0%, #85b2f9 100%);
+  background: var(--button-blue-background);
   width: 96px;
   height: 36px;
   border-radius: 14px;

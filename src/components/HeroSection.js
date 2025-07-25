@@ -42,8 +42,30 @@ const HeroSection = () => {
           width={64}
           height={64}
         />
-        <p>Drop your document here</p>
-        <p>Or click to browse Supports PDF DOC TXT and more</p>
+        <h2>Drop your document here</h2>
+        <p>Or click to browse &#11050; Supports PDF, DOC, TXT and more</p>
+        <button className={styles.chooseFileButton}>
+          <Image
+            //className={styles.dropIcon}
+            src="choosefile.svg"
+            alt="drop"
+            width={24}
+            height={24}
+          />
+          <span>Choose File</span>
+        </button>
+      </div>
+      <div className={styles.heroTwoButtonsContainer}>
+        <button>Start Summarizing for Free</button>
+        <button>Watch Demo</button>
+      </div>
+      <div className={styles.heroDownBlock}>
+        <span></span>
+        <span>99&#37; Accuracy</span>
+        <span></span>
+        <span>10k+ Documents Processed</span>
+        <span></span>
+        <span>Enterprise Security</span>
       </div>
     </div>
   );
