@@ -53,12 +53,13 @@
   line-height: 2rem; /* 32px */
 
   font-weight: 700;
-
-  background: linear-gradient(90deg, #6366f1, #60a5fa); /* example gradient */
-  -webkit-background-clip: text;
+  /* background: linear-gradient(90deg, #6366f1, #60a5fa);  */
+  /* -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
+  background-clip: text; */
+  /* color: transparent; */
+  color: var(--text-color-white);
+  /* background: var(--text-color-white); */
 }
 .navContainer {
   width: 457px;
