@@ -30,7 +30,7 @@ const HowWorksSection = () => {
             <Image src="page2_02.svg" alt="01" width={36} height={36} />
           </div>
           <h3>AI Analyzes Your File</h3>
-          <p>Noora&#39;s advanced AI intelligently identifies</p>
+          <p>Doclitics&#39;s advanced AI intelligently identifies</p>
           <p>document type and applies the perfect</p>
           <p>summarization strategy.</p>
         </div>

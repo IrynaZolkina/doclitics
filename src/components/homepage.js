@@ -4,6 +4,7 @@ import "../app/globals.css";
 import { Navbar } from "./Navbar";
 import HeroSection from "./HeroSection";
 import HowWorksSection from "./HowWorksSection";
+import SupportSection from "./SupportSection";
 
 export default function HomePage() {
   return (
@@ -11,6 +12,7 @@ export default function HomePage() {
       <Navbar />
       <HeroSection />
       <HowWorksSection />
+      <SupportSection />
     </div>
   );
 }
