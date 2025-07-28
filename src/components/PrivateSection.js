@@ -53,7 +53,7 @@ const PrivateSection = () => {
       <div className={styles.downblock}>
         <h2>Trusted by Enterprise Customers</h2>
         <p>
-          Our security standards meet the requirements of the world's most
+          Our security standards meet the requirements of the world&#39;s most
           security-conscious organizations.
         </p>
         <main>
