@@ -4,7 +4,7 @@
   align-items: center;
   background: var(--gradient-hero);
   color: var(--text-color-blue);
-  height: 1117px;
+  /* height: 1117px; */
   width: 100vw;
 }
 .supportContainer h1 {
@@ -31,7 +31,7 @@
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
   gap: 30px;
-  padding: 0 20px;
+  /* padding: 0 20px; */
   width: 1152px;
 }
 .supportGridContainer div {
@@ -60,4 +60,69 @@
 }
 .supportGridContainer section {
   padding: 10px;
+}
+.anyFiledivBorder {
+  margin-top: 30px;
+  background: linear-gradient(
+    to right,
+
+    rgba(255, 126, 176, 0.7) 0%,
+    rgba(255, 126, 176, 0) 90.87%
+  );
+  border-radius: 16px;
+  width: 1152px;
+  height: 250px;
+  position: relative;
+}
+.anyFilediv {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  height: 248px;
+  width: 1150px;
+  border-radius: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+
+  background: rgba(23, 32, 54);
+}
+.anyFilediv h3 {
+  margin-top: 30px;
+  font-size: 23px;
+
+  color: var(--text-color-white);
+}
+.anyFilediv p {
+  margin-top: 15px;
+  font-size: 14px;
+  color: var(--text-color-white);
+}
+.amount {
+  margin-top: 60px;
+  margin-bottom: 40px;
+  width: 896px;
+  height: 158px;
+  background: var(--color-azure-1580, rgba(23, 32, 54, 0.8));
+
+  border-radius: 16px;
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.amount section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.amount h3 {
+  font-size: 33px;
+}
+.amount p {
+  font-size: 15px;
+  /* color: var(--text-color-white); */
 }

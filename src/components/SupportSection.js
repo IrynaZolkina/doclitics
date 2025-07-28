@@ -61,6 +61,32 @@ const SupportSection = () => {
           <p>files</p>
         </div>
       </div>
+
+      <div className={styles.anyFiledivBorder}>
+        <div className={styles.anyFilediv}>
+          <Image src="page3_04.svg" alt="01" width={36} height={36} />
+          <h3>Any File</h3>
+          <p>Input any file and recei</p>
+        </div>
+      </div>
+      <div className={styles.amount}>
+        <section>
+          <h3>15+</h3>
+          <p>File Formats</p>
+        </section>
+        <section>
+          <h3>99.2&#37;</h3>
+          <p>Accuracy Rate</p>
+        </section>
+        <section>
+          <h3>&#60;30s</h3>
+          <p>Processing Time</p>
+        </section>
+        <section>
+          <h3>24/7</h3>
+          <p>Availability</p>
+        </section>
+      </div>
     </div>
   );
 };
