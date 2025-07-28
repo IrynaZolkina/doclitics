@@ -1,7 +1,6 @@
 import Image from "next/image";
 import "../app/globals.css";
 import styles from "./css-modules/privatsection.module.css";
-import React from "react";
 
 const PrivateSection = () => {
   return (
@@ -38,7 +37,7 @@ const PrivateSection = () => {
             <Image src="page4_03.svg" alt="01" width={32} height={32} />
           </section>
           <h3>Zero Data Retention</h3>
-          <p>Your content remains private. We don't use your</p>
+          <p>Your content remains private. We don&#39;t use your</p>
           <p>documents to train our AI models or for any other</p>
           <p>purposes.</p>
         </div>

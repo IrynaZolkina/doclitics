@@ -7,6 +7,7 @@ import HeroSection from "./HeroSection";
 import HowWorksSection from "./HowWorksSection";
 import SupportSection from "./SupportSection";
 import PrivateSection from "./PrivateSection";
+import PriceSection from "./PriceSection";
 
 export default function HomePage() {
   return (
@@ -16,6 +17,7 @@ export default function HomePage() {
       <HowWorksSection />
       <SupportSection />
       <PrivateSection />
+      <PriceSection />
     </div>
   );
 }
