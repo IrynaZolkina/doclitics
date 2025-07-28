@@ -5,7 +5,7 @@
   background: var(--gradient-hero);
   color: var(--text-color-blue);
   /* height: 1117px; */
-  width: 100vw;
+  /* width: 100vw; */
 }
 .supportContainer h1 {
   margin-top: 60px;

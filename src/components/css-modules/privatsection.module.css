@@ -1,0 +1,111 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--gradient-hero);
+  color: var(--text-color-white);
+}
+.container h1 {
+  margin-top: 60px;
+  font-family: var(--font-inter);
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 47.06px;
+  line-height: 48px;
+  /* color: var(--text-color-white); */
+  margin-bottom: 40px;
+}
+.container h1 span {
+  color: var(--text-color-blue);
+}
+.container p {
+  /* color: var(--text-color-white); */
+  font-size: 22.13px;
+  line-height: 28px;
+}
+.gridContainer {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 30px;
+  /* padding: 0 20px; */
+  /* width: 1152px; */
+}
+.gridContainer div {
+  background: rgba(23, 32, 54, 0.8);
+
+  width: 492px;
+  height: 317.75px;
+
+  border-radius: 16px;
+  padding: 30px;
+}
+.gridContainer h3 {
+  margin-top: 45px;
+  margin-bottom: 35px;
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 19.5px;
+  line-height: 24px;
+  /* color: var(--text-color-white); */
+}
+.gridContainer p,
+.downblock p {
+  font-weight: 400;
+  font-size: 14.88px;
+  line-height: 22px;
+  /* color: var(--text-color-white); */
+}
+.gridContainer section {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #5593f7 0%, #85b2f9 100%);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.downblock {
+  width: 1018px;
+  height: 361px;
+  background: rgba(23, 32, 54, 0.8);
+  border-radius: 16px;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.downblock h2 {
+  font-size: 23.25px;
+  margin-top: 40px;
+  margin-bottom: 30px;
+}
+.downblock main {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-around;
+  width: 942px;
+}
+.flexContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 97.83px;
+  height: 146px;
+
+  border-radius: 16px;
+
+  background: rgba(23, 32, 54, 0.8);
+
+  border: 1px solid rgba(28, 39, 64, 0.3);
+}
+.flexContainer p :nth-child(1) {
+  font-size: 16px;
+}
+.flexContainer p :nth-child(2) {
+  font-size: 13px;
+}
+.flexContainer section {
+  margin-top: 40px;
+}

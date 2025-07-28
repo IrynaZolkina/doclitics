@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import styles from "./css-modules/homepage.module.css";
 import "../app/globals.css";
@@ -5,6 +6,7 @@ import { Navbar } from "./Navbar";
 import HeroSection from "./HeroSection";
 import HowWorksSection from "./HowWorksSection";
 import SupportSection from "./SupportSection";
+import PrivateSection from "./PrivateSection";
 
 export default function HomePage() {
   return (
@@ -13,6 +15,7 @@ export default function HomePage() {
       <HeroSection />
       <HowWorksSection />
       <SupportSection />
+      <PrivateSection />
     </div>
   );
 }

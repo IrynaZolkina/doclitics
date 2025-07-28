@@ -50,4 +50,12 @@
     hsl(222 40% 12%) 50%,
     hsl(222 47% 6%) 100%
   ); */
+  .supportContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* height: 1117px; */
+    width: 100vw;
+  }
 }
