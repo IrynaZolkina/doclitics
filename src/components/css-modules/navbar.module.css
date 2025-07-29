@@ -92,7 +92,7 @@
   /* color: transparent; */
 }
 .navItem:hover {
-  color: red;
+  color: var(--text-color-blue);
   transition: color 0.2s, background 0.2s;
   cursor: pointer;
 }

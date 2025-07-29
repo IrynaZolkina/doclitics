@@ -1,3 +1,5 @@
+// "use client";
+
 import Image from "next/image";
 import styles from "./css-modules/navbar.module.css";
 import HeroSection from "./HeroSection";
@@ -18,12 +20,11 @@ const navItems = [
 export function Navbar() {
   const scrollToSection = (href) => {
     // const element = document.getElementById(href);
-    const element = document.getElementById(href);
+    const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
-  // const reviewsRef = useRef(null);
 
   return (
     <div>
@@ -43,17 +44,13 @@ export function Navbar() {
             {/* Navigation Links */}
             <div className={styles.navContainer}>
               {navItems.map((item) => (
-                // <Link href={item.href} key={item.label}>
                 <button
                   key={item.label}
                   onClick={() => scrollToSection(item.href)}
-                  // reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
-
                   className={styles.navItem}
                 >
                   {item.label}
                 </button>
-                // </Link>
               ))}
             </div>
 
@@ -64,21 +61,11 @@ export function Navbar() {
           </div>
         </div>
       </nav>
-      <div id="#dashboard">
-        <HeroSection />
-      </div>
-      <div id="#features">
-        <HowWorksSection />
-        <SupportSection />
-      </div>
-      <div id="#reviews"></div>
-      <div id="#faq"></div>
-      <div id="#security">
-        <PrivateSection />
-      </div>
-      <div id="#pricing">
-        <PriceSection />
-      </div>
+      <HeroSection />
+      <HowWorksSection />
+      <SupportSection />
+      <PrivateSection />
+      <PriceSection id="reviews" />
     </div>
   );
 }

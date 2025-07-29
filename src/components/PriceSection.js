@@ -14,8 +14,122 @@ const PriceSection = () => {
       <div className={styles.flexWrapper}>
         <div className={styles.flexContainer}>
           <h4>Free</h4>
-          <p>Basic features for individuals and small teams.</p>
-          <p>Limited document processing per month.</p>
+          <p>
+            <span>$0</span> /month
+          </p>
+          <p>Perfect for trying out Doclitic</p>
+          <ul>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+          </ul>
+          <button className={styles.button}>Get Started</button>
+        </div>
+        <div className={styles.flexContainer}>
+          <h4>Free</h4>
+          <p>
+            <span>$0</span> /month
+          </p>
+          <p>Perfect for trying out Doclitic</p>
+          <ul>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+          </ul>
+          <button className={styles.button}>Get Started</button>
+        </div>
+        <div className={styles.flexContainer}>
+          <h4>Free</h4>
+          <p>
+            <span>$0</span> /month
+          </p>
+          <p>Perfect for trying out Doclitic</p>
+          <ul>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+          </ul>
+          <button className={styles.button}>Get Started</button>
+        </div>
+        <div className={styles.flexContainer}>
+          <h4>Free</h4>
+          <p>
+            <span>$0</span> /month
+          </p>
+          <p>Perfect for trying out Doclitic</p>
+          <ul>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+            <li>
+              <Image src="check.svg" alt="01" width={13.33} height={13} />
+              &#160;&#160;&#160; Unlimited documents
+            </li>
+          </ul>
           <button className={styles.button}>Get Started</button>
         </div>
       </div>

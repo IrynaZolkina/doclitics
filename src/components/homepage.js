@@ -13,11 +13,11 @@ export default function HomePage() {
   return (
     <div className={styles.page}>
       <Navbar />
-      <HeroSection />
+      {/* <HeroSection />
       <HowWorksSection />
       <SupportSection />
       <PrivateSection />
-      <PriceSection />
+      <PriceSection /> */}
     </div>
   );
 }
