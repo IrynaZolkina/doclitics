@@ -94,8 +94,8 @@
 .navItem:hover {
   color: var(--text-color-blue);
   transition: color 0.2s, background 0.2s;
-  cursor: pointer;
 }
+
 .navButtonContainer {
   background: var(--button-blue-background);
   width: 96px;

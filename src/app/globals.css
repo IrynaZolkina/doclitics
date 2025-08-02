@@ -113,6 +113,10 @@
     #85b2f9 100%
   );
 }
+.active {
+  color: var(--text-color-blue);
+  font-weight: 700;
+}
 
 @media (prefers-color-scheme: dark) {
   :root {

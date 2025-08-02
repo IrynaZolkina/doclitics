@@ -1,6 +1,7 @@
 import Image from "next/image";
 import "../app/globals.css";
 import styles from "./css-modules/herosection.module.css";
+import DropZone from "./DropZone";
 
 const HeroSection = () => {
   return (
@@ -25,36 +26,8 @@ const HeroSection = () => {
         </p>
         <p>tailored precisely to your documents unique style and needs.</p>
       </div>
-      <div className={styles.heroDivImage}>
-        <Image
-          className={styles.heroImage}
-          src="aiimage.svg"
-          alt="Hero Image"
-          width={892}
-          height={348}
-        />
+      <DropZone />
 
-        <div className={styles.heroBlurImage}></div>
-        <Image
-          className={styles.dropIcon}
-          src="drop.svg"
-          alt="drop"
-          width={64}
-          height={64}
-        />
-        <h2>Drop your document here</h2>
-        <p>Or click to browse &#11050; Supports PDF, DOC, TXT and more</p>
-        <button className={styles.chooseFileButton}>
-          <Image
-            //className={styles.dropIcon}
-            src="choosefile.svg"
-            alt="drop"
-            width={24}
-            height={24}
-          />
-          <span>Choose File</span>
-        </button>
-      </div>
       <div className={styles.heroTwoButtonsContainer}>
         <button>Start Summarizing for Free</button>
         <button>Watch Demo</button>
