@@ -3,7 +3,12 @@ import "../app/globals.css";
 import styles from "./css-modules/herosection.module.css";
 import DropZone from "./DropZone";
 
-const HeroSection = () => {
+const HeroSection = ({
+  setChosenFile,
+  setPdfDoc,
+  setTotalPages,
+  setExtractedTexts,
+}) => {
   return (
     <div className={styles.heroContainer}>
       <div className={styles.aiIntelligence}>
@@ -26,7 +31,12 @@ const HeroSection = () => {
         </p>
         <p>tailored precisely to your documents unique style and needs.</p>
       </div>
-      <DropZone />
+      <DropZone
+        setChosenFile={setChosenFile}
+        setPdfDoc={setPdfDoc}
+        setTotalPages={setTotalPages}
+        setExtractedTexts={setExtractedTexts}
+      />
 
       <div className={styles.heroTwoButtonsContainer}>
         <button>Start Summarizing for Free</button>

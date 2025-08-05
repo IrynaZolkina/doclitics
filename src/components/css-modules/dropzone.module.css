@@ -66,6 +66,8 @@
 
 .heroDivImage input[type="file"] {
   color: transparent;
+  font-size: 0;
+  background: transparent;
 }
 .heroDivImage input[type="file"]::file-selector-button {
   /* visibility: hidden; */
