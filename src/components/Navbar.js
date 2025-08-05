@@ -233,7 +233,7 @@ export function Navbar() {
     // }
 
     // extractTextFromPdf();
-
+    console.log("/////    inputPrompt.   //////. ", inputPrompt);
     const response = await fetch("api/chat", {
       method: "POST",
       headers: {
