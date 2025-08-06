@@ -42,6 +42,7 @@ export function Navbar() {
 
   const [pdfDoc, setPdfDoc] = useState(null);
   const [pdfD, setPdfD] = useState(false);
+  const [openSection, setOpenSection] = useState("");
   const [pageNum, setPageNum] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [scale, setScale] = useState(1.0);
@@ -248,6 +249,7 @@ export function Navbar() {
     setIsLoading(false);
     const result = await response.json();
     console.log("///////////", result.choices);
+    ///////
     setChoices(result.choices);
   };
 
@@ -337,18 +339,6 @@ export function Navbar() {
       ) : (
         <>
           <Dashboard fileName={fileName} />
-          <button onClick={sendFile}>SUMMARY</button>
-          <button onClick={() => setPdfD(!pdfD)}>PREVIEW</button>
-          <div className={styles.summaryContainer}>
-            {choices &&
-              choices.map((choice) => {
-                return (
-                  <ReactMarkdown key={choice.index}>
-                    {choice.message.content}
-                  </ReactMarkdown>
-                );
-              })}
-          </div>
 
           {pdfD && pdfDoc && (
             <div className={styles.pdfWrapper}>
@@ -396,6 +386,18 @@ export function Navbar() {
               <button onClick={sendFile}>SUMMARY</button>
             </div>
           )}
+          <button onClick={sendFile}>SUMMARY</button>
+          <button onClick={() => setPdfD(!pdfD)}>PREVIEW</button>
+          <div className={styles.summaryContainer}>
+            {choices &&
+              choices.map((choice) => {
+                return (
+                  <ReactMarkdown key={choice.index}>
+                    {choice.message.content}
+                  </ReactMarkdown>
+                );
+              })}
+          </div>
         </>
       )}
     </div>
