@@ -256,60 +256,56 @@ export function Navbar() {
   return (
     <div>
       <nav className={styles.navbarContainer}>
-        {/* <nav className="fixed top-0 w-full z-50 glass-card border-b border-border/20"> */}
-        <div className={styles.container}>
-          <div className={styles.flexContainer}>
-            {/* Logo */}
-            <div className={styles.flexLogo} onClick={() => dbb()}>
+        <div className={styles.flexContainer}>
+          {/* Logo */}
+          {/* <div className={styles.flexLogo} onClick={() => dbb()}>
               <div className={styles.logoBox}>
                 <Image src="Group 1.svg" alt="Logo" width={40} height={40} />
-                {/* <span className={styles.logoBigLetter}>N</span> */}
               </div>
               <span className={styles.logoText}>Doclitic</span>
+            </div> */}
+
+          {/* Navigation Links */}
+          {chosenFile === null ? (
+            <div className={styles.navContainer}>
+              {navItems.map((item) => (
+                // <Link href={item.href} key={item.label}>
+                <div key={item.label} className="label">
+                  <button
+                    onClick={() => scrollToSection(item.href)}
+                    // reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
+
+                    className={styles.navItem}
+                  >
+                    {item.label}
+                  </button>
+                </div>
+              ))}
             </div>
+          ) : (
+            <div className={styles.navContainer2}>
+              {navItemsDashboard.map((item) => (
+                // <Link href={item.href} key={item.label}>
+                <div key={item.label} className="label">
+                  <button
+                    onClick={() => scrollToSection(item.href)}
+                    // reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
 
-            {/* Navigation Links */}
-            {chosenFile === null ? (
-              <div className={styles.navContainer}>
-                {navItems.map((item) => (
-                  // <Link href={item.href} key={item.label}>
-                  <div key={item.label} className="label">
-                    <button
-                      onClick={() => scrollToSection(item.href)}
-                      // reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
-
-                      className={styles.navItem}
-                    >
-                      {item.label}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className={styles.navContainer2}>
-                {navItemsDashboard.map((item) => (
-                  // <Link href={item.href} key={item.label}>
-                  <div key={item.label} className="label">
-                    <button
-                      onClick={() => scrollToSection(item.href)}
-                      // reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
-
-                      className={styles.navItem}
-                    >
-                      {item.label}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* CTA Button */}
-            <div className={styles.navButtonContainer}>
-              <Link href="/register">
-                <button className={styles.navButton}>Get Started</button>
-              </Link>
+                    className={styles.navItem}
+                  >
+                    {item.label}
+                  </button>
+                </div>
+              ))}
             </div>
-          </div>
+          )}
+
+          {/* CTA Button */}
+        </div>
+        <div className={styles.navButtonContainer}>
+          <Link href="/register">
+            <button className={styles.navButton}>Get Started</button>
+          </Link>
         </div>
       </nav>
       {chosenFile === null ? (

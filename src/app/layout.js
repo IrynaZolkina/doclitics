@@ -1,6 +1,10 @@
 import { Geist, Geist_Mono, Inter, Roboto } from "next/font/google";
 import "./globals.css";
 
+import { ReduxProvider } from "../redux/Providers";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,11 +31,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className="test">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable}`}
       >
-        {children}
+        <ReduxProvider>
+          <Header />
+
+          {children}
+          <Footer />
+        </ReduxProvider>
       </body>
     </html>
   );

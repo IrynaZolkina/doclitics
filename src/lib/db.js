@@ -28,7 +28,7 @@ async function getDB(dbName) {
 }
 
 export async function getCollection(collectionName) {
-  const db = await getDB("test");
+  const db = await getDB("auth");
   if (db) {
     return db.collection(collectionName);
   }

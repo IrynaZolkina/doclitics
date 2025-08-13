@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import "./globals.css";
 // import styles from "./page.module.css";
 
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
