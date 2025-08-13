@@ -118,7 +118,7 @@ const Register = () => {
               placeholder="Enter your password..."
             />
           </>
-
+          <p>More...</p>
           {/* <button disabled={isPending}>
               {isPending ? "Loading..." : "Register"}
             </button> */}
