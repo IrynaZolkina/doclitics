@@ -62,13 +62,13 @@ const SupportSection = () => {
         </div>
       </div>
 
-      <div className={styles.anyFiledivBorder}>
+      {/* <div className={styles.anyFiledivBorder}>
         <div className={styles.anyFilediv}>
           <Image src="page3_04.svg" alt="01" width={36} height={36} />
           <h3>Any File</h3>
           <p>Input any file and recei</p>
         </div>
-      </div>
+      </div> */}
       <div className={styles.amount}>
         <section>
           <h3>15+</h3>

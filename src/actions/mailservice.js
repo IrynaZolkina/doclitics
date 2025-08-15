@@ -12,16 +12,19 @@ export async function sendActivationMail(to, link) {
     },
   });
 
-  transporter.sendMail({
+  await transporter.sendMail({
     from: process.env.SMTP_USER,
     to: to,
     subject: "Activation" + process.env.API_URL,
     text: "",
     html: `
       <div>
-        <h1>
-          For activation <a href="${link}">${link}</a>
-        </h1>
+      <h1>Activate Your Account</h1>
+          <p>Click the link below to activate your account:</p>
+    
+         <a href="${link}">${link}</a>
+       
+         <p>This link will expire in 24 hours.</p>
       </div>
     `,
   });

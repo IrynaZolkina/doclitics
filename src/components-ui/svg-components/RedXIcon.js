@@ -8,7 +8,7 @@ export function RedXIcon({ size = 24, title = "Error" }) {
       aria-label={title}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
-      stroke="red"
+      stroke="rgba(254, 111, 146, 1)"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"

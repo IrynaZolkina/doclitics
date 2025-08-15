@@ -18,6 +18,7 @@ import Dashboard from "./Dashboard";
 // import { extractTextFromPdf } from "@/lib/textutils";
 
 import * as pdfjsLib from "pdfjs-dist";
+import Loved from "./Loved";
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
 
@@ -329,7 +330,9 @@ export function Navbar() {
           <div id="#pricing" className="section">
             <PriceSection />
           </div>
-          <div id="#reviews" className="section"></div>
+          <div id="#reviews" className="section">
+            <Loved />
+          </div>
           <div id="#faq" className="section"></div>
         </>
       ) : (

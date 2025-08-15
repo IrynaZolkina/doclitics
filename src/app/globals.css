@@ -140,7 +140,6 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
 }
-
 body {
   color: var(--foreground);
   background-color: var(--background-two);
@@ -158,6 +157,20 @@ body {
   margin: 0;
 }
 
+/* Chrome/Edge autofill style reset */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset; /* match your background color */
+  -webkit-text-fill-color: #000; /* match your text color */
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Dark mode autofill reset */
+@media (prefers-color-scheme: dark) {
+  input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #1f1f1f inset;
+    -webkit-text-fill-color: #fff;
+  }
+}
 a {
   color: inherit;
   text-decoration: none;

@@ -1,78 +1,52 @@
-export async function POST(request) {
-  const params = await request.json();
-  const apiKey = process.env.DEEPSEEK_API_KEY;
+import { NextResponse } from "next/server";
+import { getCollection } from "@/lib/db";
+import { ObjectId } from "mongodb";
 
-  const openai = new OpenAI({
-    baseURL: "https://openrouter.ai/api/v1",
-    apiKey: apiKey,
+export async function GET(req, { params }) {
+  const { activationLink } = await params;
+
+  const users = await getCollection("users");
+
+  const user = await users.findOne({
+    activationLink: activationLink,
+    isActivated: false,
   });
 
-  //   const completion = await openai.chat.completions.create({
-  //     model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
-  //     messages: [
-  //       { role: "system", content: params.prompt },
-  //       { role: "user", content: params.content },
-  //     ],
+  // console.log("----------result link----------", params);
 
-  //     temperature: 0,
-  //     max_tokens: 4096,
-  //     top_p: 1,
-  //     frequency_penalty: 0,
-  //     presence_penalty: 0,
-  //   });
+  if (!user) {
+    return NextResponse.json(
+      { error: "Invalid activation link" },
+      { status: 400 }
+    );
+  }
 
-  console.log("***.  Active link.  ***s");
+  if (new Date() > user.activationExpires) {
+    await users.deleteOne({ _id: user._id });
+    return NextResponse.json(
+      { error: "Activation link expired" },
+      { status: 400 }
+    );
+  }
 
-  // const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     Authorization: `Bearer ${apiKey}`,
-  //   },
-  //   body: JSON.stringify({
-  //     model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
-  //     messages: [
-  //       { role: "system", content: params.prompt },
-  //       { role: "user", content: params.content },
-  //     ],
-  //     temperature: 0,
-  //     max_tokens: 1024,
-  //     top_p: 1,
-  //     frequency_penalty: 0,
-  //     presence_penalty: 0,
-  //   }),
-  // });
+  // await users.updateOne(
+  //   { _id: user._id },
+  //   {
+  //     $set: { isActivated: true },
+  //     $unset: { activationLink: "", activationExpires: "" },
+  //   }
+  // );
 
-  console.log("response-----", response);
-  return NextResponse.json(response);
+  const result = await users.updateOne(
+    { _id: new ObjectId(user._id) },
+    {
+      $set: {
+        isActivated: true,
+      },
+      $unset: { activationLink: "", activationExpires: "" },
+    }
+  );
+  console.log("-----result-----", result);
+
+  return NextResponse.json({ message: "Account activated successfully" });
 }
-// import { NextRequest, NextResponse } from "next/server";
-// import OpenAI from "openai";
-
-// export async function POST(NextRequest) {
-//   const openai = new OpenAI({
-//     apiKey: process.env.OPENAI_API_KEY,
-//   });
-//   const params = await NextRequest.json();
-//   const response = await openai.chat.completions.create({
-//     //model: "gpt-3.5-turbo",
-//     model: "gpt-4o-mini",
-//     messages: [
-//       {
-//         role: "system",
-//         content: params.prompt,
-//       },
-//       {
-//         role: "user",
-//         content: params.content,
-//       },
-//     ],
-//     temperature: 0,
-//     max_tokens: 1024,
-//     top_p: 1,
-//     frequency_penalty: 0,
-//     presence_penalty: 0,
-//     //stream: true,
-//   });
-//   return NextResponse.json(response);
-// }

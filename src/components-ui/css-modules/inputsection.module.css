@@ -8,7 +8,7 @@
 .formControl label {
   width: 100%;
   color: #33059e;
-  margin-bottom: 1px;
+  margin-bottom: 5px;
 }
 
 /* .formControl label {
@@ -19,15 +19,22 @@
   /* font: inherit; */
   padding: 15px 20px;
   /* border-radius: 4px; */
-  margin: 2px 0px 50px;
+  margin: 10px 0px 5px;
 
   background: var(--background-input-text);
   color: var(--input-text-color);
   border-radius: 12px;
   border-color: var(--border-color-input);
+  height: 56px;
 }
 
 .formControl input:focus {
+  outline: none;
+  border-color: var(--border-color-input-focus);
+  background: var(--background-input-text-focus);
+  color: var(--input-text-color);
+}
+.formControl input:focus::after {
   outline: none;
   border-color: var(--border-color-input-focus);
   background: var(--background-input-text-focus);
@@ -40,7 +47,7 @@
 }
 
 .formControlInvalid input {
-  border: 1px solid #b40e0e;
+  border: 1px solid rgba(254, 111, 146, 1);
   background-color: var(--background-input-text-notwritten);
 }
 
@@ -98,7 +105,7 @@
 }
 
 .errorText {
-  color: #fb3939;
+  color: rgba(254, 111, 146, 1);
   font-size: 12px;
   font-weight: bold;
   position: absolute;
@@ -114,11 +121,11 @@
   align-items: center;
   justify-content: center;
   margin-left: 10px;
-  margin-bottom: 50px;
+  margin-bottom: 10px;
 }
 .formControl p {
   height: 14px;
   font-size: 12px;
-  text-align: right;
-  margin-right: 40px;
+  text-align: left;
+  margin-bottom: 30px;
 }

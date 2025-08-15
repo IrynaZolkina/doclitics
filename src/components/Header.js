@@ -1,6 +1,7 @@
 import Image from "next/image";
 import "../app/globals.css";
 import styles from "./css-modules/header.module.css";
+import DocliticLogo from "@/components-ui/svg-components/DocliticLogo";
 
 const Header = () => {
   return (
@@ -11,7 +12,8 @@ const Header = () => {
             {/* Logo */}
             <div className={styles.flexLogo}>
               <div className={styles.logoBox}>
-                <Image src="Group 1.svg" alt="Logo" width={40} height={40} />
+                {/* <Image src="Group 1.svg" alt="Logo" width={40} height={40} /> */}
+                <DocliticLogo width={40} height={40} />
               </div>
               <span className={styles.logoText}>Doclitic</span>
             </div>

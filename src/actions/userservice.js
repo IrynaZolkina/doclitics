@@ -57,25 +57,25 @@ export async function register(state, formData) {
   //   {console.log(password)}
   // </div>
 }
-export async function activate(activationLink) {
-  // console.log("****n link *****", link);
-  // const activationLink = link.lastIndexOf("/") + 1;
+// export async function activate(activationLink) {
+//   // console.log("****n link *****", link);
+//   // const activationLink = link.lastIndexOf("/") + 1;
 
-  const userCollection = await getCollection("users");
-  console.log("****n activationlink *****", activationLink);
-  // const candidate = await userCollection.findOne({ email: email });
+//   const userCollection = await getCollection("users");
+//   console.log("****n activationlink *****", activationLink);
+//   // const candidate = await userCollection.findOne({ email: email });
 
-  // const client = await MongoClient.connect(process.env.MONGODB_URL);
+//   // const client = await MongoClient.connect(process.env.MONGODB_URL);
 
-  // const db = client.db();
-  const user = await userCollection.findOne({ activationLink });
-  // if (!user) {
-  //   client.close();
-  //   return;
-  // }
-  await userCollection.updateOne(
-    { activationLink },
-    { $set: { isActivated: true } }
-  );
-  // client.close();oll
-}
+//   // const db = client.db();
+//   const user = await userCollection.findOne({ activationLink });
+//   // if (!user) {
+//   //   client.close();
+//   //   return;
+//   // }
+//   await userCollection.updateOne(
+//     { activationLink },
+//     { $set: { isActivated: true } }
+//   );
+//   // client.close();oll
+// }

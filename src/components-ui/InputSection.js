@@ -1,6 +1,5 @@
 import "../app/globals.css";
 import styles from "./css-modules/inputsection.module.css";
-import { GoogleIcon } from "./svg-components/GoogleIcon";
 import { GreenCheckIcon } from "./svg-components/GreenCheckIcon";
 import { RedXIcon } from "./svg-components/RedXIcon";
 
@@ -23,7 +22,7 @@ export default function InputSection(props) {
 
   const enteredValueIsValid = enteredValue.trim() !== "";
 
-  console.log("-----enteredValue.lenght-----", enteredValue.lenght);
+  // console.log("-----enteredValue.lenght-----", enteredValue.lenght);
   const inputChangeHandler = (e) => {
     // if (enteredValue.lenght < fieldLength) {
     setEnteredValue(e.target.value);
@@ -51,7 +50,6 @@ export default function InputSection(props) {
       >
         <h3>{labelText}</h3>
         {/* <label htmlFor={enteredValue}>{labelText}</label> */}
-        <p>{validationCheck === 2 ? correctMessage : " "}</p>
         <div className={styles.inputAndIcon}>
           <input
             id={id}
@@ -65,7 +63,7 @@ export default function InputSection(props) {
 
           <span>
             {validationCheck === 1 ? (
-              <GreenCheckIcon />
+              <GreenCheckIcon stroke={"rgba(93, 150, 246, 1)"} />
             ) : validationCheck === 2 ? (
               <RedXIcon />
             ) : (
@@ -74,6 +72,7 @@ export default function InputSection(props) {
             )}
           </span>
         </div>
+        <p>{validationCheck === 2 ? correctMessage : " "}</p>
         {inputText && <p className={styles.errorText}>Enter {inputText}</p>}
         {!enteredValueIsValid && touched && (
           <p className={styles.errorText}></p>
