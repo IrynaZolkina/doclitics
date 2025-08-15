@@ -2,12 +2,8 @@ import "../../../app/globals.css";
 import styles from "../../css-modules/loginpage.module.css";
 import { Suspense } from "react";
 
-import { register } from "../../../actions/userservice";
-import React, { useActionState } from "react";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { addToast } from "../../../redux/store";
-import { useSearchParams } from "next/navigation";
+// import { register } from "../../../actions/userservice";
+
 import ClientToastHandler from "@/components-ui/ClientToastHandler";
 
 const LoginPage = () => {
