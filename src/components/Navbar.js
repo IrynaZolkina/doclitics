@@ -176,7 +176,7 @@ export function Navbar() {
     if (pdfDoc && pdfD) {
       renderPage(pageNum);
     }
-  }, [pdfDoc, pdfD, pageNum, scale, rotation]);
+  }, [pdfDoc, pdfD, pageNum, scale, rotation, renderPage]);
 
   const renderPage = async (pageNumber) => {
     if (!pdfDoc) return;
