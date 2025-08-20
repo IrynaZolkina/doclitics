@@ -8,7 +8,7 @@ import React from "react";
 const infoArray = [
   {
     text: "Doclitic has transformed how our team processes documents. What used to take hours now takes minutes and the quality is consistently excellent.",
-    author: "Sarah Chen",
+    author: "Sarah Chen Chu",
     prof: "Research Director",
     ab: "SC",
   },
