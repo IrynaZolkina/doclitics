@@ -13,7 +13,7 @@ const infoArray = [
     ab: "SC",
   },
   {
-    text: "As a graduate student, Doclitic helps me quickly understand complex papers and create study notes. Its like having a research assistant 24/7.",
+    text: "As a graduate student, Doclitic helps me quickly understand complex papers and create study notes. Its like having a research assistant 24 on 7.",
     author: "Michael Rodriguez",
     prof: "PhD Student",
     ab: "MR",
