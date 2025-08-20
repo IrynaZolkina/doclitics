@@ -15,10 +15,13 @@ import SupportSection from "./SupportSection";
 import PrivateSection from "./PrivateSection";
 import PriceSection from "./PriceSection";
 import Dashboard from "./Dashboard";
-// import { extractTextFromPdf } from "@/lib/textutils";
-
-import * as pdfjsLib from "pdfjs-dist";
 import Loved from "./Loved";
+// import { extractTextFromPdf } from "@/lib/textutils";
+// import Loved from "./Loved";
+// import pdfjsLib from "pdfjs-dist/legacy/build/pdf.js";
+// import { DOMMatrix } from "canvas"; // npm install canvas
+// global.DOMMatrix = DOMMatrix;
+import * as pdfjsLib from "pdfjs-dist";
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
 

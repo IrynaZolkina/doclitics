@@ -1,0 +1,21 @@
+import styles from "./halfarrowdown.module.css";
+
+const HalfArrowDown = ({ isOpen }) => {
+  return (
+    <svg
+      className={`${styles.arrow} ${isOpen ? styles.open : ""}`}
+      width="15"
+      height="9"
+      viewBox="0 0 15 9"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1.77783 1.68408L7.77783 7.68408L13.7778 1.68408"
+        stroke="#5593F7"
+      />
+    </svg>
+  );
+};
+
+export default HalfArrowDown;

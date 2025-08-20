@@ -2,6 +2,7 @@ import Image from "next/image";
 import "../app/globals.css";
 import styles from "./css-modules/herosection.module.css";
 import DropZone from "./DropZone";
+import DropZoneN from "./DropZoneN";
 
 const HeroSection = ({
   setChosenFile,
@@ -31,12 +32,18 @@ const HeroSection = ({
         </p>
         <p>tailored precisely to your documents unique style and needs.</p>
       </div>
-      <DropZone
+      <DropZoneN
         setChosenFile={setChosenFile}
         setPdfDoc={setPdfDoc}
         setTotalPages={setTotalPages}
         setExtractedTexts={setExtractedTexts}
       />
+      {/* <DropZone
+        setChosenFile={setChosenFile}
+        setPdfDoc={setPdfDoc}
+        setTotalPages={setTotalPages}
+        setExtractedTexts={setExtractedTexts}
+      /> */}
 
       <div className={styles.heroTwoButtonsContainer}>
         <button>Start Summarizing for Free</button>

@@ -2,6 +2,9 @@
 import Image from "next/image";
 import "../app/globals.css";
 import styles from "./css-modules/dashboard.module.css";
+
+import { useSelector } from "react-redux";
+
 const summariesArray = [
   { fileName: "Sample Business Report.pdf", size: "344" },
   { fileName: "Sample Business Report1.pdf", size: "344" },
@@ -11,8 +14,17 @@ const summariesArray = [
   { fileName: "Sample Business Report5.pdf", size: "344" },
 ];
 const Dashboard = ({ fileName }) => {
+  const user = useSelector((state) => state.user);
   return (
     <div className={styles.container}>
+      {/* {user.isLoggedIn ? (
+        <>
+          <p>Username: {user.username}</p>
+          <p>Email: {user.email}</p>
+        </>
+      ) : (
+        <p>User is not logged in</p>
+      )} */}
       <h1>Welcome to your Dashboard, Andrii</h1>
       <p>To create your first summary, drag & Drop or select a file</p>
       <div className={styles.gridContainer}>
@@ -30,7 +42,7 @@ const Dashboard = ({ fileName }) => {
 
                   className={styles.arrow}
                 >
-                  <Image src="page2_04.svg" alt="01" width={24} height={24} />
+                  <Image src="/page2_04.svg" alt="01" width={24} height={24} />
                 </span>
               </div>
             ))}

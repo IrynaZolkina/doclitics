@@ -1,8 +1,13 @@
+"use client";
 import "../app/globals.css";
 import styles from "./css-modules/dropzone.module.css";
 
+import { useDispatch } from "react-redux";
+import { setFileData } from "../redux/store";
+
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import * as pdfjsLib from "pdfjs-dist";
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -15,6 +20,8 @@ const DropZone = ({
   setExtractedTexts,
 }) => {
   const [drag, setDrag] = useState(false);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   // **********
 
@@ -88,9 +95,10 @@ const DropZone = ({
             <Image
               className={styles.heroImage}
               src="aiimage.svg"
-              alt="Hero Image"
               width={892}
               height={348}
+              alt="AI Image"
+              priority={true} // ✅ important for LCP
             />
             <Image
               className={styles.dropIcon}

@@ -2,41 +2,33 @@
 
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeToast } from "../redux/store";
+
 import styles from "./css-modules/ToastContainer.module.css";
+import { removeToast } from "@/redux/store";
 
 export default function ToastContainer() {
   const toasts = useSelector((state) => state.toast);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const timers = toasts.map((toast) =>
-      setTimeout(() => dispatch(removeToast(toast.id)), 3000)
-    );
-
-    // Cleanup timers if component unmounts or toasts change
-    return () => timers.forEach((t) => clearTimeout(t));
+    if (toasts.length > 0) {
+      const timer = setTimeout(() => {
+        dispatch(removeToast(toasts[0].id));
+      }, 9000);
+      return () => clearTimeout(timer);
+    }
   }, [toasts, dispatch]);
 
   return (
     <div className={styles.toastWrapper}>
       {toasts.map((toast) => (
-        <div
-          key={toast.id}
-          className={`${styles.toast} ${
-            toast.type === "success"
-              ? styles.success
-              : toast.type === "error"
-              ? styles.error
-              : styles.info
-          } ${styles.fadeIn}`}
-        >
+        <div key={toast.id} className={`${styles.toast} ${styles[toast.type]}`}>
           <span>{toast.message}</span>
           <button
             className={styles.closeBtn}
             onClick={() => dispatch(removeToast(toast.id))}
           >
-            &times;
+            ×
           </button>
         </div>
       ))}

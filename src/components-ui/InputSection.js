@@ -1,5 +1,6 @@
 import "../app/globals.css";
 import styles from "./css-modules/inputsection.module.css";
+import { GoogleIcon } from "./svg-components/GoogleIcon";
 import { GreenCheckIcon } from "./svg-components/GreenCheckIcon";
 import { RedXIcon } from "./svg-components/RedXIcon";
 
@@ -22,7 +23,7 @@ export default function InputSection(props) {
 
   const enteredValueIsValid = enteredValue.trim() !== "";
 
-  // console.log("-----enteredValue.lenght-----", enteredValue.lenght);
+  console.log("-----enteredValue.lenght-----", enteredValue.lenght);
   const inputChangeHandler = (e) => {
     // if (enteredValue.lenght < fieldLength) {
     setEnteredValue(e.target.value);

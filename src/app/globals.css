@@ -141,8 +141,9 @@ body {
   overflow-x: hidden;
 }
 body {
-  color: var(--foreground);
+  /* color: var(--foreground); */
   background-color: var(--background-two);
+  color: wheat;
   /* background-color: yellow; */
   /* background: var(--background); */
   font-family: Arial, Helvetica, sans-serif;
@@ -178,6 +179,32 @@ a {
 .test {
   background-color: var(--gradient-hero);
 }
+
+.navButtonContainer {
+  position: fixed;
+  top: 20px;
+  /* left: 1200px; */
+  left: 80%;
+  background: var(--button-blue-background);
+  /* width: 96px;
+  height: 36px; */
+  border-radius: 14px;
+  color: var(--background-one);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+}
+.navButton {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 13.02px;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

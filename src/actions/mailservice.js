@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export async function sendActivationMail(to, link) {
+export async function sendActivationMail(to, code) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     host: process.env.SMTP_HOST,
@@ -22,7 +22,8 @@ export async function sendActivationMail(to, link) {
       <h1>Activate Your Account</h1>
           <p>Click the link below to activate your account:</p>
     
-         <a href="${link}">${link}</a>
+       
+         <p>${code}</p>
        
          <p>This link will expire in 24 hours.</p>
       </div>

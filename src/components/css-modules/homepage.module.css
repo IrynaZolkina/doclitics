@@ -34,24 +34,9 @@
     hsl(222 40% 12%) 100%
   );
 
-  /* display: grid;
-  grid-template-rows: 20px 1fr 20px;
-  align-items: center;
-  justify-items: center;
-  min-height: 100svh; */
-  /* padding: 80px; */
   gap: 64px;
   font-family: var(--font-inter);
   background-color: var(--gradient-secondary);
-  /* font-family: var(--font-geist-sans); */
-  /* background: var(--gradient-hero); */
-  /* background: linear-gradient(
-    135deg,
-    hsl(222 47% 8%) 0%,
-    hsl(222 40% 12%) 50%,
-    hsl(222 47% 6%) 100%
-  ); */
-
   display: flex;
   flex-direction: column;
   align-items: center;

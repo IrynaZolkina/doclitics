@@ -1,5 +1,8 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 
+import fs from "fs";
+import { Binary } from "mongodb";
+
 //   const client = await MongoClient.connect(process.env.MONGODB_URL);
 const client = new MongoClient(process.env.MONGODB_URL, {
   serverApi: {
@@ -10,10 +13,7 @@ const client = new MongoClient(process.env.MONGODB_URL, {
 });
 async function getDB(dbName) {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
-    //await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
@@ -33,4 +33,11 @@ export async function getCollection(collectionName) {
     return db.collection(collectionName);
   }
   return null;
+}
+
+export async function savePdfToDb(file) {
+  const collection = getCollection("files");
+
+  const pdfBuffer = fs.readFileSync(file);
+  console.log("---pdfBuffer---", pdfBuffer, "------*****");
 }

@@ -1,5 +1,43 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 
+// Toast slice
+const toastSlice = createSlice({
+  name: "toast",
+  initialState: [],
+  reducers: {
+    addToast: (state, action) => {
+      state.push({
+        id: Date.now(),
+        type: action.payload.type || "info", // "success", "error", "warning", "info"
+        message: action.payload.message,
+      });
+    },
+    removeToast: (state, action) => {
+      return state.filter((toast) => toast.id !== action.payload);
+    },
+  },
+});
+// Counter slice
+// File slice
+const initialFileState = {
+  fileName: "",
+  fileType: "",
+  storeTotalPages: "",
+  storeExtractedTexts: "",
+  fileSize: 0,
+};
+
+const fileSlice = createSlice({
+  name: "file",
+  initialState: initialFileState,
+  reducers: {
+    setFileData: (state, action) => {
+      return { ...state, ...action.payload }; // merge new data
+    },
+    clearFileData: () => initialFileState, // reset correctly
+  },
+});
+
 // User slice
 const userSlice = createSlice({
   name: "user",
@@ -22,45 +60,14 @@ const userSlice = createSlice({
   },
 });
 
-// Toast slice
-const toastSlice = createSlice({
-  name: "toast",
-  initialState: [],
-  reducers: {
-    addToast: (state, action) => {
-      state.push(action.payload);
-    },
-    removeToast: (state, action) => {
-      return state.filter((toast) => toast.id !== action.payload);
-    },
-  },
-});
-
-// Counter slice
-const counterSlice = createSlice({
-  name: "counter",
-  initialState: { value: 0 },
-  reducers: {
-    increment: (state) => {
-      state.value += 1;
-    },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    reset: (state) => {
-      state.value = 0;
-    },
-  },
-});
-
 export const { login, logout } = userSlice.actions;
 export const { addToast, removeToast } = toastSlice.actions;
-export const { increment, decrement, reset } = counterSlice.actions;
+export const { setFileData, clearFileData } = fileSlice.actions;
 
 export const store = configureStore({
   reducer: {
     user: userSlice.reducer,
     toast: toastSlice.reducer,
-    counter: counterSlice.reducer,
+    file: fileSlice.reducer,
   },
 });

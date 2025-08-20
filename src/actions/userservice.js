@@ -1,81 +1,69 @@
-"use server";
-import { v4 as uuidv4 } from "uuid";
-import bcrypt from "bcrypt";
-import { getCollection } from "@/lib/db";
-import { sendActivationMail } from "./mailservice";
-import { generateToken, saveTokenToDB } from "./tokenservice";
+// "use server";
 
-export async function register(state, formData) {
-  //   await new Promise((resolve) => setTimeout(resolve, 3000));
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const enteredUsername = formData.get("enteredUsername");
-  console.log("^^^^^^^^^---", enteredUsername);
-  // validate data
+export const validateUserName = (value) => {
+  const u = value?.trim() || "";
+  if (!u) return "Username is required";
+  if (!/^[a-zA-Z0-9_]{3,}$/.test(u))
+    return "Username must be at least 3 characters and contain only letters, numbers, or underscores";
+  return "";
+};
 
-  const userCollection = await getCollection("users");
+export const validateEmail = (value) => {
+  const e = value?.trim() || "";
+  if (!e) return "Email is required";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) return "Invalid email address";
+  return "";
+};
 
-  const candidate = await userCollection.findOne({ email: email });
-  console.log("candidate---", candidate);
-  if (candidate) {
-    console.log(`User already exists ${email}---`);
-    return;
-  }
+export const validatePassword = (value) => {
+  const p = value?.trim() || "";
+  if (!p) return "Password is required";
+  if (
+    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])(?!.*\s).{8,}$/.test(p)
+  )
+    return "Password must be at least 8 characters and include uppercase, lowercase, number, and special character, with no spaces";
+  return "";
+};
+// import { v4 as uuidv4 } from "uuid";
+// import bcrypt from "bcrypt";
+// import { getCollection } from "@/lib/db";
+// import { sendActivationMail } from "./mailservice";
+// import { generateTokens, saveTokenToDB } from "./tokenservice";
 
-  const hashedPassword = await bcrypt.hash(password, 3);
-  const activationLink = uuidv4();
-  const result = await userCollection.insertOne({
-    email,
-    password: hashedPassword,
-    activationLink,
-    isActivated: false,
-  });
-  await sendActivationMail(
-    email,
-    `${process.env.API_URL}/activated/${activationLink}`
-  );
-  // console.log("uuid---", uuid);
-  // console.log("result---", result.insertedId);
-  //   console.log("userCollection---", userCollection);
-  const tokens = await generateToken({
-    userId: result.insertedId,
-    email,
-    activationLink,
-  });
-  const refreshToken = tokens.refreshToken;
-
-  // const user = { userId: result.insertedId, email, activationLink };
-  saveTokenToDB(result.insertedId, refreshToken);
-
-  // console.log("...tokens---", { ...tokens });
-  // console.log("...user---", user);
-
-  return enteredUsername;
-  // <div>
-  //   {console.log("Register action called")}
-  //   {console.log(email)}
-  //   {console.log(password)}
-  // </div>
-}
-// export async function activate(activationLink) {
-//   // console.log("****n link *****", link);
-//   // const activationLink = link.lastIndexOf("/") + 1;
+// export async function register(state, formData) {
+//   const email = formData.get("email");
+//   const password = formData.get("password");
+//   const enteredUsername = formData.get("enteredUsername");
 
 //   const userCollection = await getCollection("users");
-//   console.log("****n activationlink *****", activationLink);
-//   // const candidate = await userCollection.findOne({ email: email });
 
-//   // const client = await MongoClient.connect(process.env.MONGODB_URL);
+//   const candidate = await userCollection.findOne({ email: email });
+//   console.log("candidate---", candidate);
+//   if (candidate) {
+//     console.log(`User already exists ${email}---`);
+//     return;
+//   }
 
-//   // const db = client.db();
-//   const user = await userCollection.findOne({ activationLink });
-//   // if (!user) {
-//   //   client.close();
-//   //   return;
-//   // }
-//   await userCollection.updateOne(
-//     { activationLink },
-//     { $set: { isActivated: true } }
+//   const hashedPassword = await bcrypt.hash(password, 3);
+//   const activationLink = uuidv4();
+//   const result = await userCollection.insertOne({
+//     email,
+//     password: hashedPassword,
+//     activationLink,
+//     isActivated: false,
+//   });
+//   await sendActivationMail(
+//     email,
+//     `${process.env.API_URL}/activated/${activationLink}`
 //   );
-//   // client.close();oll
+//   const tokens = await generateTokens({
+//     userId: result.insertedId,
+//     email,
+//     activationLink,
+//   });
+//   const refreshToken = tokens.refreshToken;
+
+//   saveTokenToDB(result.insertedId, refreshToken);
+
+//   return enteredUsername;
 // }

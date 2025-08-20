@@ -19,18 +19,27 @@ const Activated = async ({ params }) => {
 
   if (new Date() > user.activationExpires) {
     await users.deleteOne({ _id: user._id });
-    return NextResponse.json(
-      { error: "Activation link expired" },
-      { status: 400 }
-    );
+    redirect("/login?error=expired_token");
+    // return NextResponse.json(
+    //   { error: "Activation link expired" },
+    //   { status: 400 }
+    // );
   }
-
-  // activate(link);
-  redirect("/login?activated=1");
-  return (
-    <div>
-      <h1>Activated</h1>
-    </div>
+  const result = await users.updateOne(
+    { _id: user._id },
+    {
+      $set: {
+        isActivated: true,
+      },
+      $unset: { activationLink: "", activationExpires: "" },
+    }
   );
+  // activate(link);
+  redirect("/login?registered=1");
+  // return (
+  //   <div>
+
+  //   </div>
+  // );
 };
 export default Activated;
