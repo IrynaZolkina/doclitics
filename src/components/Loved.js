@@ -13,7 +13,7 @@ const infoArray = [
     ab: "SC",
   },
   {
-    text: "As a graduate student, Doclitic helps me quickly understand complex papers and create study notes. Its like having a research assistant 24 on 7.",
+    text: "As a graduate student, Doclitic helps me quickly understand complex papers and create study notes. It&apos;s like having a research assistant 24/7.",
     author: "Michael Rodriguez",
     prof: "PhD Student",
     ab: "MR",
@@ -25,7 +25,7 @@ const infoArray = [
     ab: "EW",
   },
   {
-    text: "Doclitics document analysis capabilities are impressive. It understands speficic terminology and creates summaries that are actually accurate.",
+    text: "Doclitic&apos;s document analysis capabilities are impressive. It understands spefic terminology and creates summaries that are actually accurate.",
     author: "David Kim",
     prof: "Legal Consultant",
     ab: "DK",
