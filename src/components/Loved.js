@@ -59,7 +59,7 @@ const Loved = () => {
             <span>
               <Comma />
             </span>
-            <p>"{item.text}"</p>
+            <p>{item.text}</p>
             <div className={styles.logoBlok}>
               <div className={styles.star}>
                 <span>
