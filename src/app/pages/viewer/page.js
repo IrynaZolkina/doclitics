@@ -40,7 +40,7 @@ export default function ViewerPage() {
     if (pdfDoc) {
       renderPage(pageNum);
     }
-  }, [pdfDoc, pageNum, scale, rotation, numPages]);
+  }, [pdfDoc, pageNum, scale, rotation, numPages, renderPage]);
 
   const renderPage = async (pageNumber) => {
     if (!pdfDoc) return;
