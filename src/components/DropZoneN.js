@@ -73,7 +73,7 @@ const DropZoneN = () => {
       try {
         await saveFileToIndexedDB("current-pdf", filel);
 
-        showToast("PDF saved to IndexedDB");
+        showToast("PDF saved to IndexedDB..........");
         router.push("/pages/viewer");
       } catch (err) {
         showToast(err);
