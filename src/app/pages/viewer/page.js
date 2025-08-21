@@ -1,7 +1,7 @@
 "use client";
 import "../../globals.css";
 import styles from "../../css-modules/viewerpage.module.css";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getFileFromIndexedDB, deleteFileFromIndexedDB } from "@/lib/indexeddb";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -36,34 +36,66 @@ export default function ViewerPage() {
   const fileType = useSelector((state) => state.file.fileType);
   const fileSize = useSelector((state) => state.file.fileSize);
 
+  const renderPage = useCallback(
+    async (pageNumber) => {
+      if (!pdfDoc) return;
+
+      const page = await pdfDoc.getPage(pageNumber);
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+
+      // Apply rotation
+      const viewport = page.getViewport({ scale, rotation });
+
+      // Set canvas dimensions to match the viewport
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      // Render the PDF page
+      const renderContext = {
+        canvasContext: context,
+        viewport,
+      };
+
+      await page.render(renderContext).promise;
+    },
+    [pdfDoc, scale, rotation] // dependencies
+  );
+
   useEffect(() => {
     if (pdfDoc) {
       renderPage(pageNum);
     }
-  }, [pdfDoc, pageNum, scale, rotation, numPages, renderPage]);
+  }, [pdfDoc, pageNum, renderPage]);
 
-  const renderPage = async (pageNumber) => {
-    if (!pdfDoc) return;
+  // useEffect(() => {
+  //   if (pdfDoc) {
+  //     renderPage(pageNum);
+  //   }
+  // }, [pdfDoc, pageNum, scale, rotation, numPages, renderPage]);
 
-    const page = await pdfDoc.getPage(pageNumber);
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
+  // const renderPage = async (pageNumber) => {
+  //   if (!pdfDoc) return;
 
-    // Apply rotation
-    const viewport = page.getViewport({ scale, rotation: rotation });
+  //   const page = await pdfDoc.getPage(pageNumber);
+  //   const canvas = canvasRef.current;
+  //   const context = canvas.getContext("2d");
 
-    // Set canvas dimensions to match the viewport
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
+  //   // Apply rotation
+  //   const viewport = page.getViewport({ scale, rotation: rotation });
 
-    // Render the PDF page
-    const renderContext = {
-      canvasContext: context,
-      viewport: viewport,
-    };
+  //   // Set canvas dimensions to match the viewport
+  //   canvas.height = viewport.height;
+  //   canvas.width = viewport.width;
 
-    await page.render(renderContext).promise;
-  };
+  //   // Render the PDF page
+  //   const renderContext = {
+  //     canvasContext: context,
+  //     viewport: viewport,
+  //   };
+
+  //   await page.render(renderContext).promise;
+  // };
 
   const handleZoomIn = async () => {
     const newScale = scale + 0.2;

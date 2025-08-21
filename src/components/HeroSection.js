@@ -1,7 +1,7 @@
 import Image from "next/image";
 import "../app/globals.css";
 import styles from "./css-modules/herosection.module.css";
-import DropZone from "./DropZone";
+// import DropZone from "./DropZone";
 import DropZoneN from "./DropZoneN";
 
 const HeroSection = ({

@@ -172,34 +172,34 @@ export function Navbar() {
   // Navigation functions
 
   // Re-render when page number, scale or rotation changes
-  useEffect(() => {
-    if (pdfDoc && pdfD) {
-      renderPage(pageNum);
-    }
-  }, [pdfDoc, pdfD, pageNum, scale, rotation, renderPage]);
+  // useEffect(() => {
+  //   if (pdfDoc && pdfD) {
+  //     renderPage(pageNum);
+  //   }
+  // }, [pdfDoc, pdfD, pageNum, scale, rotation, renderPage]);
 
-  const renderPage = async (pageNumber) => {
-    if (!pdfDoc) return;
+  // const renderPage = async (pageNumber) => {
+  //   if (!pdfDoc) return;
 
-    const page = await pdfDoc.getPage(pageNumber);
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
+  //   const page = await pdfDoc.getPage(pageNumber);
+  //   const canvas = canvasRef.current;
+  //   const context = canvas.getContext("2d");
 
-    // Apply rotation
-    const viewport = page.getViewport({ scale, rotation: rotation });
+  //   // Apply rotation
+  //   const viewport = page.getViewport({ scale, rotation: rotation });
 
-    // Set canvas dimensions to match the viewport
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
+  //   // Set canvas dimensions to match the viewport
+  //   canvas.height = viewport.height;
+  //   canvas.width = viewport.width;
 
-    // Render the PDF page
-    const renderContext = {
-      canvasContext: context,
-      viewport: viewport,
-    };
+  //   // Render the PDF page
+  //   const renderContext = {
+  //     canvasContext: context,
+  //     viewport: viewport,
+  //   };
 
-    await page.render(renderContext).promise;
-  };
+  //   await page.render(renderContext).promise;
+  // };
 
   const goToPrevPage = () => {
     if (pageNum > 1) {

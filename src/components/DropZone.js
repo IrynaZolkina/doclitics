@@ -3,7 +3,7 @@ import "../app/globals.css";
 import styles from "./css-modules/dropzone.module.css";
 
 import { useDispatch } from "react-redux";
-import { setFileData } from "../redux/store";
+// import { setFileData } from "../redux/store";
 
 import Image from "next/image";
 import { useState } from "react";
