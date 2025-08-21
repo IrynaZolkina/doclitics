@@ -1,3 +1,4 @@
+"use client";
 import "../app/globals.css";
 import styles from "./css-modules/inputsection.module.css";
 import { GreenCheckIcon } from "./svg-components/GreenCheckIcon";
