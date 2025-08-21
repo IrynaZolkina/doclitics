@@ -204,6 +204,9 @@ a {
   font: inherit;
   font-size: 13.02px;
 }
+.navButton:hover {
+  color: var(--text-color-white);
+}
 
 @media (prefers-color-scheme: dark) {
   html {

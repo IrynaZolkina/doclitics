@@ -1,6 +1,6 @@
 "use client";
 import "../../globals.css";
-import styles from "../../css-modules/viewerpage.module.css";
+import styles from "../css-modules/viewerpage.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getFileFromIndexedDB, deleteFileFromIndexedDB } from "@/lib/indexeddb";
 
@@ -11,6 +11,8 @@ import Link from "next/link";
 import Button from "@/components-ui/Button";
 import Paper from "@/components-ui/svg-components/Paper";
 import { formatBytes } from "@/lib/formatBytes";
+import Eye1 from "@/components-ui/svg-components/Eye1";
+import EyeOff1 from "@/components-ui/svg-components/EyeOff1";
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
 
@@ -22,6 +24,7 @@ export default function ViewerPage() {
   const [arrayBuffer, setArrayBuffer] = useState(null);
   const [numPages, setNumPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [openViewer, setOpenViewer] = useState(true);
 
   const [chosenFile, setChosenFile] = useState(null);
   const [extractedText, setExtractedTexts] = useState();
@@ -29,12 +32,36 @@ export default function ViewerPage() {
   const [totalPages, setTotalPages] = useState(0);
 
   const [pageNum, setPageNum] = useState(1);
+  const [activeIndexType, setActiveIndexType] = useState(5);
+  const [activeIndexTone, setActiveIndexTone] = useState(3);
+  const [value, setValue] = useState(50);
+  const sliderRef = useRef(null);
 
   const canvasRef = useRef(null);
   const dispatch = useDispatch();
   const fileName = useSelector((state) => state.file.fileName);
   const fileType = useSelector((state) => state.file.fileType);
   const fileSize = useSelector((state) => state.file.fileSize);
+  console.log("chosenFile---", chosenFile, typeof chosenFile, "*****");
+  console.log("fulltext--", extractedText);
+
+  const documentTypes = [
+    "Business Report",
+    "Research Paper / Notes",
+    "Literature",
+    "Analytical Document",
+    "Resume / CV",
+    "Meeting Transcript",
+    "Other",
+  ];
+  const documentTones = [
+    "Formal",
+    "Casual",
+    "Academic",
+    "Friendly",
+    "Persuasive",
+    "Neural",
+  ];
 
   const renderPage = useCallback(
     async (pageNumber) => {
@@ -44,8 +71,23 @@ export default function ViewerPage() {
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
 
+      /* insert here */
+      const container = canvas.parentElement;
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+
+      let viewport = page.getViewport({ scale: 1, rotation });
+
+      const scaleX = containerWidth / viewport.width;
+      const scaleY = containerHeight / viewport.height;
+      const newScale = Math.min(scaleX, scaleY);
+
+      /* insert here */
+
       // Apply rotation
-      const viewport = page.getViewport({ scale, rotation });
+      /* */
+      viewport = page.getViewport({ scale: newScale, rotation });
+      // const viewport = page.getViewport({ scale, rotation });
 
       // Set canvas dimensions to match the viewport
       canvas.height = viewport.height;
@@ -63,10 +105,12 @@ export default function ViewerPage() {
   );
 
   useEffect(() => {
-    if (pdfDoc) {
-      renderPage(pageNum);
+    if (!openViewer) {
+      if (pdfDoc) {
+        renderPage(pageNum);
+      }
     }
-  }, [pdfDoc, pageNum, renderPage]);
+  }, [pdfDoc, pageNum, renderPage, openViewer]);
 
   // useEffect(() => {
   //   if (pdfDoc) {
@@ -147,10 +191,13 @@ export default function ViewerPage() {
   // Rotation functions
   const rotateClockwise = () => {
     setRotation((prevRotation) => (prevRotation + 90) % 360);
+
+    // renderPage(currentPage);
   };
 
   const rotateCounterClockwise = () => {
     setRotation((prevRotation) => (prevRotation - 90 + 360) % 360);
+    // renderPage(numPages);
   };
   const handleNextPage = async () => {
     if (currentPage < numPages) {
@@ -160,44 +207,62 @@ export default function ViewerPage() {
     }
   };
   const filePreposition = async () => {
-    try {
-      const file = await getFileFromIndexedDB("current-pdf");
-      console.log("File name from IndexedDB:-------", file.name);
-      await deleteFileFromIndexedDB("current-pdf");
-      setChosenFile(file);
-      const reader = new FileReader();
-      reader.readAsArrayBuffer(file); // ***  !!!!
-      reader.onload = async (e) => {
-        const typedArray = new Uint8Array(e.target.result);
-        try {
-          const loadingTask = pdfjsLib.getDocument(typedArray);
-          const pdf = await loadingTask.promise;
-          console.log("pdf=========", pdf);
-          setPdfDoc(pdf);
-          setTotalPages(pdf.numPages);
-          //     setPageNum(1);
-          let fullText = "";
-          for (let i = 1; i <= pdf.numPages; i++) {
-            const page = await pdf.getPage(i);
-            const textContent = await page.getTextContent();
-            fullText += textContent.items.map((item) => item.str).join(" ");
-          }
+    if (!chosenFile) {
+      try {
+        const file = await getFileFromIndexedDB("current-pdf");
+        console.log("File name from IndexedDB:-------", file.name);
+        await deleteFileFromIndexedDB("current-pdf");
+        setChosenFile(file);
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(file); // ***  !!!!
+        reader.onload = async (e) => {
+          const typedArray = new Uint8Array(e.target.result);
+          try {
+            const loadingTask = pdfjsLib.getDocument(typedArray);
+            const pdf = await loadingTask.promise;
+            console.log("pdf=========", pdf);
+            setPdfDoc(pdf);
+            setTotalPages(pdf.numPages);
+            //     setPageNum(1);
+            let fullText = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+              const page = await pdf.getPage(i);
+              const textContent = await page.getTextContent();
+              fullText += textContent.items.map((item) => item.str).join(" ");
+            }
 
-          setExtractedTexts(fullText);
-        } catch (error) {
-          console.error("Error loading PDF:", error);
-          alert("Error loading PDF file");
-        }
-      };
-      //read
-    } catch (error) {
-      console.error("Error getting file from IndexedDB:", error);
+            setExtractedTexts(fullText);
+          } catch (error) {
+            console.error("Error loading PDF:", error);
+            alert("Error loading PDF file");
+          }
+        };
+        //read
+      } catch (error) {
+        console.error("Error getting file from IndexedDB:", error);
+      }
     }
   };
 
   // if (error) return <p style={{ color: "red" }}>{error}</p>;
   // if (!pageUrl) return <p>Загрузка PDF...</p>;
   // filePreposition();
+
+  // Update track background
+  // useEffect(() => {
+  //   const slider = sliderRef.current;
+  //   if (!slider) return;
+
+  //   const percentage = ((value - slider.min) / (slider.max - slider.min)) * 100;
+
+  //   // left color: green, right color: light gray
+  //   const bg = `linear-gradient(to right, #4caf50 0%, #4caf50 ${percentage}%, #ddd ${percentage}%, #ddd 100%)`;
+
+  //   slider.style.background = bg;
+  // }, [value]);
+  const trackStyle = {
+    background: `linear-gradient(to right, #4caf50 0%, #4caf50 ${value}%, #ddd ${value}%, #ddd 100%)`,
+  };
   return (
     <div className={styles.viewerPage}>
       <div
@@ -243,61 +308,125 @@ export default function ViewerPage() {
 
       <div className={styles.pageWrapper}>
         <div className={styles.pageContainer}>
-          <h2>Selected File:</h2>
-          <div className={styles.blockContainer}>
-            <div>
-              {" "}
-              <Paper />
-            </div>
-            <div>{fileName}</div>
-            <div className={styles.block}>
-              {fileSize > 0 ? formatBytes(fileSize) : ""}
-            </div>
-            <div className={styles.block}>.{fileType}</div>
-            <div>
-              <Button
-                onClick={filePreposition}
-                bg={"rgba(60, 131, 246, 0.05)"}
-                borderColor={"rgba(85, 147, 247, 0.3)"}
-                height={"55px"}
-                width={"151px"}
-                radius={"13px"}
-              >
-                <span className={styles.preview}>Preview</span>
-              </Button>
+          <div className={styles.blockWrapper}>
+            <h2>Selected File:</h2>
+            <div className={styles.blockContainer}>
+              <div>
+                <Paper />
+              </div>
+              <div>{fileName}</div>
+              <div className={styles.block}>
+                {fileSize > 0 ? formatBytes(fileSize) : ""}
+              </div>
+              <div className={styles.block}>.{fileType}</div>
+              <div>
+                <Button
+                  onClick={() => {
+                    setOpenViewer(!openViewer);
+                    filePreposition();
+                  }}
+                  bg={"rgba(60, 131, 246, 0.05)"}
+                  borderColor={"rgba(85, 147, 247, 0.3)"}
+                  height={"55px"}
+                  width={"151px"}
+                  radius={"13px"}
+                >
+                  <span className={styles.buttonInside}>
+                    {openViewer ? <Eye1 /> : <EyeOff1 />}
+                    <span className={styles.preview}>
+                      {openViewer ? "Preview" : "Close Preview"}
+                    </span>
+                  </span>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div className={styles.controlsContainer}>
-        <div className={styles.pageControls}>
-          <button onClick={goToPrevPage} disabled={pageNum <= 1}>
-            Previous
-          </button>
-          <span>
-            Page {pageNum} of {totalPages}
-          </span>
-          <button onClick={goToNextPage} disabled={pageNum >= totalPages}>
-            Next
-          </button>
-        </div>
+          {!openViewer && (
+            <div className={styles.controlsContainer}>
+              <div className={styles.controlsBox}></div>
+              <div className={styles.pageControls}>
+                <button onClick={goToPrevPage} disabled={pageNum <= 1}>
+                  Previous
+                </button>
+                <span>
+                  Page {pageNum} of {totalPages}
+                </span>
+                <button onClick={goToNextPage} disabled={pageNum >= totalPages}>
+                  Next
+                </button>
+              </div>
 
-        <div className={styles.pdfContainer}>
-          {/* {console.log("pdf-doc---", pdfDoc)} */}
-          <canvas ref={canvasRef} />
-        </div>
-        <div className={styles.zoomControls}>
-          <button onClick={zoomOut}>Zoom Out</button>
-          <span>{Math.round(scale * 100)}%</span>
-          <button onClick={zoomIn}>Zoom In</button>
-        </div>
+              <div className={styles.pdfContainer}>
+                {/* {console.log("pdf-doc---", pdfDoc)} */}
+                <canvas ref={canvasRef} />
+              </div>
+              <div className={styles.zoomControls}>
+                <button onClick={zoomOut}>Zoom Out</button>
+                <span>{Math.round(scale * 100)}%</span>
+                <button onClick={zoomIn}>Zoom In</button>
+              </div>
 
-        <div className={styles.rotationControls}>
-          <button onClick={rotateCounterClockwise}>Rotate Left</button>
-          <button onClick={rotateClockwise}>Rotate Right</button>
-        </div>
-        <div className={styles.container}>
-          <Button>hello</Button>
+              <div className={styles.rotationControls}>
+                <button onClick={rotateCounterClockwise}>Rotate Left</button>
+                <button onClick={rotateClockwise}>Rotate Right</button>
+              </div>
+              <div className={styles.container}>
+                <Button>hello</Button>
+              </div>
+            </div>
+          )}
+
+          <div className={styles.blockWrapper}>
+            <h2>Document Type</h2>
+            <p>What kind of document is this?</p>
+            <div className={styles.blockContainer2}>
+              {documentTypes.map((item, index) => (
+                <div
+                  key={index}
+                  onClick={() => setActiveIndexType(index)}
+                  className={`${styles.chooseButtonContainer} ${
+                    activeIndexType === index ? styles.active : ""
+                  }`}
+                >
+                  <div>
+                    <div className={styles.chooseButton}>{item}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.blockWrapper}>
+            <h2>Tone & Style</h2>
+            <p>Choose a tone or a style for the Summary</p>
+            <div className={styles.blockContainer3}>
+              {documentTones.map((item, index) => (
+                <div
+                  key={index}
+                  onClick={() => setActiveIndexTone(index)}
+                  className={`${styles.chooseButtonContainer} ${
+                    activeIndexTone === index ? styles.active : ""
+                  }`}
+                >
+                  <div>
+                    <div className={styles.chooseButton}>{item}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <input
+              type="range"
+              // ref={sliderRef}
+              className={styles.slider}
+              style={trackStyle}
+              min="0"
+              max="100"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
+          </div>
         </div>
       </div>
     </div>

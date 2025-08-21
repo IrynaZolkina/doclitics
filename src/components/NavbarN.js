@@ -24,6 +24,7 @@ import Loved from "./Loved";
 // global.DOMMatrix = DOMMatrix;
 import * as pdfjsLib from "pdfjs-dist";
 import { getFileFromIndexedDB } from "@/lib/indexeddb";
+import FaqSection from "./FaqSection";
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
 
@@ -217,9 +218,12 @@ export function NavbarN() {
 
           {/* CTA Button */}
         </div>
-        <div className={styles.navButtonContainer}>
+        <div
+          className="navButtonContainer"
+          style={{ width: "96px", height: "36px" }}
+        >
           <Link href="/register">
-            <button className={styles.navButton}>Get Started</button>
+            <button className="navButton">Get Started</button>
           </Link>
         </div>
       </nav>
@@ -253,7 +257,9 @@ export function NavbarN() {
           <div id="#reviews" className="section">
             <Loved />
           </div>
-          <div id="#faq" className="section"></div>
+          <div id="#faq" className="section">
+            <FaqSection />
+          </div>
         </>
       ) : (
         <>

@@ -1,13 +1,14 @@
 "use client";
-import "../../../app/globals.css";
+import "../../../globals.css";
 import styles from "../../css-modules/registerpage.module.css";
 
 import React, { useActionState, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import InputSection from "@/components-ui/InputSection";
-import { addToast } from "../../../redux/store";
+
 import { useRouter } from "next/navigation";
+import { addToast } from "@/redux/store";
 
 const Register = () => {
   const [enteredUsername, setEnteredUsername] = useState("");
