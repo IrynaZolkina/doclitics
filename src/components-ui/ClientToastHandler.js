@@ -3,7 +3,7 @@
 
 import { useSelector, useDispatch } from "react-redux";
 import { removeToast } from "../redux/store";
-import styles from "../css-modules/toast.module.css"; // optional: your toast CSS
+// optional: your toast CSS
 
 export default function ClientToastHandler() {
   const dispatch = useDispatch();
