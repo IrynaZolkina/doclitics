@@ -1,7 +1,7 @@
 "use client";
 import "../app/globals.css";
 import styles from "./css-modules/inputsection.module.css";
-import { GoogleIcon } from "./svg-components/GoogleIcon";
+// import { GoogleIcon } from "./svg-components/GoogleIcon";
 import { GreenCheckIcon } from "./svg-components/GreenCheckIcon";
 import { RedXIcon } from "./svg-components/RedXIcon";
 
