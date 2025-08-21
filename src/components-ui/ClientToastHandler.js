@@ -1,48 +1,31 @@
+// /components-ui/ClientToastHandler.js
 "use client";
 
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { addToast } from "../redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import { removeToast } from "../redux/store";
+import styles from "../css-modules/toast.module.css"; // optional: your toast CSS
 
 export default function ClientToastHandler() {
-  const searchParams = useSearchParams();
   const dispatch = useDispatch();
+  const toasts = useSelector((state) => state.toast);
 
-  useEffect(() => {
-    const registered = searchParams.get("registered");
-    const error = searchParams.get("error");
+  const handleRemove = (id) => {
+    dispatch(removeToast(id));
+  };
 
-    if (registered === "1") {
-      dispatch(
-        addToast({
-          id: Date.now(),
-          message: "Registration successful! Please login.",
-          type: "success",
-        })
-      );
-    }
-
-    if (error === "invalid_token") {
-      dispatch(
-        addToast({
-          id: Date.now(),
-          message: "Invalid activation link.",
-          type: "error",
-        })
-      );
-    }
-
-    if (error === "expired_token") {
-      dispatch(
-        addToast({
-          id: Date.now(),
-          message: "Activation link expired.",
-          type: "error",
-        })
-      );
-    }
-  }, [searchParams, dispatch]);
-
-  return null;
+  return (
+    <div className={styles.toastContainer}>
+      {toasts.map((toast) => (
+        <div key={toast.id} className={`${styles.toast} ${styles[toast.type]}`}>
+          <span>{toast.message}</span>
+          <button
+            className={styles.closeButton}
+            onClick={() => handleRemove(toast.id)}
+          >
+            ×
+          </button>
+        </div>
+      ))}
+    </div>
+  );
 }
