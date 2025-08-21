@@ -1,6 +1,6 @@
 "use client";
 
-import "../../../app/globals.css";
+import "../../globals.css";
 import styles from "../../css-modules/loginpage.module.css";
 // import { Suspense } from "react";
 
@@ -10,8 +10,9 @@ import styles from "../../css-modules/loginpage.module.css";
 import { useDispatch } from "react-redux";
 
 import InputSectionLogin from "@/components-ui/InputSectionLogin";
-import { addToast } from "../../../redux/store";
+
 import { useState } from "react";
+import { addToast } from "@/redux/store";
 
 const LoginPage = () => {
   const [enteredEmail, setEnteredEmail] = useState("");
