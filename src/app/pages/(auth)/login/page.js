@@ -1,6 +1,6 @@
 "use client";
 
-import "../../globals.css";
+import "@/app/globals.css";
 import styles from "../../css-modules/loginpage.module.css";
 // import { Suspense } from "react";
 

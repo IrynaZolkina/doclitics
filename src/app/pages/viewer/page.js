@@ -101,7 +101,11 @@ export default function ViewerPage() {
 
       await page.render(renderContext).promise;
     },
-    [pdfDoc, scale, rotation] // dependencies
+    [
+      pdfDoc,
+      //scale,
+      rotation,
+    ] // dependencies
   );
 
   useEffect(() => {
