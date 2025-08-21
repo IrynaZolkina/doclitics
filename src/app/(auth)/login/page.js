@@ -6,7 +6,7 @@ import styles from "../../css-modules/loginpage.module.css";
 
 // import { register } from "../../../actions/userservice";
 
-import ClientToastHandler from "@/components-ui/ClientToastHandler";
+// import ClientToastHandler from "@/components-ui/ClientToastHandler";
 import { useDispatch } from "react-redux";
 
 import InputSectionLogin from "@/components-ui/InputSectionLogin";
@@ -82,7 +82,7 @@ const LoginPage = () => {
   return (
     <div className={styles.container}>
       {/* <Suspense fallback={null}> */}
-      <ClientToastHandler />
+      {/* <ClientToastHandler /> */}
       {/* </Suspense> */}
       <h1 className={styles.title}>Login</h1>
       <form onSubmit={handleSubmit} className={styles.form}>
