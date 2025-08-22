@@ -18,7 +18,7 @@ import { formatBytes } from "@/lib/formatBytes";
 import { getFileFromIndexedDB, deleteFileFromIndexedDB } from "@/lib/indexeddb";
 import Eye1 from "@/components-ui/svg-components/Eye1";
 import EyeOff1 from "@/components-ui/svg-components/EyeOff1";
-import SliderRange from "../../../components-ui/sliderRange";
+import SliderRange from "../../../components-ui/SliderRange";
 import { promptMd } from "@/lib/promptMd";
 import { setFileData } from "@/redux/store";
 
