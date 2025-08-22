@@ -173,60 +173,62 @@
   height: 1100px;
   margin: 0 auto;
 }
-.slider {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 8px;
-  border-radius: 4px;
-  background: linear-gradient(to right, #4caf50 50%, #ddd 50%);
+.sliderRange {
+  margin-left: 50px;
+}
+.blockContainer4 {
+  margin-top: 20px;
+  height: 80px;
+  padding: 0 35px;
+  font-size: 16px;
+}
+.blockContainer4 input {
+  width: 700px;
+  height: 40px;
+  border: none;
+  color: var(--text-color-white);
+}
+.blockContainer4 input::placeholder {
+  color: rgba(133, 178, 249, 0.4);
+  font-weight: bold;
+}
+.blockContainer4 input:focus {
   outline: none;
+  background: #1d2c4a;
+  padding: 0 10px;
+  border-radius: 7px;
+}
+.activeRed {
+  border-color: rgba(236, 72, 153, 1);
+}
+.summaryContainer {
+  width: 60%;
+  height: 290vh;
+  margin: 0 auto;
+  color: white;
+}
+.button {
+  /* background: #4f46e5;  */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.3s ease; /* smooth track background */
+  font-size: 16px;
+  font-weight: 500;
+  border: 1px solid rgba(236, 72, 153, 1);
+
+  /* Smooth press animation */
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Webkit track */
-.slider::-webkit-slider-runnable-track {
-  height: 8px;
-  border-radius: 4px;
+.button:hover {
+  /* background: #4338ca; Darker on hover */
+  transform: scale(1.05);
 }
 
-/* Webkit thumb */
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  background: #ffffff;
-  border: 2px solid #4caf50;
-  border-radius: 50%;
-  margin-top: -6px; /* center thumb */
-  cursor: pointer;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.3s, border-color 0.3s;
-}
-
-.slider::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
-}
-
-/* Firefox track and thumb */
-.slider::-moz-range-track {
-  height: 8px;
-  border-radius: 4px;
-  background: linear-gradient(to right, #4caf50 50%, #ddd 50%);
-  transition: background 0.3s ease;
-}
-
-.slider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  background: #ffffff;
-  border: 2px solid #4caf50;
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.3s, border-color 0.3s;
-}
-
-.slider::-moz-range-thumb:hover {
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+.button:active {
+  transform: scale(0.95); /* Shrinks slightly */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Shadow reduces */
 }

@@ -4,7 +4,8 @@ import OpenAI from "openai";
 export async function POST(request) {
   const params = await request.json();
   const apiKey = process.env.DEEPSEEK_API_KEY;
-
+  console.log("params.prompt---", params.prompt);
+  console.log("params.content---", params.content);
   const openai = new OpenAI({
     baseURL: "https://openrouter.ai/api/v1",
     apiKey: apiKey,

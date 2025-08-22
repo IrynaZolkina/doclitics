@@ -64,7 +64,7 @@ const DropZoneN = () => {
     dispatch(
       setFileData({
         fileName: filel.name,
-        fileType: "pdf",
+        fileType: filel.type,
         fileSize: filel.size,
         // or actual base64 string if you generate it
       })

@@ -227,41 +227,36 @@ export function NavbarN() {
           </Link>
         </div>
       </nav>
-      {chosenFile === null ? (
-        <>
-          <div id="#dashboard" className="section">
-            <HeroSection
-              setChosenFile={setChosenFile}
-              setPdfDoc={setPdfDoc}
-              setTotalPages={setTotalPages}
-              setExtractedTexts={setExtractedTexts}
-            />
-          </div>
-          {/* <button
-            onClick={filePreposition}
-            style={{ color: "white", padding: "10px", background: "lightBlue" }}
-          >
-            FILE!!!!!!!!!!!!!!!!
-          </button> */}
-          <div id="#features" className="section">
-            <HowWorksSection />
-            <SupportSection />
-          </div>
+      {/* {chosenFile === null ? ( */}
+      <>
+        <div id="#dashboard" className="section">
+          <HeroSection
+            setChosenFile={setChosenFile}
+            setPdfDoc={setPdfDoc}
+            setTotalPages={setTotalPages}
+            setExtractedTexts={setExtractedTexts}
+          />
+        </div>
 
-          <div id="#security" className="section">
-            <PrivateSection />
-          </div>
-          <div id="#pricing" className="section">
-            <PriceSection />
-          </div>
-          <div id="#reviews" className="section">
-            <Loved />
-          </div>
-          <div id="#faq" className="section">
-            <FaqSection />
-          </div>
-        </>
-      ) : (
+        <div id="#features" className="section">
+          <HowWorksSection />
+          <SupportSection />
+        </div>
+
+        <div id="#security" className="section">
+          <PrivateSection />
+        </div>
+        <div id="#pricing" className="section">
+          <PriceSection />
+        </div>
+        <div id="#reviews" className="section">
+          <Loved />
+        </div>
+        <div id="#faq" className="section">
+          <FaqSection />
+        </div>
+      </>
+      {/* ) : (
         <>
           <Dashboard fileName={fileName} />
 
@@ -324,7 +319,7 @@ export function NavbarN() {
               })}
           </div>
         </>
-      )}
+      )} */}
     </div>
   );
 }

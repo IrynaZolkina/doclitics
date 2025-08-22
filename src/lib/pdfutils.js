@@ -1,41 +1,31 @@
-"use client";
+// "use client";
 // Save file as ArrayBuffer in IndexedDB
-export function saveFileToIndexedDb(file) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const arrayBuffer = await file.arrayBuffer(); // convert File/Blob → ArrayBuffer
-      const request = indexedDB.open("MyFileDB", 1);
 
-      request.onupgradeneeded = (event) => {
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains("files")) {
-          db.createObjectStore("files");
-        }
-      };
+//       };
 
-      request.onsuccess = (event) => {
-        const db = event.target.result;
-        const tx = db.transaction(["files"], "readwrite");
-        const store = tx.objectStore("files");
+//       request.onsuccess = (event) => {
+//         const db = event.target.result;
+//         const tx = db.transaction(["files"], "readwrite");
+//         const store = tx.objectStore("files");
 
-        const putRequest = store.put(arrayBuffer, "myPDF");
+//         const putRequest = store.put(arrayBuffer, "myPDF");
 
-        putRequest.onsuccess = () => resolve("File saved");
-        putRequest.onerror = (e) => {
-          if (e.target.error?.name === "QuotaExceededError") {
-            reject("Not enough space in IndexedDB");
-          } else {
-            reject("Error saving: " + e.target.error);
-          }
-        };
-      };
+//         putRequest.onsuccess = () => resolve("File saved");
+//         putRequest.onerror = (e) => {
+//           if (e.target.error?.name === "QuotaExceededError") {
+//             reject("Not enough space in IndexedDB");
+//           } else {
+//             reject("Error saving: " + e.target.error);
+//           }
+//         };
+//       };
 
-      request.onerror = () => reject("Error opening DB");
-    } catch (err) {
-      reject("Error converting file: " + err.message);
-    }
-  });
-}
+//       request.onerror = () => reject("Error opening DB");
+//     } catch (err) {
+//       reject("Error converting file: " + err.message);
+//     }
+//   });
+// }
 //   return new Promise((resolve, reject) => {
 //     const request = indexedDB.open("MyFileDB", 1);
 

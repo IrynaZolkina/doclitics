@@ -1,20 +1,26 @@
 "use client";
 import "../../globals.css";
 import styles from "../css-modules/viewerpage.module.css";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { getFileFromIndexedDB, deleteFileFromIndexedDB } from "@/lib/indexeddb";
 
-import { useSelector, useDispatch } from "react-redux";
-
+import ReactMarkdown from "react-markdown";
 import * as pdfjsLib from "pdfjs-dist";
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+import OpenAI from "openai";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Link from "next/link";
+
 import Button from "@/components-ui/Button";
 import Paper from "@/components-ui/svg-components/Paper";
 import { formatBytes } from "@/lib/formatBytes";
+import { getFileFromIndexedDB, deleteFileFromIndexedDB } from "@/lib/indexeddb";
 import Eye1 from "@/components-ui/svg-components/Eye1";
 import EyeOff1 from "@/components-ui/svg-components/EyeOff1";
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+import SliderRange from "../../../components-ui/sliderRange";
+import { promptMd } from "@/lib/promptMd";
+import { setFileData } from "@/redux/store";
 
 export default function ViewerPage() {
   const [pageUrl, setPageUrl] = useState(null);
@@ -34,8 +40,12 @@ export default function ViewerPage() {
   const [pageNum, setPageNum] = useState(1);
   const [activeIndexType, setActiveIndexType] = useState(5);
   const [activeIndexTone, setActiveIndexTone] = useState(3);
-  const [value, setValue] = useState(50);
-  const sliderRef = useRef(null);
+  const [activeIndexSize, setActiveIndexSize] = useState(0);
+  const [inputAdditional, setInputAdditional] = useState("");
+  const [researchType, setResearchType] = useState(0);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [choices, setChoices] = useState([]);
 
   const canvasRef = useRef(null);
   const dispatch = useDispatch();
@@ -47,9 +57,9 @@ export default function ViewerPage() {
 
   const documentTypes = [
     "Business Report",
-    "Research Paper / Notes",
     "Literature",
-    "Analytical Document",
+    "Research Paper / Notes",
+    "Concept Document",
     "Resume / CV",
     "Meeting Transcript",
     "Other",
@@ -62,6 +72,11 @@ export default function ViewerPage() {
     "Persuasive",
     "Neural",
   ];
+  const documentSize = ["Normal", "Advanced "];
+
+  useEffect(() => {
+    setResearchType(activeIndexType);
+  }, [activeIndexType]);
 
   const renderPage = useCallback(
     async (pageNumber) => {
@@ -101,11 +116,7 @@ export default function ViewerPage() {
 
       await page.render(renderContext).promise;
     },
-    [
-      pdfDoc,
-      //scale,
-      rotation,
-    ] // dependencies
+    [pdfDoc, rotation] // dependencies
   );
 
   useEffect(() => {
@@ -114,7 +125,7 @@ export default function ViewerPage() {
         renderPage(pageNum);
       }
     }
-  }, [pdfDoc, pageNum, renderPage, openViewer]);
+  }, [pdfDoc, pageNum, renderPage, openViewer, scale]);
 
   // useEffect(() => {
   //   if (pdfDoc) {
@@ -170,7 +181,6 @@ export default function ViewerPage() {
       await renderPage(arrayBuffer, newPage, scale, rotation);
     }
   };
-
   const goToPrevPage = () => {
     if (pageNum > 1) {
       setPageNum((prevPageNum) => prevPageNum - 1);
@@ -236,6 +246,11 @@ export default function ViewerPage() {
             }
 
             setExtractedTexts(fullText);
+            dispatch(
+              setFileData({
+                storeExtractedTexts: fullText,
+              })
+            );
           } catch (error) {
             console.error("Error loading PDF:", error);
             alert("Error loading PDF file");
@@ -264,9 +279,34 @@ export default function ViewerPage() {
 
   //   slider.style.background = bg;
   // }, [value]);
-  const trackStyle = {
-    background: `linear-gradient(to right, #4caf50 0%, #4caf50 ${value}%, #ddd ${value}%, #ddd 100%)`,
+
+  const sendFile = async () => {
+    //const apiKey = process.env.DEEPSEEK_API_KEY;
+    // if (!filesend) {
+    //   return;
+    // }
+    // extractTextFromPdf();
+
+    const inputPrompt = promptMd[researchType].prompt;
+    console.log("/////    inputPrompt.   //////. ", inputPrompt);
+    console.log("/////    extractedText.   //////. ", extractedText);
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: extractedText,
+        prompt: inputPrompt,
+      }),
+    });
+    setIsLoading(false);
+    const result = await response.json();
+    console.log("///////////", result.choices);
+    ///////
+    setChoices(result.choices);
   };
+
   return (
     <div className={styles.viewerPage}>
       <div
@@ -379,7 +419,6 @@ export default function ViewerPage() {
               </div>
             </div>
           )}
-
           <div className={styles.blockWrapper}>
             <h2>Document Type</h2>
             <p>What kind of document is this?</p>
@@ -399,7 +438,6 @@ export default function ViewerPage() {
               ))}
             </div>
           </div>
-
           <div className={styles.blockWrapper}>
             <h2>Tone & Style</h2>
             <p>Choose a tone or a style for the Summary</p>
@@ -419,18 +457,65 @@ export default function ViewerPage() {
               ))}
             </div>
           </div>
-          <div>
-            <input
-              type="range"
-              // ref={sliderRef}
-              className={styles.slider}
-              style={trackStyle}
-              min="0"
-              max="100"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
+          <div className={styles.blockWrapper}>
+            <h2>Size & Depth</h2>
+            <p>How deep do you want your summary to go?</p>
+            <div className={styles.blockContainer3}>
+              {documentSize.map((item, index) => (
+                <div
+                  key={index}
+                  onClick={() => setActiveIndexSize(index)}
+                  className={`${styles.chooseButtonContainer} ${
+                    activeIndexSize === index ? styles.active : ""
+                  }`}
+                >
+                  <div>
+                    <div className={styles.chooseButton}>{item}</div>
+                  </div>
+                </div>
+              ))}
+              <div className={styles.sliderRange}>
+                <SliderRange
+                  min={300}
+                  max={2000}
+                  thumbWidth={20}
+                  step={20}
+                  initial={500}
+                />
+              </div>
+            </div>
           </div>
+          <div className={styles.blockWrapper}>
+            <h2>Additional Notes</h2>
+            <p>Any additional details you whould like the AI to focus on</p>
+            <div
+              className={`${styles.blockContainer} ${styles.blockContainer4}`}
+            >
+              <input
+                type="text"
+                value={inputAdditional}
+                className={styles.inputAdditional}
+                onChange={(e) => setInputAdditional(e.target.value)}
+                placeholder="E.g. “Focus on marketing trends” or “Skip boilerplate intros”"
+              />
+            </div>
+          </div>
+          <div
+            onClick={sendFile}
+            // className={`${styles.chooseButtonContainer} ${styles.activeRed}`}
+          >
+            <button className={styles.button}>Generate Summary!</button>
+          </div>
+        </div>
+        <div className={styles.summaryContainer}>
+          {choices &&
+            choices.map((choice) => {
+              return (
+                <ReactMarkdown key={choice.index}>
+                  {choice.message.content}
+                </ReactMarkdown>
+              );
+            })}
         </div>
       </div>
     </div>
