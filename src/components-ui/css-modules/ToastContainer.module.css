@@ -24,10 +24,10 @@
   animation: fadeInOut 3s ease forwards;
 }
 
-.success {
+.toast.success {
   background-color: #22c55e;
 }
-.error {
+.toast.error {
   background-color: #ef4444;
 }
 .warning {

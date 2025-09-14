@@ -9,6 +9,8 @@ import InputSection from "@/components-ui/InputSection";
 
 import { useRouter } from "next/navigation";
 import { addToast } from "@/redux/store";
+import Image from "next/image";
+import { GoogleIcon } from "@/components-ui/svg-components/GoogleIcon";
 
 const Register = () => {
   const [enteredUsername, setEnteredUsername] = useState("");
@@ -103,7 +105,8 @@ const Register = () => {
     validationCheckPassword,
     validationCheckPasswordRepeat,
   ]);
-  const handleSubmit = async (e) => {
+
+  const handleSubmitGoogle = async (e) => {
     e.preventDefault();
     setPending(true);
     try {
@@ -113,7 +116,7 @@ const Register = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username: enteredUsername,
-          email: enteredEmail,
+          email: enteredEmail.toLowerCase(),
           password: enteredPassword,
         }),
       });
@@ -158,6 +161,101 @@ const Register = () => {
           message: result.message || "Something..... went wrong",
         })
       );
+      console.log("result-----:", result);
+      // dispatch(
+      //   addToast({
+      //     id: Date.now(),
+      //     type: result.ok ? "success" : "error",
+      //     message: result.message || "Something..... went wrong",
+      //   })
+      // );
+      // dispatch(addToast({ type: "success", message: "User registered!" }));
+    } catch (err) {
+      dispatch(addToast({ type: "error", message: err.message }));
+      // } catch (err) {
+      //   console.log("err.message", err);
+
+      // console.log("User registered:", { ...data });
+      // const mes = data.userDto.email;
+      // console.log("mes-----:", mes);
+      // dispatch(
+      //   addToast({
+      //     id: Date.now(),
+      //     type: "error",
+      //     message: err.message || "Network error, please try again.",
+      //   })
+      // );
+    } finally {
+      setPending(false);
+    }
+  };
+  async function handleGoogleLogin() {
+    // window.location.href = "/api/auth/google";
+    const res = await fetch("/api/auth/google");
+    const data = await res.json();
+
+    // If backend returns { authUrl: "https://accounts.google.com/..." }
+    if (res.ok && data.authUrl) {
+      window.location.href = data.authUrl; // redirect manually
+    }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setPending(true);
+    try {
+      // ✅ API request
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: enteredUsername,
+          email: enteredEmail.toLowerCase(),
+          password: enteredPassword,
+        }),
+      });
+      // if (!res.ok) throw new Error("Registration failed" + { ...data });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error);
+        // setPending(false);
+        // dispatch(
+
+        //   addToast({
+        //     id: Date.now(),
+        //     type: res.ok ? "✅ success" : "❌error",
+        //     message: res.data || "Something went wrong",
+        //   })
+        // );
+        // throw new Error();
+        // throw new Error("" || "Registration failed");
+      }
+      // const data = await res.json();
+      // const mes = data.userDto.email;
+      // dispatch(
+
+      //   addToast({
+      //     id: Date.now(),
+      //     type: res.ok ? "✅ success" : "❌error",
+      //     message: "" || "Something..... went wrong",
+      //   })
+      // );
+      // console.log("Server response:", data);
+
+      // const data = await res.json();
+      // console.log("User registered:", { ...data });
+      // console.log("mes-----:", mes);
+      // dispatch(
+      // );
+      const result = await res.json();
+      dispatch(
+        addToast({
+          type: "success",
+          message: result.message || "Something..... went wrong",
+        })
+      );
+      console.log("result-----:", result);
       // dispatch(
       //   addToast({
       //     id: Date.now(),
@@ -211,7 +309,7 @@ const Register = () => {
       dispatch(
         addToast({ type: "success", message: data.message || "Verificated" })
       );
-      router.push("/login?registered=1");
+      // router.push("/login?registered=1");
     } catch (err) {
       // dispatch(addToast({ type: "error", message: err.message }));
     } finally {
@@ -222,7 +320,52 @@ const Register = () => {
   return (
     <div className={styles.registerWrapper}>
       <div className={styles.gridContainer}>
-        <div className={styles.pictureContainer}></div>
+        <div className={styles.pictureContainer}>
+          <div>
+            <Image
+              src="/register.png"
+              alt="Picture"
+              width={554}
+              height={775}
+              className={styles.image}
+            />
+            <div className={styles.imageText}>
+              <div className={styles.imageTextInner}>
+                <h1>Transform Your</h1>
+                <h1>
+                  <span>Documents</span> with AI
+                </h1>
+                <h3>Experience the future of document processing</h3>
+                <p>with Doclitic intelligent AI companion.</p>
+                <div className={styles.textBlock}>
+                  <div className={styles.head}>
+                    <span className={styles.circle}></span>{" "}
+                    <p>Instant document analysis and insights</p>
+                  </div>
+                  <div className={styles.head}>
+                    <span className={styles.circle}></span>{" "}
+                    <p>Natural language document interaction</p>
+                  </div>
+                  <div className={styles.head}>
+                    <span className={styles.circle}></span>
+                    <p>Enterprise-grade security and privacy</p>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.boxes}>
+                <div>
+                  <h2>10K+</h2>
+                  <p>Documents Processed</p>
+                </div>
+                <div>
+                  <h2>99.9%</h2>
+                  <p>Accuracy Rate</p>
+                </div>
+              </div>
+            </div>
+          </div>{" "}
+          {/* <div className={styles.overlay}> </div> */}
+        </div>
         <div className={styles.registerContainer}>
           <div className={styles.twoButtons}>
             <span>Sign In</span>
@@ -230,6 +373,11 @@ const Register = () => {
           </div>
           <h1>Create an account</h1>
           <p>Already have an account? Log in </p>
+          {/* <a href="/api/auth/google"> */}
+          <button onClick={handleGoogleLogin} className={styles.googleButton}>
+            <GoogleIcon /> Login with Google
+          </button>
+          {/* </a> */}
           <div className={styles.formBox}>
             {/* <form action={action}>
             <label htmlFor="email">Email</label>

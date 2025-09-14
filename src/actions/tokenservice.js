@@ -31,8 +31,8 @@ export async function generateTokens(payload) {
 //   return token;
 // }
 export async function saveTokenToDB(userId, refreshToken) {
-  const tokensCollection = await getCollection("tokens");
-
+  const tokensCollection = await getCollection("refreshTokens");
+  // const tokensCollection = await getCollection("tokens");
   console.log("tokens-userId, refreshToken--", userId, refreshToken);
 
   // Check if token already exists

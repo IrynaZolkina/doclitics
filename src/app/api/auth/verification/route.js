@@ -57,7 +57,11 @@ export async function POST(req) {
         $set: {
           isActivated: true,
         },
-        $unset: { activationLink: "", activationExpires: "" },
+        $unset: {
+          activationLink: "",
+          activationExpires: "",
+          verificationCode: "",
+        },
       }
     );
     if (result.modifiedCount === 1) {

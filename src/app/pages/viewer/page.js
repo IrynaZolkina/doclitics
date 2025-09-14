@@ -21,6 +21,9 @@ import EyeOff1 from "@/components-ui/svg-components/EyeOff1";
 import SliderRange from "../../../components-ui/SliderRange";
 import { promptMd } from "@/lib/promptMd";
 import { setFileData } from "@/redux/store";
+import Popup from "@/components-ui/Popup";
+import { useRouter } from "next/navigation";
+import Arrowleft from "./Arrowleft";
 
 export default function ViewerPage() {
   const [pageUrl, setPageUrl] = useState(null);
@@ -47,11 +50,15 @@ export default function ViewerPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [choices, setChoices] = useState([]);
 
+  const [showPopup, setShowPopup] = useState(false);
+
   const canvasRef = useRef(null);
   const dispatch = useDispatch();
   const fileName = useSelector((state) => state.file.fileName);
   const fileType = useSelector((state) => state.file.fileType);
   const fileSize = useSelector((state) => state.file.fileSize);
+  const user = useSelector((state) => state.user);
+  const router = useRouter();
   console.log("chosenFile---", chosenFile, typeof chosenFile, "*****");
   console.log("fulltext--", extractedText);
 
@@ -156,31 +163,6 @@ export default function ViewerPage() {
   //   await page.render(renderContext).promise;
   // };
 
-  const handleZoomIn = async () => {
-    const newScale = scale + 0.2;
-    setScale(newScale);
-    await renderPage(arrayBuffer, currentPage, newScale, rotation);
-  };
-
-  const handleZoomOut = async () => {
-    const newScale = Math.max(0.5, scale - 0.2);
-    setScale(newScale);
-    await renderPage(arrayBuffer, currentPage, newScale, rotation);
-  };
-
-  const handleRotate = async () => {
-    const newRotation = (rotation + 90) % 360;
-    setRotation(newRotation);
-    await renderPage(arrayBuffer, currentPage, scale, newRotation);
-  };
-
-  const handlePrevPage = async () => {
-    if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      setCurrentPage(newPage);
-      await renderPage(arrayBuffer, newPage, scale, rotation);
-    }
-  };
   const goToPrevPage = () => {
     if (pageNum > 1) {
       setPageNum((prevPageNum) => prevPageNum - 1);
@@ -213,13 +195,13 @@ export default function ViewerPage() {
     setRotation((prevRotation) => (prevRotation - 90 + 360) % 360);
     // renderPage(numPages);
   };
-  const handleNextPage = async () => {
-    if (currentPage < numPages) {
-      const newPage = currentPage + 1;
-      setCurrentPage(newPage);
-      await renderPage(arrayBuffer, newPage, scale, rotation);
-    }
-  };
+  // const handleNextPage = async () => {
+  //   if (currentPage < numPages) {
+  //     const newPage = currentPage + 1;
+  //     setCurrentPage(newPage);
+  //     await renderPage(arrayBuffer, newPage, scale, rotation);
+  //   }
+  // };
   const filePreposition = async () => {
     if (!chosenFile) {
       try {
@@ -265,28 +247,8 @@ export default function ViewerPage() {
 
   // if (error) return <p style={{ color: "red" }}>{error}</p>;
   // if (!pageUrl) return <p>Загрузка PDF...</p>;
-  // filePreposition();
-
-  // Update track background
-  // useEffect(() => {
-  //   const slider = sliderRef.current;
-  //   if (!slider) return;
-
-  //   const percentage = ((value - slider.min) / (slider.max - slider.min)) * 100;
-
-  //   // left color: green, right color: light gray
-  //   const bg = `linear-gradient(to right, #4caf50 0%, #4caf50 ${percentage}%, #ddd ${percentage}%, #ddd 100%)`;
-
-  //   slider.style.background = bg;
-  // }, [value]);
 
   const sendFile = async () => {
-    //const apiKey = process.env.DEEPSEEK_API_KEY;
-    // if (!filesend) {
-    //   return;
-    // }
-    // extractTextFromPdf();
-
     const inputPrompt = promptMd[researchType].prompt;
     console.log("/////    inputPrompt.   //////. ", inputPrompt);
     console.log("/////    extractedText.   //////. ", extractedText);
@@ -306,6 +268,12 @@ export default function ViewerPage() {
     ///////
     setChoices(result.choices);
   };
+  const handleChoice = (choice) => {
+    console.log("User chose:", choice);
+    setShowPopup(false);
+
+    // router.push("/pages/register");
+  };
 
   return (
     <div className={styles.viewerPage}>
@@ -320,35 +288,13 @@ export default function ViewerPage() {
       <h1>Ready to Summarize Smarter?</h1>
       <p>
         Choose your style, and let our AI do the heavy lifting. You can explore
-        the options below{" "}
+        the options below
       </p>
       <p>
-        to see how summaries are customized — when you’re ready to generate your
-        first one,
+        to see how summaries are customized — when you are ready to generate
+        your first one,
       </p>
       <p>simply create a free account to unlock the magic.</p>
-
-      {/* <div style={{ marginBottom: 20 }}>
-        <button onClick={handleZoomIn}>➕ Увеличить</button>
-        <button onClick={handleZoomOut}>➖ Уменьшить</button>
-        <button onClick={handleRotate}>↻ Повернуть</button>
-      </div>
-
-      <div style={{ marginBottom: 20 }}>
-        <button onClick={handlePrevPage} disabled={currentPage === 1}>
-          ◀️ Назад
-        </button>
-        <span style={{ margin: "0 10px" }}>
-          Страница {currentPage} из {numPages}
-        </span>
-        <button onClick={handleNextPage} disabled={currentPage === numPages}>
-          Вперёд ▶️
-        </button>
-      </div>
-
-      <div>
-        <img src={pageUrl} alt={`Страница ${currentPage}`} />
-      </div> */}
 
       <div className={styles.pageWrapper}>
         <div className={styles.pageContainer}>
@@ -389,15 +335,24 @@ export default function ViewerPage() {
             <div className={styles.controlsContainer}>
               <div className={styles.controlsBox}></div>
               <div className={styles.pageControls}>
-                <button onClick={goToPrevPage} disabled={pageNum <= 1}>
-                  Previous
+                <button
+                  className={styles.buttonPageLeft}
+                  onClick={goToPrevPage}
+                  disabled={pageNum <= 1}
+                >
+                  <Arrowleft />
+                </button>
+
+                <button
+                  className={styles.buttonPageRight}
+                  onClick={goToNextPage}
+                  disabled={pageNum >= totalPages}
+                >
+                  <Arrowleft />
                 </button>
                 <span>
                   Page {pageNum} of {totalPages}
                 </span>
-                <button onClick={goToNextPage} disabled={pageNum >= totalPages}>
-                  Next
-                </button>
               </div>
 
               <div className={styles.pdfContainer}>
@@ -500,6 +455,15 @@ export default function ViewerPage() {
               />
             </div>
           </div>
+          <button onClick={() => setShowPopup(true)}>Open Popup</button>
+          {showPopup && (
+            <Popup
+              // onChoice={(choice) => handleChoice(choice)}
+              onCancel={() => setShowPopup(false)}
+              option1={() => router.push("/pages/register")}
+              option2={() => router.push("/pages/login")}
+            />
+          )}
           <div
             onClick={sendFile}
             // className={`${styles.chooseButtonContainer} ${styles.activeRed}`}
@@ -511,9 +475,9 @@ export default function ViewerPage() {
           {choices &&
             choices.map((choice) => {
               return (
-                <ReactMarkdown key={choice.index}>
-                  {choice.message.content}
-                </ReactMarkdown>
+                <div className="markdown" key={choice.index}>
+                  <ReactMarkdown>{choice.message.content}</ReactMarkdown>
+                </div>
               );
             })}
         </div>

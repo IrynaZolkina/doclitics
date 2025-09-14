@@ -86,11 +86,11 @@
   font-weight: bold;
   font-size: 16px;
 }
-.heroDivImage label {
+/* .heroDivImage label {
   color: transparent;
   font-size: 0;
   background: transparent;
-}
+} */
 .heroDivImage label {
   background: var(--button-blue-background);
   color: var(--background-one);
@@ -106,4 +106,20 @@
   border-radius: 16px;
   font-weight: bold;
   font-size: 16px;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* initial shadow */
+  transition: transform 0.1s ease, box-shadow 0.1s ease; /* smooth */
+}
+.heroDivImage label:hover {
+  background: rgba(164, 194, 225, 0.8);
+  cursor: pointer;
+  color: white;
+}
+.heroDivImage label:active {
+  position: absolute;
+  top: 240px;
+  /* left: 50%;
+  transform: translateX(-50%); */
+  transform: translateX(-50%) scale(0.95);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* shadow reduces */
 }

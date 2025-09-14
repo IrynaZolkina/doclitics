@@ -222,7 +222,7 @@ export function NavbarN() {
           className="navButtonContainer"
           style={{ width: "96px", height: "36px" }}
         >
-          <Link href="/register">
+          <Link href="/pages/auth/login">
             <button className="navButton">Get Started</button>
           </Link>
         </div>

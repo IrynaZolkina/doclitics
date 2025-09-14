@@ -75,5 +75,5 @@
   white-space: nowrap;
   pointer-events: none;
   transition: left 0.1s ease;
-  z-index: 1500;
+  /* z-index: 1500; */
 }

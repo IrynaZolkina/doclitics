@@ -157,7 +157,6 @@ const DropZoneN = () => {
             <div className={styles.chooseFileButton}>
               <Image src="choosefile.svg" alt="drop" width={24} height={24} />
             </div>
-            {console.log("Helloooooo")}
           </div>
         ) : (
           <div
@@ -183,7 +182,7 @@ const DropZoneN = () => {
             />
             <h2>Drop your document here</h2>
             <p>Or click to browse &#11050; Supports PDF, DOC, TXT and more</p>
-            <label>
+            <label className={styles.label}>
               Choose file
               <input
                 type="file"

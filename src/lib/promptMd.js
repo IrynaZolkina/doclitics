@@ -29,8 +29,7 @@ Provide **notable statistics, KPIs, or financials** mentioned in the report. Use
 ## ⚠️ Risks or Challenges  
 Clearly list any risks, weaknesses, or critical concerns raised. Use bold or italics for high-priority items.
 
-## ✅ Strategic Recommendations  
-If the report proposes action steps, summarize them here. Use formal business tone, and phrase each as an executive suggestion.
+## ✅ **Strategic Recommendations** - Paragraph and phrase each as an executive suggestion. If the report proposes action steps, summarize them here. Use formal business tone, and phrase each as an executive suggestion.
 
 ## 🧾 Final Takeaway  
 One short paragraph that reflects the overall implication of the report. Think like a strategist — what should the C-suite care most about?

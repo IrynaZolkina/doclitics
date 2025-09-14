@@ -1,7 +1,9 @@
 "use client";
-import { useState } from "react";
 import "../app/globals.css";
 import styles from "./css-modules/faqsection.module.css";
+
+import { useState } from "react";
+
 import HalfArrowDown from "@/components-ui/svg-components/HalfArrowDown";
 
 const faqArray = [
@@ -69,55 +71,42 @@ const FaqSection = () => {
     }));
   };
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem" }}>
-      <h2
-        style={{
-          fontSize: "24px",
-          fontWeight: "bold",
-          marginBottom: "20px",
-          textAlign: "center",
-        }}
-      >
-        Frequently Asked Questions
-      </h2>
+    <div className={styles.container}>
+      <h1>
+        Frequently Asked <span>Questions</span>
+      </h1>
+      <p>
+        Everything you need to know about Doclitic. Can&apos;t find what
+        you&apos;re
+      </p>
+      <p>looking for? Contact our support team.</p>
+      <div className={styles.questionsContainer}>
+        {faqArray.map((faq, index) => (
+          <div key={index} className={styles.question}>
+            <div className={styles.q}>
+              <h3>{faq.question}</h3>
+              <button
+                onClick={() => toggleItem(index)}
+                // style={{
+                //   fontSize: "14px",
+                //   padding: "5px 10px",
 
-      {faqArray.map((faq, index) => (
-        <div
-          key={index}
-          style={{
-            marginBottom: "10px",
-            padding: "10px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <h3 style={{ margin: 0 }}>{faq.question}</h3>
-            <button
-              onClick={() => toggleItem(index)}
-              style={{
-                fontSize: "14px",
-                padding: "5px 10px",
-
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
-              {/* {openItems[index] ? "Hide" : <HalfArrowDown isOpen={} />} */}
-              <HalfArrowDown isOpen={openItems[index]} />
-            </button>
+                //   color: "white",
+                //   border: "none",
+                //   borderRadius: "5px",
+                //   cursor: "pointer",
+                // }}
+              >
+                {/* {openItems[index] ? "Hide" : <HalfArrowDown isOpen={} />} */}
+                <HalfArrowDown isOpen={openItems[index]} />
+              </button>
+            </div>
+            <div className={styles.answer}>
+              {openItems[index] && <div>{faq.answer}</div>}
+            </div>
           </div>
-          {openItems[index] && (
-            <p style={{ marginTop: "10px", color: "#444" }}>{faq.answer}</p>
-          )}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

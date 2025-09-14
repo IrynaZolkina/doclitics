@@ -24,7 +24,7 @@ export default function InputSection(props) {
 
   const enteredValueIsValid = enteredValue.trim() !== "";
 
-  console.log("-----enteredValue.lenght-----", enteredValue.lenght);
+  // console.log("-----enteredValue.lenght-----", enteredValue.lenght);
   const inputChangeHandler = (e) => {
     // if (enteredValue.lenght < fieldLength) {
     setEnteredValue(e.target.value);

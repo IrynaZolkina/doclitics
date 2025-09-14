@@ -19,7 +19,7 @@ async function getDB(dbName) {
     );
     return client.db(dbName);
   } catch (error) {
-    console.log("Error");
+    console.log("Error connecting to MongoDB:", error);
   }
   //   finally {
   //     // Ensures that the client will close when you finish/error
@@ -29,6 +29,7 @@ async function getDB(dbName) {
 
 export async function getCollection(collectionName) {
   const db = await getDB("auth");
+  // console.log("DB connected-------", db);
   if (db) {
     return db.collection(collectionName);
   }

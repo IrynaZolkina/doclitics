@@ -15,9 +15,9 @@ const Footer = () => {
             <p>summaries with AI-powered intelligence. Fast,</p>
             <p>secure, and tailored to your needs.</p>
           </div>
-          <div className={styles.secondColumn}></div>{" "}
-          <div className={styles.thirdColumn}></div>{" "}
-          <div className={styles.forthColumn}></div>
+          <div className={styles.secondColumn}>Products</div>{" "}
+          <div className={styles.thirdColumn}>Support</div>{" "}
+          <div className={styles.forthColumn}>Legal</div>
         </div>
       </div>
     </div>

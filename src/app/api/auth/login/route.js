@@ -1,82 +1,102 @@
-import { getCollection } from "@/lib/db";
-import { NextResponse } from "next/server";
-
-import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
-import { sendActivationMail } from "@/actions/mailservice";
-import { generateTokens, saveTokenToDB } from "@/actions/tokenservice";
+import { NextResponse } from "next/server";
+import { signAccessToken, signRefreshToken } from "@/lib/jwt";
+import { setAuthCookies } from "@/lib/cookies";
+import { getUserCollection, getRefreshTokensCollection } from "@/lib/mongodb";
+import crypto from "crypto";
+import { hashToken } from "@/utils/tokens";
+
+const ACCESS_COOKIE_NAME = "accessToken";
+const REFRESH_COOKIE_NAME = "refreshToken";
+
+const ACCESS_EXPIRES = 6 * 60;
+const REFRESH_EXPIRES = 30 * 24 * 3600; // 30 days
 
 export async function POST(req) {
   try {
     const { email, password } = await req.json();
-    console.log(email, password);
-    if (!email || !password) {
+    console.log("handleSubmit-server ********", email, password);
+    const users = await getUserCollection();
+
+    const user = await users.findOne({ email });
+    if (!user)
       return NextResponse.json(
-        { error: "All fields are required" },
-        { status: 400 }
+        { error: "Invalid credentials" },
+        { status: 401 }
       );
-    }
+    // if (!user.verified)
+    //   return NextResponse.json({ error: "Not verified" }, { status: 401 });
 
-    const userCollection = await getCollection("users");
-    // const client = await clientPromise;
-    // const db = client.db();
-    // const users = db.collection("users");
-
-    // Check if email exists
-    const user = await userCollection.findOne({ email: email });
-    // console.log("candidate---", candidate);
-    if (!user) {
-      console.log(`User not found ${email}---`);
-      return NextResponse.json({ error: "User not... found" }, { status: 400 });
-    }
-
-    const isPasswordsEqual = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordsEqual) {
+    const match = await bcrypt.compare(password, user.passwordHash);
+    if (!match)
       return NextResponse.json(
-        { error: "Incorrect password" },
-        { status: 400 }
+        { error: "Invalid credentials-----" },
+        { status: 401 }
       );
-    }
-
-    const userDto = {
-      userId: user._id,
+    const payload = {
+      userId: user._id.toString(),
       username: user.username,
       email: user.email,
     };
-    console.log("userDt-------o", userDto);
+    const accessToken = signAccessToken(payload);
+    const refreshToken = signRefreshToken(payload);
+    const hashedToken = hashToken(refreshToken);
+    const csrfToken = crypto.randomBytes(24).toString("hex");
+    // setAuthCookies(accessToken, refreshToken);
 
-    const tokens = await generateTokens({ ...userDto });
-    // console.log(".accessToken-------", tokens.accessToken);
-    // console.log(".refreshToken-------", tokens.refreshToken);
+    // Save hashed refresh token in DB
+    const tokenscollection = await getRefreshTokensCollection();
+    await tokenscollection.updateOne(
+      { userId: user._id.toString() },
+      {
+        $set: {
+          refreshToken: refreshToken,
+          hashedToken: hashedToken,
+          createdAt: new Date(),
+          expiresAt: new Date(Date.now() + REFRESH_EXPIRES * 1000),
+        },
+      },
+      { upsert: true }
+    );
 
-    saveTokenToDB(userDto.userId, tokens.refreshToken);
+    // set cookies
+    // const res = NextResponse.redirect(
+    //   new URL("/pages/dashboard", process.env.API_URL)
+    // );
+    const res = NextResponse.json({ success: true, user });
 
-    // Create JSON response
-    const response = NextResponse.json({
-      message: "Login successful. ",
-      userDto,
-      accessToken: tokens.accessToken,
-    });
-
-    // Set HTTP-only cookie for refresh token
-    response.cookies.set("refreshToken", tokens.refreshToken, {
+    res.cookies.set(ACCESS_COOKIE_NAME, accessToken, {
       httpOnly: true,
-      path: "/",
-      maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
+      secure: true,
       sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: Number(ACCESS_EXPIRES) || 300,
     });
 
-    return response;
+    // refresh token as HttpOnly cookie
+    res.cookies.set(REFRESH_COOKIE_NAME, refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
+      maxAge: Number(REFRESH_EXPIRES) || 1209600,
+    });
+    res.cookies.set("csrfToken", csrfToken, {
+      httpOnly: false,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
+    });
 
-    // return NextResponse.json({
-    //   message:
-    //     "Registration successful. Check your email to activate your account. Link will be active during 10 min.",
-    //   userDto,...tokens
-    // });
+    return res;
   } catch (err) {
-    console.error(err);
-    // return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error("Google callback error:", err);
+    return NextResponse.redirect(
+      new URL("/pages/login?error=oauth", process.env.API_URL)
+    );
   }
+
+  // return NextResponse.json({
+  //   user: { email: user.email, username: user.username },
+  // });
 }

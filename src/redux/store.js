@@ -1,20 +1,19 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { use } from "react";
 
 // Toast slice
 const toastSlice = createSlice({
   name: "toast",
-  initialState: [],
+  initialState: null,
   reducers: {
     addToast: (state, action) => {
-      state.push({
-        id: Date.now(),
+      return {
+        id: Date.now() + Math.random(),
         type: action.payload.type || "info", // "success", "error", "warning", "info"
         message: action.payload.message,
-      });
+      };
     },
-    removeToast: (state, action) => {
-      return state.filter((toast) => toast.id !== action.payload);
-    },
+    removeToast: () => null,
   },
 });
 // Counter slice
@@ -42,32 +41,91 @@ const fileSlice = createSlice({
 const userSlice = createSlice({
   name: "user",
   initialState: {
+    accessToken: null,
     username: "",
     email: "",
     isLoggedIn: false,
   },
   reducers: {
     login: (state, action) => {
+      state.accessToken = action.payload.accessToken;
       state.username = action.payload.username;
       state.email = action.payload.email;
       state.isLoggedIn = true;
     },
     logout: (state) => {
+      state.accessToken = null;
       state.username = "";
       state.email = "";
       state.isLoggedIn = false;
     },
   },
 });
+const userNameSlice = createSlice({
+  name: "userName",
+  initialState: {
+    username: "",
+    useremail: "",
+    userIsLoggedIn: false,
+    userCategory: "",
+  },
+  reducers: {
+    setUserLogin: (state, action) => {
+      state.username = action.payload.username;
+      state.useremail = action.payload.email;
+      state.userIsLoggedIn = true;
+      state.userCategory = action.payload.userCategory; //
+      state.picture = action.payload.picture; //
+    },
+    setUserLogout: (state) => {
+      state.username = "";
+      state.useremail = "";
+      state.userIsLoggedIn = false;
+      state.userCategory = "";
+      state.picture = "";
+    },
+  },
+});
 
+const authSlice = createSlice({
+  name: "auth",
+  initialState: {
+    user: null,
+    loading: false,
+    error: null,
+  },
+  reducers: {
+    setUser(state, action) {
+      state.user = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    clearUser(state) {
+      state.user = null;
+      state.loading = false;
+      state.error = null;
+    },
+    setLoading(state) {
+      state.loading = true;
+    },
+    setError(state, action) {
+      state.error = action.payload;
+      state.loading = false;
+    },
+  },
+});
+export const { setUser, clearUser, setLoading, setError } = authSlice.actions;
 export const { login, logout } = userSlice.actions;
 export const { addToast, removeToast } = toastSlice.actions;
 export const { setFileData, clearFileData } = fileSlice.actions;
+export const { setUserLogin, setUserLogout } = userNameSlice.actions;
 
 export const store = configureStore({
   reducer: {
+    userNameSlice: userNameSlice.reducer,
     user: userSlice.reducer,
     toast: toastSlice.reducer,
     file: fileSlice.reducer,
+    auth: authSlice.reducer,
   },
 });

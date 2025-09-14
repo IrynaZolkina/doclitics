@@ -11,8 +11,9 @@ import { useDispatch } from "react-redux";
 
 import InputSectionLogin from "@/components-ui/InputSectionLogin";
 
-import { useState } from "react";
-import { addToast } from "@/redux/store"; //kkkkkkk
+import { useEffect, useState } from "react";
+import { addToast, setUserLogin } from "@/redux/store"; //kkkkkkk
+import { GoogleIcon } from "@/components-ui/svg-components/GoogleIcon";
 
 const LoginPage = () => {
   const [enteredEmail, setEnteredEmail] = useState("");
@@ -22,11 +23,36 @@ const LoginPage = () => {
   const [pending, setPending] = useState(true);
   const dispatch = useDispatch();
 
+  // useEffect(() => {
+  //   async function fetchUser() {
+  //     try {
+  //       const res = await fetch("/api/auth/me", {
+  //         method: "GET",
+  //         credentials: "include", // important for cookies
+  //       });
+  //       if (!res.ok) return;
+
+  //       const data = await res.json();
+  //       dispatch(
+  //         setUserLogin({
+  //           username: data.user.username,
+  //           picture: data.user.picture,
+  //         })
+  //       );
+  //     } catch (err) {
+  //       console.error("Failed to fetch user:", err);
+  //     }
+  //   }
+
+  //   fetchUser();
+  // }, [dispatch]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setPending(true);
     try {
       // ✅ API request
+      console.log("handleSubmit ********", enteredEmail, enteredPassword);
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -37,30 +63,23 @@ const LoginPage = () => {
       });
 
       const data = await res.json();
+      // console.log("res from login api:::::::::::::::::::::::;", res);
+      console.log("data from login api:::::::::::::::::::::::;", data);
       if (!res.ok) {
         console.log("User :", data.error);
         throw new Error(data.error);
-
-        // const mes = data.userDto.email;
-        // console.log("mes-----:", mes);
-        // dispatch(
-        //   addToast({
-        //     id: Date.now(),
-        //     type: res.ok ? "success" : "error",
-        //     message: data.message + mes || "Something went wrong",
-        //   })
-        // );
       }
-      // const result = await res.json();
-
-      const mes = data.userDto.email;
-      console.log("mes-----:", mes);
-      console.log("usrname-----:", data.userDto.username);
-      console.log("mes-----:", mes);
+      // dispatch(
+      //   addToast({
+      //     type: "success",
+      //     message: data.message || "Something..... went wrong",
+      //   })
+      // );
       dispatch(
-        addToast({
-          type: "success",
-          message: data.message || "Something..... went wrong",
+        setUserLogin({
+          username: data.user.username,
+          email: data.user.email,
+          picture: data.user.picture,
         })
       );
     } catch (err) {
@@ -73,18 +92,27 @@ const LoginPage = () => {
       //     message: "Network... error, please try again.",
       //   })
       // );
-    } finally {
-      setPending(false);
     }
+    // finally {
+    //   setPending(false);
+    // }
   };
 
   const logout = async () => {};
+
+  const handleGoogleLogin = () => {
+    // Redirect to your backend route that sends user to Google
+    window.location.href = "/api/auth/google";
+  };
 
   return (
     <div className={styles.container}>
       {/* <Suspense fallback={null}> */}
       {/* <ClientToastHandler /> */}
       {/* </Suspense> */}
+      <button onClick={handleGoogleLogin} className={styles.googleButton}>
+        <GoogleIcon /> Login with Google
+      </button>
       <h1 className={styles.title}>Login</h1>
       <form onSubmit={handleSubmit} className={styles.form}>
         <InputSectionLogin
