@@ -11,7 +11,14 @@ import { sendActivationMail } from "@/actions/mailservice";
 
 export async function POST(req) {
   try {
-    const { email, username, password } = await req.json();
+    const body = await req.json().catch(() => null); // parse safely
+    if (!body) {
+      return NextResponse.json(
+        { error: "Invalid request body" },
+        { status: 400 }
+      );
+    }
+    const { email, username, password } = body;
     console.log(
       "username: enteredUsername,email: enteredEmail.toLowerCase(),password: enteredPassword",
       username,
