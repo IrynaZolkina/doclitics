@@ -25,7 +25,7 @@ export async function POST(req) {
       email,
       password
     );
-
+    //jjvjgjghkhv
     // 2. Validate input
     if (!email || !password || !username) {
       return NextResponse.json(
