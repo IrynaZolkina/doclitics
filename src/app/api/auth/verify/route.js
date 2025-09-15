@@ -22,7 +22,9 @@ export async function POST(req) {
     // Find verification record
     const record = await verifications.findOne({ email });
     console.log(record, "---------record");
-
+    // 4. Success → move pendingUser to users
+    const pendingUsers = await getPendingUsersCollection();
+    const pendingUser = await pendingUsers.findOne({ email });
     // 1. No record found (expired or wrong email)
     if (!record) {
       return NextResponse.json(
@@ -31,12 +33,14 @@ export async function POST(req) {
       );
     }
     // 2. Check attempts (max 5)
-    if (record.attempts >= 3) {
-      return NextResponse.json(
-        { code: "TOO_MANY_ATTEMPTS", message: "Too many wrong attempts" },
-        { status: 400 }
-      );
-    }
+    // if (record.attempts >= 3) {
+    //   await pendingUsers.deleteOne({ email });
+    //   await verifications.deleteOne({ email });
+    //   return NextResponse.json(
+    //     { code: "TOO_MANY_ATTEMPTS", message: "Too many wrong attempts" },
+    //     { status: 400 }
+    //   );
+    // }
     // 3. Wrong code → increment attempts
 
     // Compare provided code with stored hash
@@ -49,6 +53,14 @@ export async function POST(req) {
       await verifications.updateOne({ email }, { $inc: { attempts: 1 } });
 
       const remaining = 3 - (record.attempts + 1);
+      if (remaining === 0) {
+        await pendingUsers.deleteOne({ email });
+        await verifications.deleteOne({ email });
+        return NextResponse.json(
+          { code: "TOO_MANY_ATTEMPTS", message: "Too many wrong attempts" },
+          { status: 400 }
+        );
+      }
 
       return NextResponse.json(
         {
@@ -65,9 +77,6 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-    // 4. Success → move pendingUser to users
-    const pendingUsers = await getPendingUsersCollection();
-    const pendingUser = await pendingUsers.findOne({ email });
 
     if (!pendingUser) {
       return NextResponse.json(

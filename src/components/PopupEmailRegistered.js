@@ -34,7 +34,7 @@ export default function PopupEmailRegistered({
         <div className={styles.buttons}>
           <button
             className={styles.button}
-            //onClick={() => handleClose(option1)}
+            onClick={() => handleClose(option2)}
           >
             Sign In
           </button>{" "}

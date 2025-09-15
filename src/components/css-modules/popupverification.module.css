@@ -84,10 +84,15 @@
 .button {
   /* flex: 1; */
   /* margin: 0 26px; */
-  height: 44px;
+  width: 479px;
+  height: 50px;
+
+  font-weight: bold;
+  color: antiquewhite;
+
   padding: 10px 20px;
-  border: 1px solid rgba(97, 146, 225, 1);
-  border-radius: 10px;
+  border: none;
+  border-radius: 14px;
   font-size: 13.45px;
   cursor: pointer;
   transition: transform 0.1s ease, box-shadow 0.15s ease;
@@ -95,6 +100,11 @@
   color: white;
 }
 
+.button:disabled {
+  color: rgba(148, 163, 184, 0.5);
+
+  background: rgba(60, 131, 246, 0.3);
+}
 .button:hover {
   opacity: 0.9;
   background: rgba(97, 146, 225, 1);
@@ -108,6 +118,9 @@
   width: auto;
 } */
 
+.countdownTimer {
+  margin-top: 20px;
+}
 /* 🔹 Animations */
 @keyframes fadeIn {
   from {

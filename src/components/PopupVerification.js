@@ -4,10 +4,13 @@ import Mail from "@/components-ui/svg-components/Mail";
 import { maskEmail } from "@/utils/emailfunctions";
 import VerificationCodeInput from "./VerificationCodeInput";
 import CountdownTimer from "@/components-ui/CountdownTimer";
+import { toastManualFunction } from "@/components-ui/ToastManual";
 
 export default function PopupVerification({
   onChoice,
   onCancel,
+  onSuccess,
+  onFailure,
   option1,
   option2,
   email,
@@ -17,7 +20,7 @@ export default function PopupVerification({
   const [success, setSuccess] = useState(false);
   const [closing, setClosing] = useState(false);
   const handleClose = (callback) => {
-    success && setClosing(true);
+    setClosing(true);
     setTimeout(() => {
       if (callback) {
         callback();
@@ -28,19 +31,39 @@ export default function PopupVerification({
   const handleSubmit = (fullCode, success) => {
     setCode(fullCode);
     setVerificationCode(fullCode);
-    if (success) {
-      // close only if verification passed
-      handleClose(onCancel);
-    }
 
-    // handleClose(option2);
-    console.log("Submitted code:", fullCode);
-    // handleVerify(fullCode, enteredEmail);
+    // Close popup in both cases, but routing depends on success/failure
+    handleClose(() => {
+      onCancel();
+      if (success) {
+        router.push("/pages/login");
+      } else {
+        router.push("/pages/register");
+      }
+    });
+    // if (success) {
+    //   // close only if verification passed
+    //   handleClose(onSuccess);
+    // }
+
+    // // handleClose(option2);
+    // console.log("Submitted code:", fullCode);
+    // // handleVerify(fullCode, enteredEmail);
   };
 
   const handleTimerEnd = () => {
-    console.log("Time is up! Resend code or disable input.");
+    toastManualFunction("⏳ Code expired. Try registration again.", "error");
+    handleClose(onFailure); // 👈 close and redirect to register
   };
+
+  const handleTooManyAttempts = () => {
+    toastManualFunction(
+      "🚫 Too many attempts. Try registration again.",
+      "error"
+    );
+    handleClose(onFailure); // 👈 close and redirect to register
+  };
+
   return (
     <div
       className={`${styles.overlay} ${closing ? styles.overlayClosing : ""}`}
@@ -60,6 +83,7 @@ export default function PopupVerification({
           onSubmit={handleSubmit}
           email={email}
           setSuccess={setSuccess}
+          onTooManyAttempts={handleTooManyAttempts} // 👈
         />
         {/* <p>Code in parent state: {code}</p> */}
         <div className={styles.buttons}>
@@ -69,7 +93,7 @@ export default function PopupVerification({
           >
             Verify Email
           </p>{" "} */}
-          <div>
+          <div className={styles.countdownTimer}>
             Code expires in{"    "}
             <CountdownTimer initialMinutes={10} onEnd={handleTimerEnd} />
           </div>

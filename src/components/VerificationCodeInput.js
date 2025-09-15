@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./css-modules/VerificationCodeInput.module.css";
 import ToastSuper, { toastSuperFunction } from "@/components-ui/ToastSuper";
-import ToastManual from "@/components-ui/ToastManual";
+import ToastManual, { toastManualFunction } from "@/components-ui/ToastManual";
 
 export default function VerificationCodeInput({
   length = 6,
@@ -9,10 +9,6 @@ export default function VerificationCodeInput({
   email,
   setSuccess,
 }) {
-  const [popupToastSuper, setPopupToastSuper] = useState(null);
-  const [showToastSuper, setShowToastSuper] = useState(false);
-  const [showToastManual, setShowToastManual] = useState(true);
-
   const [values, setValues] = useState(Array(length).fill(""));
   const [message, setMessage] = useState("");
   const inputsRef = useRef([]);
@@ -61,37 +57,67 @@ export default function VerificationCodeInput({
       const data = await res.json();
 
       if (res.ok) {
-        alert("✅ Verified!");
         setSuccess(true);
-
-        onSubmit(code, true); // ✅ tell parent success
-        // maybe redirect or close popup
-        // Success
-        setMessage("✅ Email verified successfully!");
-      } else {
-        setSuccess(false);
-        resetInputs();
-        if (data.code === "INVALID_CODE") {
-          setMessage(`❌ Wrong code. ${data.remainingAttempts} attempts left.`);
-        } else if (data.code === "TOO_MANY_ATTEMPTS") {
-          setMessage("🚫 Too many attempts. Request a new code.");
-        } else if (data.code === "CODE_EXPIRED") {
-          showToastManual(
-            "⏳ Code expired.",
-            "warning",
-            setPopupToastSuper,
-            setShowToastSuper
-          );
-          setMessage("⏳ Code expired. Request a new one.");
-        } else {
-          setMessage("⚠️ Something went wrong.");
-        }
+        toastSuperFunction("✅ Email verified successfully!", "success");
+        onSubmit(code, true); // ✅ success → close popup + redirect to login
+        return;
       }
+
+      // ❌ Failed cases
+      setSuccess(false);
+      resetInputs();
+      if (data.code === "INVALID_CODE") {
+        setMessage(`❌ Wrong code. ${data.remainingAttempts} attempts left.`);
+      } else if (
+        data.code === "TOO_MANY_ATTEMPTS" ||
+        data.code === "CODE_EXPIRED"
+      ) {
+        toastManualFunction(
+          data.code === "TOO_MANY_ATTEMPTS"
+            ? "🚫 Too many attempts. Try registration again."
+            : "⏳ Code expired. Try registration again.",
+          "error"
+        );
+        onSubmit(code, false); // 🔴 tell parent to close + go back to register
+      } else {
+        setMessage("⚠️ Something went wrong.");
+      }
+
+      // if (res.ok) {
+      //   // alert("✅ Verified!");
+      //   setSuccess(true);
+
+      //   onSubmit(code, true); // ✅ tell parent success
+      //   // maybe redirect or close popup
+      //   // Success
+      //   // setMessage("✅ Email verified successfully!");
+      //   toastSuperFunction("✅ Email verified successfully!", "success");
+      //   return;
+      // } else {
+      //   setSuccess(false);
+      //   resetInputs();
+      //   if (data.code === "INVALID_CODE") {
+      //     setMessage(`❌ Wrong code. ${data.remainingAttempts} attempts left.`);
+      //   } else if (data.code === "TOO_MANY_ATTEMPTS") {
+      //     toastManualFunction(
+      //       "🚫 Too many attempts. Try registration again.",
+      //       "error"
+      //     );
+
+      //     onTooManyAttempts();
+      //   } else if (data.code === "CODE_EXPIRED") {
+      //     toastManualFunction(
+      //       "⏳ Code expired. Try registration again.",
+      //       "error"
+      //     );
+      //   } else {
+      //     setMessage("⚠️ Something went wrong.");
+      //   }
+      // }
 
       // if (onSuccess) onSuccess(); // notify parent (optional)
     } catch (err) {
-      console.error("Network error:", err);
-      setMessage("⚠️ Network error. Please try again.");
+      toastSuperFunction("⚠️ Network error. Please try again.", "error");
     }
   };
 

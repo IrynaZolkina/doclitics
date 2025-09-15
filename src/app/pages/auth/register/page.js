@@ -14,6 +14,7 @@ import ToastSuper, { toastSuperFunction } from "@/components-ui/ToastSuper";
 import ToastManual, { toastManualFunction } from "@/components-ui/ToastManual";
 
 const Register = () => {
+  const [userEmail, setUserEmail] = useState("");
   const [enteredUsername, setEnteredUsername] = useState("");
   const [enteredUsernameTouched, setEnteredUsernameTouched] = useState(false);
   const [enteredEmail, setEnteredEmail] = useState("");
@@ -54,13 +55,13 @@ const Register = () => {
   const router = useRouter();
 
   const validateUserName = (value) => /^[A-Za-z0-9_]+$/.test(value);
-  const validateEmail = (value) => true;
-  // const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  const validatePassword = (value) => true;
-  // const validatePassword = (value) =>
-  //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])(?!.*\s).{8,}$/.test(
-  //     value
-  //   );
+  // const validateEmail = (value) => true;
+  const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  // const validatePassword = (value) => true;
+  const validatePassword = (value) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])(?!.*\s).{8,}$/.test(
+      value
+    );
 
   const validationEmail = (value) => {
     // console.log("...***********...");
@@ -126,6 +127,7 @@ const Register = () => {
     //   enteredEmail.toLowerCase(),
     //   enteredPassword
     // );
+    setUserEmail(enteredEmail);
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
@@ -158,13 +160,13 @@ const Register = () => {
           // setMessage("⚠️ This email is pending verification. Please check your inbox.");
         } else {
           // setMessage("⚠️ Unexpected error. Please try again.");
-          setShowPopupEmailRegistered({
-            status: true,
-            message: "⚠️ Unexpected error. Please try again.",
-          });
+          toastSuperFunction(
+            "H⚠️ Unexpected error. Please try again.",
+            "error"
+          );
         }
         // setEnteredUsername("");
-        setEnteredUsernameTouched(false);
+        // setEnteredUsernameTouched(false);
         setEnteredEmail("");
         setEnteredEmailTouched(false);
         setEnteredPassword("");
@@ -172,7 +174,7 @@ const Register = () => {
         setEnteredPasswordRepeat("");
         setEnteredPasswordRepeadTouched(false);
         setValidationCheckEmail(0);
-        setValidationCheckUserName(0);
+        // setValidationCheckUserName(0);
         setValidationCheckPassword(0);
         setValidationCheckPasswordRepeat(0);
         setAgree(false);
@@ -180,101 +182,35 @@ const Register = () => {
       }
 
       setShowPopupVerification(true);
-
-      // console.log("handleverify");
-      // if (!verificationCode || verificationCode.length !== 6) {
-      //   console.log("Enter 6-digit code sent to ", enteredEmail);
-      //   return;
-      // }
-      // console.log("verificationCode--********", verificationCode);
-      // try {
-      //   console.log("/api/auth/verify---", enteredEmail.toLowerCase());
-      //   const res = await fetch("/api/auth/verify", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({
-      //       email: enteredEmail.toLowerCase(),
-      //       code: verificationCode,
-      //     }),
-      //   });
-      //   if (res.ok) {
-      //     alert("Account verified! You can log in now.");
-      //     dispatch(
-      //       addToast({
-      //         type: "success",
-      //         message: "✅ Account verified! You can log in now.",
-      //       })
-      //     );
-      //     const data = await res.json();
-      //     if (!res.ok) {
-      //       throw new Error(data.error);
-      //     }
-      //     window.location.href = "/pages/auth/login";
-      //   }
-      // } catch (err) {
-      //   // alert("Verification failed: " + err);
-      //   dispatch(
-      //     addToast({
-      //       type: "error",
-      //       message: "❌ " + err.message + "Verification failed: ",
-      //     })
-      //   );
-      // }
-      // alert("Check your email for the verification code.");
-      // dispatch(
-      //   addToast({
-      //     type: "info",
-      //     message: "Check your email for the verification code.",
-      //   })
-      // );
-      // setVerificationPopUp(true);
-      // setStep("verify");
-      // const err = await res.text();
-      //  alert("Registration failed: " + err);
-      // dispatch(addToast({ type: "error", message: "Registration failed: "+err }));
+      // // setEnteredUsername("");
+      // // setEnteredUsernameTouched(false);
+      // setEnteredEmail("");
+      // setEnteredEmailTouched(false);
+      // setEnteredPassword("");
+      // setEnteredPasswordTouched(false);
+      // setEnteredPasswordRepeat("");
+      // setEnteredPasswordRepeadTouched(false);
+      // setValidationCheckEmail(0);
+      // // setValidationCheckUserName(0);
+      // setValidationCheckPassword(0);
+      // setValidationCheckPasswordRepeat(0);
+      // setAgree(false);
     } catch (err) {
-      // showPopup(" ❌ " + err.message, "warning");
-      // toastSuperFunction(
-      //   " ❌ " + err.message,
-      //   "warning",
-      //   setPopupToastSuper,
-      //   setShowToastSuper
-      // );
-      setShowPopupEmailRegistered({ status: true });
+      // setShowPopupEmailRegistered({ status: true });
       console.log(err.message, err, "88****************");
     }
 
     // window.location.href = "/pages/auth/login";
   }
 
-  // useEffect(() => {
-  //   if (showToast) {
-  //     const timer = setTimeout(() => {
-  //       dispatch(removeToast());
-  //       setShowToast(false);
-  //     }, 90000);
-
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [showToast]);
-
   return (
     <div className={styles.registerWrapper}>
-      {/* {popupToastSuper && (
-        <ToastSuper
-          popup={{ type: "success", message: "Email verified successfully!" }}
-          show={showToastSuper}
-          onClose={() => {
-            setShowToastSuper(false), setPopupToastSuper(false);
-          }}
-        />
-      )} */}
       {showPopupEmailRegistered.status && (
         <PopupEmailRegistered
           // onChoice={(choice) => handleChoice(choice)}
           onCancel={() => setShowPopupEmailRegistered({ status: false })}
-          option1={() => router.push("/pages/register")}
-          option2={() => router.push("/pages/login")}
+          // option1={() => router.push("/pages/register")}
+          // option2={() => router.push("/pages/auth/login")}
           message={showPopupEmailRegistered.message}
           // option2={() => router.push("/pages/login")}
         />
@@ -282,14 +218,24 @@ const Register = () => {
       {showPopupVerification && (
         <PopupVerification
           // onChoice={(choice) => handleChoice(choice)}
-          onCancel={() => setShowPopupVerification(false)}
+          onCancel={() => {
+            setShowPopupVerification(false);
+            // router.push("/pages/auth/login");
+          }}
           // option2={() => router.push("/pages/login")}
-          email={enteredEmail}
+          email={userEmail}
           setVerificationCode={setVerificationCode}
           // handleVerify={handleVerify}
-
+          onSuccess={() => {
+            setShowPopupVerification(false); // close popup
+            router.push("/pages/auth/login"); // go to login
+          }}
+          onFailure={() => {
+            setShowPopupVerification(false);
+            // router.push("/pages/auth/register"); // 👈 back to register
+          }}
           // option1={() => router.push("/pages/register")}
-          // option2={() => router.push("/pages/login")}
+          //option2={() => router.push("/pages/login")}
           // option2={() => router.push("/pages/login")}
         />
       )}
@@ -471,7 +417,7 @@ const Register = () => {
                 </div>
               </div>
             )} */}
-            <button
+            {/* <button
               onClick={() => {
                 toastManualFunction("Hello world!", "success");
               }}
@@ -484,7 +430,7 @@ const Register = () => {
               }}
             >
               {"Register"}
-            </button>
+            </button> */}
 
             {/* </form> */}
           </div>
