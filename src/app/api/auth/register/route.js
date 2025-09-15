@@ -83,7 +83,7 @@ export async function POST(req) {
 
     //    6. Send code (for now, console.log)
 
-    await sendActivationMail(email, code);
+    await sendActivationMail(email, code); // gfiufifiuyfiuyfitf
 
     return NextResponse.json({ message: "Verification code sent to email" });
   } catch (err) {
