@@ -1,6 +1,9 @@
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URL; // your MongoDB connection string
+// const uri = process.env.MONGODB_URL; // your MongoDB connection string
+const uri =
+  "mongodb+srv://zolkinairyna:TMqXCty4hDZlmZQo@cluster0.g6sez6l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
 const options = {};
 
 // Create a global variable to hold the client across hot reloads in dev
