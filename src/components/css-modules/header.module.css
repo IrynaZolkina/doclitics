@@ -8,11 +8,12 @@
   backdrop-filter: blur(10px);
 
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  /* background: rgba(23, 32, 54, 0.8); */
 }
 .container {
   /* background: #172036cc; */
-  background: var(--header-background);
-
+  /* background: var(--header-background); */
+  /* background: lavender; */
   max-width: 100%; /* or your preferred max width */
   height: 70px;
   display: flex;
