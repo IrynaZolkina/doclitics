@@ -1,5 +1,5 @@
 "use client";
-import { Geist, Geist_Mono, Inter, Roboto } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Roboto, Manrope } from "next/font/google";
 import "./globals.css";
 
 import { ReduxProvider } from "../redux/Providers";
@@ -10,6 +10,13 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import ToastManual from "@/components-ui/ToastManual";
 import ToastSuper from "@/components-ui/ToastSuper";
+import PopupLogin from "@/components/PopupLogin";
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"], // choose what you need
+  variable: "--font-manrope",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,7 +61,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${
           inter.variable
-        } ${roboto.variable} page-transition ${fade ? "fade-in" : "fade-out"}`}
+        } ${roboto.variable} ${manrope.variable} page-transition ${
+          fade ? "fade-in" : "fade-out"
+        }`}
       >
         <ReduxProvider>
           <div className="page-wrapper">
@@ -64,6 +73,7 @@ export default function RootLayout({ children }) {
             {/* <ToastContainer /> */}
             <ToastManual />
             <ToastSuper />
+            <PopupLogin />
           </div>
         </ReduxProvider>
       </body>

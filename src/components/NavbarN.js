@@ -25,6 +25,7 @@ import Loved from "./Loved";
 import * as pdfjsLib from "pdfjs-dist";
 import { getFileFromIndexedDB } from "@/lib/indexeddb";
 import FaqSection from "./FaqSection";
+import { showLoginPopup } from "./PopupLogin";
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
 
@@ -222,9 +223,19 @@ export function NavbarN() {
           className="navButtonContainer"
           style={{ width: "96px", height: "36px" }}
         >
-          <Link href="/pages/auth/login">
-            <button className="navButton">Get Started</button>
-          </Link>
+          {/* <Link href="/pages/auth/login"> */}
+
+          <button
+            className="navButton"
+            onClick={() =>
+              showLoginPopup((userData) => {
+                console.log("User logged in!", userData);
+              })
+            }
+          >
+            Get Started
+          </button>
+          {/* </Link> */}
         </div>
       </nav>
       {/* {chosenFile === null ? ( */}

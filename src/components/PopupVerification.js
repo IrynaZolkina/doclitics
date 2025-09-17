@@ -5,6 +5,7 @@ import { maskEmail } from "@/utils/emailfunctions";
 import VerificationCodeInput from "./VerificationCodeInput";
 import CountdownTimer from "@/components-ui/CountdownTimer";
 import { toastManualFunction } from "@/components-ui/ToastManual";
+import { useRouter } from "next/navigation";
 
 export default function PopupVerification({
   onChoice,
@@ -19,6 +20,7 @@ export default function PopupVerification({
   const [code, setCode] = useState("");
   const [success, setSuccess] = useState(false);
   const [closing, setClosing] = useState(false);
+  const router = useRouter();
   const handleClose = (callback) => {
     setClosing(true);
     setTimeout(() => {
@@ -36,9 +38,11 @@ export default function PopupVerification({
     handleClose(() => {
       onCancel();
       if (success) {
-        router.push("/pages/login");
+        showLoginPopup((userData) => {
+          console.log("User logged in!", userData);
+        });
       } else {
-        router.push("/pages/register");
+        // router.push("/pages/register");
       }
     });
     // if (success) {

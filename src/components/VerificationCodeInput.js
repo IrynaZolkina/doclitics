@@ -8,6 +8,8 @@ export default function VerificationCodeInput({
   onSubmit,
   email,
   setSuccess,
+  onChange,
+  isOpen, /// reset when popup opens by watching a prop like isOpen.
 }) {
   const [values, setValues] = useState(Array(length).fill(""));
   const [message, setMessage] = useState("");
@@ -23,23 +25,74 @@ export default function VerificationCodeInput({
     if (!val) return;
 
     const newValues = [...values];
-    newValues[idx] = val;
+    // newValues[idx] = val;
+    newValues[idx] = val.slice(-1); // only last digit
     setValues(newValues);
 
     // move focus to next input
     if (idx < length - 1 && val) {
       inputsRef.current[idx + 1].focus();
     }
+    onChange?.(newValues.join(""));
   };
 
+  // const handleKeyDown = (e, idx) => {
+  //   if (e.key === "Backspace" && !values[idx] && idx > 0) {
+  //     const newValues = [...values];
+  //     newValues[idx - 1] = "";
+  //     setValues(newValues);
+  //     inputsRef.current[idx - 1].focus();
+  //   }
+  // };
+
   const handleKeyDown = (e, idx) => {
-    if (e.key === "Backspace" && !values[idx] && idx > 0) {
+    if (e.key === "Backspace") {
+      e.preventDefault();
       const newValues = [...values];
-      newValues[idx - 1] = "";
-      setValues(newValues);
+
+      if (newValues[idx]) {
+        newValues[idx] = "";
+        setValues(newValues);
+      } else if (idx > 0) {
+        inputsRef.current[idx - 1].focus();
+        newValues[idx - 1] = "";
+        setValues(newValues);
+      }
+
+      onChange?.(newValues.join(""));
+    }
+
+    if (e.key === "ArrowLeft" && idx > 0) {
       inputsRef.current[idx - 1].focus();
     }
+
+    if (e.key === "ArrowRight" && idx < length - 1) {
+      inputsRef.current[idx + 1].focus();
+    }
   };
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const paste = e.clipboardData.getData("text").replace(/[^0-9]/g, "");
+    if (!paste) return;
+
+    const newValues = [...values];
+    paste
+      .split("")
+      .slice(0, length)
+      .forEach((char, i) => {
+        newValues[i] = char;
+      });
+
+    setValues(newValues);
+    onChange?.(newValues.join(""));
+
+    // focus last filled input
+    const lastIndex = Math.min(paste.length, length) - 1;
+    if (lastIndex >= 0) {
+      inputsRef.current[lastIndex].focus();
+    }
+  };
+
   const resetInputs = () => {
     setValues(Array(length).fill(""));
     inputsRef.current[0]?.focus();
@@ -82,40 +135,6 @@ export default function VerificationCodeInput({
       } else {
         setMessage("⚠️ Something went wrong.");
       }
-
-      // if (res.ok) {
-      //   // alert("✅ Verified!");
-      //   setSuccess(true);
-
-      //   onSubmit(code, true); // ✅ tell parent success
-      //   // maybe redirect or close popup
-      //   // Success
-      //   // setMessage("✅ Email verified successfully!");
-      //   toastSuperFunction("✅ Email verified successfully!", "success");
-      //   return;
-      // } else {
-      //   setSuccess(false);
-      //   resetInputs();
-      //   if (data.code === "INVALID_CODE") {
-      //     setMessage(`❌ Wrong code. ${data.remainingAttempts} attempts left.`);
-      //   } else if (data.code === "TOO_MANY_ATTEMPTS") {
-      //     toastManualFunction(
-      //       "🚫 Too many attempts. Try registration again.",
-      //       "error"
-      //     );
-
-      //     onTooManyAttempts();
-      //   } else if (data.code === "CODE_EXPIRED") {
-      //     toastManualFunction(
-      //       "⏳ Code expired. Try registration again.",
-      //       "error"
-      //     );
-      //   } else {
-      //     setMessage("⚠️ Something went wrong.");
-      //   }
-      // }
-
-      // if (onSuccess) onSuccess(); // notify parent (optional)
     } catch (err) {
       toastSuperFunction("⚠️ Network error. Please try again.", "error");
     }
@@ -125,33 +144,17 @@ export default function VerificationCodeInput({
 
   return (
     <div>
-      {/* {popupToastSuper && (
-        <ToastSuper
-          popup={{ type: "success", message: "Email verified successfully!" }}
-          show={showToastSuper}
-          onClose={() => {
-            setShowToastSuper(false), setPopupToastSuper(false);
-          }}
-        />
-      )} */}
-      {/* {showToastManual && (
-        <ToastManual
-          message="Manual close only"
-          type="info"
-          onClose={() => setShowToastManual(false)}
-        />
-      )} */}
-
-      <div className={styles.container}>
+      <div className={styles.container} onPaste={handlePaste}>
         {values.map((val, idx) => (
           <input
             key={idx}
+            ref={(el) => (inputsRef.current[idx] = el)}
             type="text"
-            maxLength="1"
+            inputMode="numeric"
+            maxLength={1}
             value={val}
             onChange={(e) => handleChange(e, idx)}
             onKeyDown={(e) => handleKeyDown(e, idx)}
-            ref={(el) => (inputsRef.current[idx] = el)}
             className={styles.input}
           />
         ))}

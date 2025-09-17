@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   width: 100%;
+
   /* background: linear-gradient(
     135deg,
     rgba(60, 131, 246, 0) 0%,
@@ -10,11 +11,10 @@
   ); */
   /* background: rgba(0, 8, 20, 0); */
   background: linear-gradient(
-    to right,
+    to bottom,
     rgba(13, 17, 23, 1) 0%,
     /* #0D1117 at 100% opacity */ rgba(13, 17, 23, 1) 50%,
-    /* #0D1117 at 100% opacity */ rgba(13, 17, 23, 0.95) 100%
-      /* #0D1117 at 95% opacity */
+    /* #0D1117 at 100% opacity */ #111723 100% /* #0D1117 at 95% opacity */
   );
 }
 .gridContainer {
@@ -33,31 +33,49 @@
   height: 775px;
   position: relative;
   overflow: hidden;
+  z-index: 20;
   /* border: 1px solid white; */
+}
+.image {
+  filter: brightness(0.65);
+  border-radius: 10px;
 }
 .imageText {
   position: absolute;
   top: 0px;
   left: 0px;
-  font-family: var(--font-roboto);
+  /* font-family: var(--font-roboto); */
   width: 100%;
   height: 100%;
   color: rgba(255, 255, 255, 1);
 }
 .imageTextInner {
+  margin: 0 auto;
   margin-top: 90px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
+  width: 78%;
+  /* font-family: var(--font-manrope); */
+  font-family: var(--font-inter);
 }
 .imageTextInner h1 {
-  font-family: var(--font-inter);
-  font-size: 48px;
+  font-size: 47px;
   line-height: 60px;
+  font-weight: bold;
 }
 .imageTextInner h1 span {
   color: var(--text-color-blue);
+}
+.imageTextInner h3 {
+  margin-top: 10px;
+}
+.imageTextInner .h3 {
+  font-weight: 400;
+  line-height: 32.5px;
+  font-size: 19.38px;
+  margin: 5px 0;
 }
 .imageTextInner text {
   margin-top: 20px;
@@ -82,9 +100,9 @@
 }
 .boxes {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   margin-top: 60px;
-  width: 80%;
+  width: 78%;
   margin: 0 auto;
 }
 .boxes div {
@@ -230,45 +248,6 @@
   height: 20px;
 }
 
-/* .popup {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  color: #fff;
-  padding: 16px 24px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-
-  
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-} */
-
-/* .popup.show {
-  opacity: 1;
-  transform: translateY(0);
-} */
-/* .popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); 
-
-  color: #fff;
-  padding: 16px 24px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-
-  opacity: 0;
-  transition: opacity 0.5s ease;
-} */
-
-/* .popup.show {
-  opacity: 1;
-} */
 .popup {
   position: fixed;
   top: 50%;

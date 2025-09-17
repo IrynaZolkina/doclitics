@@ -63,7 +63,7 @@ export async function POST(req) {
     // const res = NextResponse.redirect(
     //   new URL("/pages/dashboard", process.env.API_URL)
     // );
-    const res = NextResponse.json({ success: true, user });
+    const res = NextResponse.json({ success: true, user }); //don't sent all user!!!
 
     res.cookies.set(ACCESS_COOKIE_NAME, accessToken, {
       httpOnly: true,

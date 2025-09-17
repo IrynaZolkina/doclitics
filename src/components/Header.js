@@ -99,8 +99,8 @@ const Header = () => {
               </p>
             ) : (
               <p className={styles.initials}>
-                {username}
-                {"ANDREW".slice(0, 2)}
+                {username.slice(0, 1)}
+                {/* {"ANDREW".slice(0, 1)} */}
               </p>
             )}
           </div>

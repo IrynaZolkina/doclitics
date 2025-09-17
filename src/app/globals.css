@@ -1,6 +1,6 @@
 :root {
   /* input-section-module */
-  --background-input-text: rgb(14, 22, 37);
+  --background-input-text: rgba(28, 36, 49, 1);
   --input-text-color: rgba(255, 255, 255, 0.6);
   --border-color-input: rgba(255, 255, 255, 0.35);
   --background-input-text-focus: rgba(21, 30, 51, 1);
@@ -11,6 +11,8 @@
   --background: #390b0b;
   --foreground: #171717;
   --lavende: #e6e6fa;
+
+  --header-background: rgb(23, 32, 54, 0.8);
 
   /* Core colors - Dark theme */
   --background: 222 47% 8%;

@@ -55,13 +55,17 @@ const Register = () => {
   const router = useRouter();
 
   const validateUserName = (value) => /^[A-Za-z0-9_]+$/.test(value);
-  // const validateEmail = (value) => true;
-  const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  // const validatePassword = (value) => true;
+  // const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  const validateEmail = (value) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) &&
+    value.toLowerCase() !== "doclitic@gmail.com";
+
   const validatePassword = (value) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])(?!.*\s).{8,}$/.test(
       value
     );
+  // const validateEmail = (value) => true;
+  // const validatePassword = (value) => true;
 
   const validationEmail = (value) => {
     // console.log("...***********...");
@@ -255,8 +259,12 @@ const Register = () => {
                 <h1>
                   <span>Documents</span> with AI
                 </h1>
-                <h3>Experience the future of document processing</h3>
-                <p>with Doclitic intelligent AI companion.</p>
+                <h3 className={styles.h3}>
+                  Experience the future of document processing
+                </h3>
+                <p className={styles.h3}>
+                  with Doclitic intelligent AI companion.
+                </p>
                 <div className={styles.textBlock}>
                   <div className={styles.head}>
                     <span className={styles.circle}></span>{" "}
