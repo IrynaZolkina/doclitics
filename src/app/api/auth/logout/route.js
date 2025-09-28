@@ -63,3 +63,11 @@ export async function POST(req) {
   });
   return res;
 }
+
+// export async function POST() {
+//   const res = NextResponse.json({ message: "Logged out" });
+//   ["accessToken", "refreshToken", "csrfToken"].forEach((c) =>
+//     res.cookies.set(c, "", { httpOnly: true, secure: true, expires: new Date(0), path: "/" })
+//   );
+//   return res;
+// }

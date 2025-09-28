@@ -61,6 +61,19 @@ const userSlice = createSlice({
     },
   },
 });
+
+const pageSlice = createSlice({
+  name: "app",
+  initialState: {
+    lastPage: "/",
+  },
+  reducers: {
+    setLastPage(state, action) {
+      state.lastPage = action.payload;
+    },
+  },
+});
+
 const userNameSlice = createSlice({
   name: "userName",
   initialState: {
@@ -119,6 +132,7 @@ export const { login, logout } = userSlice.actions;
 export const { addToast, removeToast } = toastSlice.actions;
 export const { setFileData, clearFileData } = fileSlice.actions;
 export const { setUserLogin, setUserLogout } = userNameSlice.actions;
+export const { setLastPage } = pageSlice.actions;
 
 export const store = configureStore({
   reducer: {
@@ -127,5 +141,6 @@ export const store = configureStore({
     toast: toastSlice.reducer,
     file: fileSlice.reducer,
     auth: authSlice.reducer,
+    page: pageSlice.reducer,
   },
 });

@@ -185,19 +185,19 @@ const Register = () => {
       }
 
       setShowPopupVerification(true);
-      // // setEnteredUsername("");
-      // // setEnteredUsernameTouched(false);
-      // setEnteredEmail("");
-      // setEnteredEmailTouched(false);
-      // setEnteredPassword("");
-      // setEnteredPasswordTouched(false);
-      // setEnteredPasswordRepeat("");
-      // setEnteredPasswordRepeadTouched(false);
-      // setValidationCheckEmail(0);
-      // // setValidationCheckUserName(0);
-      // setValidationCheckPassword(0);
-      // setValidationCheckPasswordRepeat(0);
-      // setAgree(false);
+      setEnteredUsername("");
+      setEnteredUsernameTouched(false);
+      setEnteredEmail("");
+      setEnteredEmailTouched(false);
+      setEnteredPassword("");
+      setEnteredPasswordTouched(false);
+      setEnteredPasswordRepeat("");
+      setEnteredPasswordRepeadTouched(false);
+      setValidationCheckEmail(0);
+      setValidationCheckUserName(0);
+      setValidationCheckPassword(0);
+      setValidationCheckPasswordRepeat(0);
+      setAgree(false);
     } catch (err) {
       // setShowPopupEmailRegistered({ status: true });
       console.log(err.message, err, "88****************");
@@ -213,7 +213,11 @@ const Register = () => {
           // onChoice={(choice) => handleChoice(choice)}
           onCancel={() => setShowPopupEmailRegistered({ status: false })}
           // option1={() => router.push("/pages/register")}
-          // option2={() => router.push("/pages/auth/login")}
+          option2={() =>
+            showLoginPopup(() => {
+              console.log("User logged in!");
+            })
+          }
           message={showPopupEmailRegistered.message}
           // option2={() => router.push("/pages/login")}
         />
@@ -231,9 +235,6 @@ const Register = () => {
           // handleVerify={handleVerify}
           onSuccess={() => {
             setShowPopupVerification(false); // close popup
-            showLoginPopup(() => {
-              console.log("User logged in!");
-            }); // go to login
           }}
           onFailure={() => {
             setShowPopupVerification(false);
@@ -387,14 +388,14 @@ const Register = () => {
                       type="checkbox"
                       checked={agree}
                       onChange={(e) => setAgree(e.target.checked)}
-                    />{" "}
-                    <span className={styles.checkmark}></span>{" "}
+                    />
+                    <span className={styles.checkmark}></span>
                     <div>
-                      I agree to the{" "}
-                      <span className={styles.checkm}>Terms of Service</span>{" "}
+                      I agree to the
+                      <span className={styles.checkm}>Terms of Service</span>
                       and <span className={styles.checkm}>Privacy Policy</span>
                     </div>
-                  </label>{" "}
+                  </label>
                 </div>
                 <button
                   type="submit"
@@ -405,53 +406,9 @@ const Register = () => {
                 </button>
               </>
             </form>
-            {/* {verificationPopUp && (
-              <div>
-                <input
-                  type="text"
-                  placeholder="6-digit code"
-                  value={verificationCode}
-                  maxLength={6}
-                  onChange={(e) => setVerificationCode(e.target.value)}
-                  required
-                  className={styles.form}
-                />
-                <div
-                  onClick={handleVerify}
-                  type="submit"
-                  disabled={loading}
-                  className={styles.codeButton}
-                >
-                  {loading ? "Submitting..." : "Register"}
-                </div>
-              </div>
-            )} */}
-            {/* <button
-              onClick={() => {
-                toastManualFunction("Hello world!", "success");
-              }}
-            >
-              {"Register"}
-            </button>
-            <button
-              onClick={() => {
-                toastSuperFunction("Hello world!", "error");
-              }}
-            >
-              {"Register"}
-            </button> */}
-
-            {/* </form> */}
           </div>
-        </div>{" "}
+        </div>
       </div>
-
-      {/* <MyToast
-        type={toast.type}
-        message={toast.message}
-        showToast={showToast}
-        setShowToast={setShowToast}
-      /> */}
     </div>
   );
 };

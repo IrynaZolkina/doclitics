@@ -47,7 +47,7 @@ export default function InputSectionLogin(props) {
         //     : styles.formControl
         // }
       >
-        <h3>{labelText}</h3>
+        <h3 style={{ textAlign: "left" }}>{labelText}</h3>
         {/* <label htmlFor={enteredValue}>{labelText}</label> */}
         <div className={styles.inputAndIcon}>
           <input

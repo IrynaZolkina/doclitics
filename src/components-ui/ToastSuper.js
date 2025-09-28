@@ -1,3 +1,4 @@
+"use client";
 // ToastSuperSingleton.js
 import { useState, useEffect } from "react";
 import styles from "./css-modules/ToastSuper.module.css";

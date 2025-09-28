@@ -20,15 +20,16 @@ export async function POST(request) {
 
     temperature: 0,
     max_tokens: 4096,
+    // max_tokens: 1024, //4096,
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0,
   });
 
-  //const response = completion.choices[0].message;
-  //const response = completion.choices[0].message;
-  const response = completion;
-  console.log("******s", response.choices[0].message.content);
+  const response = completion.choices;
+  // const response = completion.choices[0].message;
+  // const response = completion.choices[0].message.content;
+  // console.log("******s", response[0].message.content);
 
   // const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
   //   method: "POST",

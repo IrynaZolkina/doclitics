@@ -6,9 +6,13 @@ import crypto from "crypto";
 export function hashToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
+// Hash function (SHA-256)
+export function hashTokenSha256(token) {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
 
 export async function saveRefreshToken(userId, token) {
-  const hashed = hashToken(token);
+  const hashed = hashTokenSha256(token);
 
   // Store in DB: userId + hashedToken
   const tokenscollection = await getRefreshTokensCollection();
@@ -19,9 +23,19 @@ export async function saveRefreshToken(userId, token) {
   );
 }
 
-export async function verifyRefreshTokenHashed(userId, token) {
-  const hashed = hashToken(token);
+export async function saveRefreshTokenToDb(userId, token) {
+  const hashed = hashTokenSha256(token);
+  // Store in DB: userId + hashedToken
+  const tokenscollection = await getRefreshTokensCollection();
+  await tokenscollection.updateOne(
+    { userId },
+    { $set: { token: hashed, createdAt: new Date() } },
+    { upsert: true }
+  );
+}
 
+export async function verifyRefreshTokenHashed(userId, token) {
+  const hashed = hashTokenSha256(token);
   const tokenscollection = await getRefreshTokensCollection();
   const stored = await tokenscollection.findOne({ userId: userId });
   if (!stored) return false;
@@ -30,9 +44,7 @@ export async function verifyRefreshTokenHashed(userId, token) {
 
 export async function rotateRefreshToken(userId, payload) {
   const newRefreshToken = signRefreshToken(payload);
-
   await saveRefreshToken(userId, newRefreshToken);
-
   return newRefreshToken;
 }
 

@@ -8,12 +8,22 @@ import { exchangeCodeForTokens, fetchGoogleUser } from "@/lib/oauth";
 import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 import { ObjectId } from "mongodb";
 import crypto from "crypto";
+import { hashTokenSha256 } from "@/utils/tokens";
 
-const ACCESS_COOKIE_NAME = "accessToken";
-const REFRESH_COOKIE_NAME = "refreshToken";
+// Load from env with defaults
+const ACCESS_TOKEN_MINUTES = parseInt(
+  process.env.ACCESS_TOKEN_MINUTES || "6",
+  10
+);
+const REFRESH_TOKEN_DAYS = parseInt(process.env.REFRESH_TOKEN_DAYS || "20", 10);
 
-const ACCESS_EXPIRES = 6 * 60;
-const REFRESH_EXPIRES = 30 * 24 * 3600; // 30 days
+// Access token expiry
+const accessTokenExpirySeconds = ACCESS_TOKEN_MINUTES * 60; // for JWT sign
+const accessTokenCookieMaxAge = (ACCESS_TOKEN_MINUTES + 1) * 60; // +1 minute
+
+// Refresh token expiry
+const refreshTokenExpiryMs = REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000;
+const refreshTokenCookieMaxAge = REFRESH_TOKEN_DAYS * 24 * 60 * 60; // in seconds for cookies
 
 export async function GET(req) {
   try {
@@ -40,7 +50,6 @@ export async function GET(req) {
         googleId: profile.sub,
         category: "free",
         picture: profile.picture,
-        verified: true,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -56,55 +65,78 @@ export async function GET(req) {
         await users.updateOne({ _id: user._id }, { $set: update });
       }
     }
+
+    const tokenscollection = await getRefreshTokensCollection();
+
     // create tokens
     const payload = {
-      userId: user._id,
+      userId: user._id.toString(),
+      username: user.username,
+      email: user.email,
+    };
+    const userInfo = {
       username: user.username,
       email: user.email,
     };
     const accessToken = signAccessToken(payload);
     const refreshToken = signRefreshToken(payload);
+    const hashedToken = hashTokenSha256(refreshToken);
     const csrfToken = crypto.randomBytes(24).toString("hex");
     console.log("Generated tokens for userId:------", payload, refreshToken);
+
+    // 4. Insert new refresh token (multi-device)
+    await tokenscollection.insertOne({
+      userId: user._id.toString(),
+      hashedToken: hashedToken,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      expiresAt: new Date(Date.now() + refreshTokenExpiryMs), // 20 days
+    });
+
     // Save refresh token in DB
-    const tokenscollection = await getRefreshTokensCollection();
-    await tokenscollection.updateOne(
-      { userId: user._id },
-      {
-        $set: {
-          refreshToken: refreshToken,
-          createdAt: new Date(),
-          expiresAt: new Date(Date.now() + REFRESH_EXPIRES * 1000),
-        },
-      },
-      { upsert: true }
-    );
+    // await tokenscollection.updateOne(
+    //   { userId: user._id.toString() },
+    //   {
+    //     $set: {
+    //       refreshToken: refreshToken,
+    //       hashedToken: hashedToken,
+    //       createdAt: new Date(),
+
+    //       expiresAt: new Date(Date.now() + REFRESH_EXPIRES * 1000),
+    //     },
+    //   },
+    //   { upsert: true }
+    // );
     // set cookies
     const res = NextResponse.redirect(
-      new URL("/pages/auth/login", process.env.API_URL)
+      new URL("/pages/test", process.env.API_URL)
     );
-
+    // const res = NextResponse.json({ success: true, userInfo });
     // access token as non-httpOnly cookie so client JS can read and hydrate Redux
-    res.cookies.set(ACCESS_COOKIE_NAME, accessToken, {
+    res.cookies.set("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      //sameSite: "strict",
+      sameSite: "lax",
       path: "/",
-      maxAge: Number(ACCESS_EXPIRES) || 300,
+      maxAge: accessTokenCookieMaxAge,
     });
 
     // refresh token as HttpOnly cookie
-    res.cookies.set(REFRESH_COOKIE_NAME, refreshToken, {
+    res.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "lax",
+
+      //sameSite: "strict",
       path: "/",
-      maxAge: Number(REFRESH_EXPIRES) || 1209600,
+      maxAge: refreshTokenCookieMaxAge,
     });
     res.cookies.set("csrfToken", csrfToken, {
       httpOnly: false,
       secure: true,
-      sameSite: "strict",
+      sameSite: "lax",
+      //sameSite: "strict",
       path: "/",
     });
 

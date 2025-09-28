@@ -24,6 +24,8 @@ import { setFileData } from "@/redux/store";
 import Popup from "@/components-ui/Popup";
 import { useRouter } from "next/navigation";
 import Arrowleft from "./Arrowleft";
+import { apiFetch } from "@/utils/apiFetch";
+import { toastSuperFunctionJS } from "@/components-ui/toastSuperFunctionJS";
 
 export default function ViewerPage() {
   const [pageUrl, setPageUrl] = useState(null);
@@ -47,8 +49,11 @@ export default function ViewerPage() {
   const [inputAdditional, setInputAdditional] = useState("");
   const [researchType, setResearchType] = useState(0);
 
+  const [value, setValue] = useState(500);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [choices, setChoices] = useState([]);
+  const [choices, setChoices] = useState("");
+  // const [choices, setChoices] = useState([]);
 
   const [showPopup, setShowPopup] = useState(false);
 
@@ -249,24 +254,42 @@ export default function ViewerPage() {
   // if (!pageUrl) return <p>Загрузка PDF...</p>;
 
   const sendFile = async () => {
-    const inputPrompt = promptMd[researchType].prompt;
+    const inputPrompt = promptMd[activeIndexType].prompt;
+    // const inputPrompt = promptMd[researchType].prompt;
     console.log("/////    inputPrompt.   //////. ", inputPrompt);
-    console.log("/////    extractedText.   //////. ", extractedText);
-    const response = await fetch("/api/chat", {
+    const TONE = documentTones[activeIndexTone];
+    const WORDCOUNT = value;
+    console.log("/////    TONE.   //////. ", TONE);
+    console.log("/////    WORDCOUNT.   //////. ", WORDCOUNT);
+    const formattedPrompt = inputPrompt
+      .replace("{TONE}", TONE)
+      .replace("{WORD COUNT}", WORDCOUNT);
+    console.log("/////    formattedPrompt.   //////. ", formattedPrompt);
+    const additionalNotes = inputAdditional.trim();
+    // console.log("/////    extractedText.   //////. ", extractedText);
+    // const response = await fetch("/api/chat", {
+    const response = await apiFetch("/api/chat", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         content: extractedText,
-        prompt: inputPrompt,
+        prompt: formattedPrompt,
       }),
     });
     setIsLoading(false);
-    const result = await response.json();
-    console.log("///////////", result.choices);
-    ///////
-    setChoices(result.choices);
+    if (response) {
+      const result = await response.json();
+      // const result1 = await response.json();
+      console.log("///////////", result);
+      // console.log("///////////", result[0].message.content);
+      ///////
+      setChoices(result);
+    } else {
+      toastSuperFunctionJS("Please, sign in", "warning");
+    }
   };
   const handleChoice = (choice) => {
     console.log("User chose:", choice);
@@ -435,6 +458,8 @@ export default function ViewerPage() {
                   max={2000}
                   thumbWidth={20}
                   step={20}
+                  value={value}
+                  setValue={setValue}
                   initial={500}
                 />
               </div>
@@ -475,7 +500,9 @@ export default function ViewerPage() {
           {choices &&
             choices.map((choice) => {
               return (
+                // <div className="markdown">
                 <div className="markdown" key={choice.index}>
+                  {/* <ReactMarkdown>{choices}</ReactMarkdown> */}
                   <ReactMarkdown>{choice.message.content}</ReactMarkdown>
                 </div>
               );

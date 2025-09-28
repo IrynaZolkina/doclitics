@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { verifyAccessToken } from "@/lib/jwt";
 import {
   getPendingUserCollection,
+  getRefreshTokensCollection,
   getVerificationCollection,
 } from "@/lib/mongodb";
 
@@ -24,6 +25,15 @@ export async function GET(req) {
   // await collection.createIndex(
   //   { createdAt: 1 },
   //   { expireAfterSeconds: 600 } // 10 minutes
+  // );
+
+  // console.log("TTL index created!");
+
+  // Create TTL index (safe to run multiple times)
+  // const collection = await getRefreshTokensCollection();
+  // await collection.createIndex(
+  //   { createdAt: 1 },
+  //   { expireAfterSeconds: 60 * 60 * 24 * 20 } // 1,728,000 seconds
   // );
 
   // console.log("TTL index created!");

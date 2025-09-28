@@ -1,4 +1,3 @@
-"use client";
 import { Geist, Geist_Mono, Inter, Roboto, Manrope } from "next/font/google";
 import "./globals.css";
 
@@ -6,11 +5,14 @@ import { ReduxProvider } from "../redux/Providers";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 // import ToastContainer from "@/components-ui/ToastContainer";
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+
 import ToastManual from "@/components-ui/ToastManual";
 import ToastSuper from "@/components-ui/ToastSuper";
 import PopupLogin from "@/components/PopupLogin";
+
+import { setUserLogin } from "@/redux/store";
+import { apiFetch } from "@/utils/apiFetch";
+import UserLoader from "@/components/UserLoader";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -43,32 +45,22 @@ const roboto = Roboto({
 // };
 
 export default function RootLayout({ children }) {
-  const pathname = usePathname();
-  const [displayChildren, setDisplayChildren] = useState(children);
-  const [fade, setFade] = useState(true);
+  // const pathname = usePathname();
+  // const [displayChildren, setDisplayChildren] = useState(children);
+  // const [fade, setFade] = useState(true);
+  // const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   setFade(false); // fade out
-  //   const timeout = setTimeout(() => {
-  //     setDisplayChildren(children); // swap page
-  //     setFade(true); // fade in new page
-  //   }, 200); // duration matches CSS
-
-  //   return () => clearTimeout(timeout);
-  // }, [pathname, children]);
   return (
     <html lang="en" className="test">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${
-          inter.variable
-        } ${roboto.variable} ${manrope.variable} page-transition ${
-          fade ? "fade-in" : "fade-out"
-        }`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable} ${manrope.variable} `}
       >
         <ReduxProvider>
+          {/* Client-only wrapper for Redux + user fetch */}
+          {/* <UserLoader /> */}
           <div className="page-wrapper">
             <Header />
-            {displayChildren}
+            {children}
             <Footer />
             {/* <ToastContainer /> */}
             <ToastManual />

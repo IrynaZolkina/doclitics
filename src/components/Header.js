@@ -9,8 +9,9 @@ import { useRouter } from "next/navigation";
 
 import DocliticLogo from "@/components-ui/svg-components/DocliticLogo";
 import { setUserLogout } from "@/redux/store";
-import { apiFetch } from "@/lib/apiFetch";
+import { apiFetch } from "@/utils/apiFetch";
 import Doclitic2 from "@/components-ui/svg-components/Doclitic2";
+import UserLoader from "./UserLoader";
 
 const Header = () => {
   const router = useRouter();
@@ -25,11 +26,14 @@ const Header = () => {
     try {
       console.log("Logout clicked");
 
-      await fetch("/api/auth/logout", {
+      await apiFetch("/api/auth/logout", {
         method: "POST",
         credentials: "include",
       });
-
+      await fetch("/api/auth/logout1", {
+        method: "POST",
+        credentials: "include",
+      });
       // Clear Redux user state
       dispatch(setUserLogout());
 
@@ -70,6 +74,7 @@ const Header = () => {
       ) : (
         <p className={styles.initials}>{"ANDREW".slice(0, 2)}</p>
       )} */}
+      <UserLoader />
       <div className={styles.headerContainer}>
         <div className={styles.container}>
           <div className={styles.flexContainer}>
@@ -92,18 +97,20 @@ const Header = () => {
               {/* </div> */}
             </div>
           </div>
-          <div>
-            {picture ? (
-              <p className={styles.picture}>
-                <Image src={picture} alt="Logo" width={50} height={50} />
-              </p>
-            ) : (
-              <p className={styles.initials}>
-                {username.slice(0, 1)}
-                {/* {"ANDREW".slice(0, 1)} */}
-              </p>
-            )}
-          </div>
+          {username && (
+            <div>
+              {picture ? (
+                <p className={styles.picture}>
+                  <Image src={picture} alt="Logo" width={50} height={50} />
+                </p>
+              ) : (
+                <p className={styles.initials}>
+                  {username.slice(0, 1)}
+                  {/* {"ANDREW".slice(0, 1)} */}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>

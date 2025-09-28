@@ -6,8 +6,10 @@ export default function SliderRange({
   max = 100,
   step = 10,
   initial = 50,
+  value,
+  setValue,
 }) {
-  const [value, setValue] = useState(initial);
+  // const [value, setValue] = useState(initial);
   const [percent, setPercent] = useState(((initial - min) / (max - min)) * 100); // 👈 initialize correctly
   const sliderRef = useRef();
 

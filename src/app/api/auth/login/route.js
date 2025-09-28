@@ -1,85 +1,136 @@
 import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
-import { signAccessToken, signRefreshToken } from "@/lib/jwt";
+import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
 import { setAuthCookies } from "@/lib/cookies";
 import { getUserCollection, getRefreshTokensCollection } from "@/lib/mongodb";
 import crypto from "crypto";
-import { hashToken } from "@/utils/tokens";
+import { hashTokenSha256 } from "@/utils/tokens";
+import { errorResponse } from "@/utils/apiFetch";
 
-const ACCESS_COOKIE_NAME = "accessToken";
-const REFRESH_COOKIE_NAME = "refreshToken";
+// Load from env with defaults
+const ACCESS_TOKEN_MINUTES = parseInt(
+  process.env.ACCESS_TOKEN_MINUTES || "6",
+  10
+);
+const REFRESH_TOKEN_DAYS = parseInt(process.env.REFRESH_TOKEN_DAYS || "20", 10);
 
-const ACCESS_EXPIRES = 6 * 60;
-const REFRESH_EXPIRES = 30 * 24 * 3600; // 30 days
+// Access token expiry
+const accessTokenExpirySeconds = ACCESS_TOKEN_MINUTES * 60; // for JWT sign
+const accessTokenCookieMaxAge = (ACCESS_TOKEN_MINUTES + 1) * 60; // +1 minute
+
+// Refresh token expiry
+const refreshTokenExpiryMs = REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000;
+const refreshTokenCookieMaxAge = REFRESH_TOKEN_DAYS * 24 * 60 * 60; // in seconds for cookies
 
 export async function POST(req) {
   try {
     const { email, password } = await req.json();
     console.log("handleSubmit-server ********", email, password);
-    const users = await getUserCollection();
+    const usersCollection = await getUserCollection();
+    const tokensCollection = await getRefreshTokensCollection();
 
-    const user = await users.findOne({ email });
+    // 1. Find user
+    const user = await usersCollection.findOne({ email });
     if (!user)
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 }
       );
-    // if (!user.verified)
-    //   return NextResponse.json({ error: "Not verified" }, { status: 401 });
-
-    const match = await bcrypt.compare(password, user.passwordHash);
-    if (!match)
+    // 2. Check password (skip for Google OAuth users)
+    if (user.googleId) {
+      // ❌ User signed up with Google, so password login is not allowed
       return NextResponse.json(
-        { error: "Invalid credentials-----" },
-        { status: 401 }
+        {
+          error:
+            "This account was created with Google. Please log in using Google.",
+        },
+        { status: 400 }
       );
+    } else {
+      // Normal email/password login
+      const isValid = await bcrypt.compare(password, user.passwordHash);
+      if (!isValid) {
+        return NextResponse.json(
+          { error: "Invalid email or password" },
+          { status: 401 }
+        );
+      }
+    }
+    // 3. Generate tokens
     const payload = {
       userId: user._id.toString(),
       username: user.username,
       email: user.email,
     };
-    const accessToken = signAccessToken(payload);
-    const refreshToken = signRefreshToken(payload);
-    const hashedToken = hashToken(refreshToken);
-    const csrfToken = crypto.randomBytes(24).toString("hex");
-    // setAuthCookies(accessToken, refreshToken);
+    const userInfo = {
+      username: user.username,
+      email: user.email,
+    };
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken(payload);
 
-    // Save hashed refresh token in DB
-    const tokenscollection = await getRefreshTokensCollection();
-    await tokenscollection.updateOne(
-      { userId: user._id.toString() },
-      {
-        $set: {
-          refreshToken: refreshToken,
-          hashedToken: hashedToken,
-          createdAt: new Date(),
-          expiresAt: new Date(Date.now() + REFRESH_EXPIRES * 1000),
-        },
-      },
-      { upsert: true }
-    );
+    const hashedToken = hashTokenSha256(refreshToken);
+    const csrfToken = crypto.randomBytes(24).toString("hex");
+
+    // 4. Insert new refresh token (multi-device)
+    await tokensCollection.insertOne({
+      userId: user._id.toString(),
+      hashedToken: hashedToken,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      expiresAt: new Date(Date.now() + refreshTokenExpiryMs), // 20 days
+    });
+
+    // // setAuthCookies(accessToken, refreshToken);
+
+    // // Save hashed refresh token in DB
+    // await tokensCollection.updateOne(
+    //   { userId: user._id.toString() },
+    //   {
+    //     $set: {
+    //       refreshToken: refreshToken,
+    //       hashedToken: hashedToken,
+    //       createdAt: new Date(),
+    //       expiresAt: new Date(Date.now() + REFRESH_EXPIRES * 1000),
+    //     },
+    //   },
+    //   { upsert: true }
+    // );
+
+    // const user = await users.findOne(
+    //       { email: payload.email },
+    //       {
+    //         projection: {
+    //           _id: 0,          // hide MongoDB _id
+    //           username: 1,
+    //           email: 1,
+    //           category: 1,
+    //           picture: 1,
+    //         },
+    //       }
+    //     );
 
     // set cookies
     // const res = NextResponse.redirect(
     //   new URL("/pages/dashboard", process.env.API_URL)
     // );
-    const res = NextResponse.json({ success: true, user }); //don't sent all user!!!
+    const res = NextResponse.json({ success: true, userInfo }); //don't sent all user!!!
 
-    res.cookies.set(ACCESS_COOKIE_NAME, accessToken, {
+    res.cookies.set("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
       path: "/",
-      maxAge: Number(ACCESS_EXPIRES) || 300,
+      maxAge: accessTokenCookieMaxAge,
     });
 
     // refresh token as HttpOnly cookie
-    res.cookies.set(REFRESH_COOKIE_NAME, refreshToken, {
+    res.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
       path: "/",
-      maxAge: Number(REFRESH_EXPIRES) || 1209600,
+      maxAge: refreshTokenCookieMaxAge,
     });
     res.cookies.set("csrfToken", csrfToken, {
       httpOnly: false,
@@ -90,10 +141,8 @@ export async function POST(req) {
 
     return res;
   } catch (err) {
-    console.error("Google callback error:", err);
-    return NextResponse.redirect(
-      new URL("/pages/login?error=oauth", process.env.API_URL)
-    );
+    console.error("Login error:", err);
+    return errorResponse("LOGIN_FAILED", "Login failed", 500);
   }
 
   // return NextResponse.json({

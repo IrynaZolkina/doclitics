@@ -3,6 +3,9 @@ import styles from "./css-modules/VerificationCodeInput.module.css";
 import ToastSuper, { toastSuperFunction } from "@/components-ui/ToastSuper";
 import ToastManual, { toastManualFunction } from "@/components-ui/ToastManual";
 
+import { showLoginPopup } from "./PopupLogin";
+import { useRouter } from "next/navigation";
+
 export default function VerificationCodeInput({
   length = 6,
   onSubmit,
@@ -14,6 +17,8 @@ export default function VerificationCodeInput({
   const [values, setValues] = useState(Array(length).fill(""));
   const [message, setMessage] = useState("");
   const inputsRef = useRef([]);
+
+  const router = useRouter();
 
   useEffect(() => {
     // focus first input on mount
@@ -35,15 +40,6 @@ export default function VerificationCodeInput({
     }
     onChange?.(newValues.join(""));
   };
-
-  // const handleKeyDown = (e, idx) => {
-  //   if (e.key === "Backspace" && !values[idx] && idx > 0) {
-  //     const newValues = [...values];
-  //     newValues[idx - 1] = "";
-  //     setValues(newValues);
-  //     inputsRef.current[idx - 1].focus();
-  //   }
-  // };
 
   const handleKeyDown = (e, idx) => {
     if (e.key === "Backspace") {
@@ -111,8 +107,16 @@ export default function VerificationCodeInput({
 
       if (res.ok) {
         setSuccess(true);
-        toastSuperFunction("✅ Email verified successfully!", "success");
-        onSubmit(code, true); // ✅ success → close popup + redirect to login
+        toastSuperFunction(
+          "✅ Email verified successfully! You can Login now",
+          "success"
+        );
+        // onSubmit(code, true); // ✅ success → close popup + redirect to login
+        // Go back to the page with login popup
+        router.back();
+
+        // Re-open login popup (small delay so navigation finishes first)
+        setTimeout(() => showLoginPopup(), 200);
         return;
       }
 

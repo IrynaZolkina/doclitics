@@ -3,9 +3,11 @@
 import Popup from "./Popup";
 import { useState } from "react";
 import styles from "./Popup.module.css";
+import { useDispatch } from "react-redux";
 
 export default function Home() {
   const [popup, setPopup] = useState(null);
+  const dispatch = useDispatch();
 
   const showPopup = () => {
     const newPopup = {

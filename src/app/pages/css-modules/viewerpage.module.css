@@ -226,6 +226,9 @@
   margin: 0 auto;
   color: white;
 }
+.summaryContainer li {
+  margin-bottom: 10px;
+}
 .button {
   /* background: #4f46e5;  */
   color: white;

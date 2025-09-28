@@ -24,7 +24,7 @@ const SupportSection = () => {
           <section>
             <Image src="page3_02.svg" alt="01" width={36} height={36} />
           </section>
-          <h3>Academic Paperss</h3>
+          <h3>Academic Papers</h3>
           <p>Research papers, thesis documents,</p>
           <p>scholarly articles</p>
         </div>
