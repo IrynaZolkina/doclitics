@@ -224,7 +224,7 @@ a {
 .fade-out {
   opacity: 0;
 }
-markdown h1 {
+.markdown h1 {
   font-size: 2rem;
   color: lavender;
 }
@@ -245,6 +245,13 @@ markdown h1 {
   line-height: 1.6;
   margin-bottom: 20px;
   border: 1px solid rgba(85, 147, 247, 0.3);
+  padding: 20px;
+  border-radius: 20px;
+}
+.markdown ol,
+ul {
+  margin-bottom: 20px;
+  border: 1px solid rgba(247, 85, 220, 0.3);
   padding: 20px;
   border-radius: 20px;
 }
