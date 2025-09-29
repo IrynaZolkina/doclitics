@@ -2,15 +2,9 @@
 import Image from "next/image";
 import "./globals.css";
 // import styles from "./page.module.css";
-import { login } from "../redux/store";
 
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import HomePage from "@/components/homepage";
-// pages/index.jsx or app/page.jsx
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setUserLogin } from "@/redux/store";
-import { apiFetch } from "@/utils/apiFetch";
+
 import { NavbarN } from "@/components/NavbarN";
 
 export default function Home() {

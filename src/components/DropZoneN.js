@@ -135,14 +135,14 @@ const DropZoneN = () => {
             onDragOver={(e) => dragStartHandler(e)}
             onDrop={(e) => handleFileChange(e, 1)}
           >
-            <Image
+            {/* <Image
               className={styles.heroImage}
               src="/AI.png"
               width={892}
               height={348}
               alt="AI Image"
               priority={true} // ✅ important for LCP
-            />
+            /> */}
             <Image
               className={styles.dropIcon}
               src="drop.svg"
@@ -165,13 +165,13 @@ const DropZoneN = () => {
             onDragLeave={(e) => dragLeaveHandler(e)}
             onDragOver={(e) => dragStartHandler(e)}
           >
-            <Image
+            {/* <Image
               className={styles.heroImage}
               src="/AI.png"
               alt="Hero Image"
               width={892}
               height={348}
-            />
+            /> */}
             <div className={styles.heroBlurImage}></div>
             <Image
               className={styles.dropIcon}
