@@ -1,5 +1,6 @@
 import { verifyAccessToken } from "@/lib/jwt";
-import { errorResponse } from "@/utils/apiFetch";
+import { errorResponse } from "@/utils/errorHandler";
+
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
@@ -51,18 +52,19 @@ export async function POST(request) {
       presence_penalty: 0,
     });
 
-    const response = completion.choices;
+    // const response = completion.choices;
     // return NextResponse.json(
     //   { success: true, data: { user } },
     //   { status: 200 }
     // );
+    const response = completion.choices[0]?.message?.content || "";
     console.log("response-----", response);
     return NextResponse.json(response);
   } catch (err) {
-    console.log("err-----", err);
+    // console.log("err-----", err);
     return errorResponse(
       "INVALID_TOKEN",
-      "Invalid token. Token verification failed",
+      "Invalid token. Token verification failed" + err,
       401
     );
   }

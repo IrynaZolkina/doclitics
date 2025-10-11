@@ -6,9 +6,25 @@ import "./globals.css";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 import { NavbarN } from "@/components/NavbarN";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   useScrollAnimation();
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   const lastPage = localStorage.getItem("lastPage");
+  //   if (lastPage && lastPage !== router.pathname) {
+  //     localStorage.removeItem("lastPage"); // cleanup
+  //     router.push(lastPage); // client-side redirect
+  //   }
+  // }, [router]);
+  // useEffect(() => {
+  //   const lastPage = localStorage.getItem("lastPage") || "/";
+  //   localStorage.removeItem("lastPage"); // cleanup
+  //   window.location.href = lastPage; // redirect user
+  // }, []);
 
   // const dispatch = useDispatch();
 

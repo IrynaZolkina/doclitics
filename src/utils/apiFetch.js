@@ -17,7 +17,8 @@ export async function apiFetch(url, options = {}) {
   // Getting csrfToken from cookie
   const csrfToken = getCookie("csrfToken");
   if (!csrfToken) {
-    toastManualFunctionJS("No CSRF token found, please login", "error");
+    console.log("No CSRF token found, please login");
+    // toastManualFunctionJS("No CSRF token found, please login", "error");
     return;
   }
 
@@ -39,16 +40,20 @@ export async function apiFetch(url, options = {}) {
       headers: { "X-CSRF-Token": csrfToken },
       credentials: "include", // ✅ must include here too
     });
-
-    if (refreshRes.ok) {
+    const data = await refreshRes.json();
+    console.log("Refresh response status: ", refreshRes);
+    console.log("Refresh response status: ", refreshRes.status);
+    if (data.success) {
       // New access token set in HttpOnly cookie automatically
       // Retry original request
+      console.log("Refresh refreshRes.success: ", data.success);
       res = await fetch(url, options);
     } else {
       // Refresh failed, force logout or redirect to login
       // window.location.href = "http://localhost:3000/";
       //   ToastManual("Token refresh failed");
-      console.log("Token refresh failed ");
+      console.log("Refresh refreshRes.error.message: ", data.error.message);
+      toastManualFunctionJS("Token refresh failed " + data.error.message);
     }
   }
 

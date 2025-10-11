@@ -16,7 +16,7 @@ export const showLoginPopup = (callback) => {
   if (showLoginPopupExternal) showLoginPopupExternal(callback);
 };
 
-export default function PopupLogin() {
+export default function PopupLogin({ currentPath }) {
   const [isOpen, setIsOpen] = useState(false);
   const [callbackOnSuccess, setCallbackOnSuccess] = useState(null);
 
@@ -43,10 +43,10 @@ export default function PopupLogin() {
 
   if (!isOpen) return null;
 
-  const currentPath = window.location.pathname + window.location.search;
+  // const currentPath = window.location.pathname + window.location.search;
 
   // Save page before opening popup
-  dispatch(setLastPage(currentPath));
+  // dispatch(setLastPage(currentPath));
 
   const handleClose = () => {
     // setIsOpen(false);

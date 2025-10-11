@@ -18,14 +18,37 @@ const toastSlice = createSlice({
 });
 // Counter slice
 // File slice
+
+export const summarySlice = createSlice({
+  name: "summary",
+  initialState: {
+    choices: "",
+    // choices: [],
+  },
+  reducers: {
+    setSummary: (state, action) => {
+      // action.payload should be array of choices
+      state.choices = action.payload;
+    },
+    clearSummary: (state) => {
+      state.choices = "";
+      // state.choices = [];
+    },
+  },
+});
+/********************************** */
 const initialFileState = {
   fileName: "",
   fileType: "",
   storeTotalPages: "",
   storeExtractedTexts: "",
   fileSize: 0,
+  formattedPrompt: "",
+  type: "",
+  style: "",
+  depth: "",
+  tone: "",
 };
-
 const fileSlice = createSlice({
   name: "file",
   initialState: initialFileState,
@@ -133,6 +156,7 @@ export const { addToast, removeToast } = toastSlice.actions;
 export const { setFileData, clearFileData } = fileSlice.actions;
 export const { setUserLogin, setUserLogout } = userNameSlice.actions;
 export const { setLastPage } = pageSlice.actions;
+export const { setSummary, clearSummary } = summarySlice.actions;
 
 export const store = configureStore({
   reducer: {
@@ -142,5 +166,6 @@ export const store = configureStore({
     file: fileSlice.reducer,
     auth: authSlice.reducer,
     page: pageSlice.reducer,
+    summary: summarySlice.reducer,
   },
 });

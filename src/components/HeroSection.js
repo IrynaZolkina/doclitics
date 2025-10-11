@@ -18,12 +18,12 @@ const HeroSection = ({
       </div>
       <div className={styles.heading1}>
         <p>
-          Turn Your Documents into <span>Stunning</span>
+          Transform Any Document into <span>Instant, </span>
         </p>
         <p>
-          <span>Summaries.</span>
+          <span>Clear, Actionable Summaries.</span>
         </p>
-        <p>Instantly.</p>
+        {/* <p>Instantly.</p> */}
       </div>
       <div className={styles.heading2}>
         <p>

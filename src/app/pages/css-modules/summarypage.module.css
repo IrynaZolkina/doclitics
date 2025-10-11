@@ -1,0 +1,9 @@
+.summaryContainer {
+  width: 60%;
+  /* height: 290vh; */
+  margin: 0 auto;
+  color: white;
+}
+.summaryContainer li {
+  margin-bottom: 10px;
+}

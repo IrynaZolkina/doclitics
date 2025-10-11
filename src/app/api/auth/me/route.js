@@ -23,7 +23,7 @@ export async function GET(req) {
     if (!payload) {
       return errorResponse(
         "INVALID_TOKEN",
-        "Access Token Invalid token. Not authorized",
+        "Access Token Invalid. Not authorized",
         401
       );
     }
@@ -31,14 +31,14 @@ export async function GET(req) {
     const users = await getUserCollection();
     const user = await users.findOne({ email: payload.email });
     console.log("User from DB:-------------------- ", user);
-    if (!user) {
-      if (!user)
-        return errorResponse(
-          "USER_NOT_FOUND",
-          "User not found. Not authorized",
-          404
-        );
-    }
+    // if (!user) {
+    if (!user)
+      return errorResponse(
+        "USER_NOT_FOUND",
+        "User not found. Not authorized",
+        404
+      );
+    // }
     return NextResponse.json(
       { success: true, data: { user } },
       { status: 200 }

@@ -42,87 +42,43 @@ const DropZoneN = () => {
   };
 
   const handleFileChange = async (event, dragIndicator) => {
-    let filel;
+    let chosenFile;
     if (dragIndicator === 1) {
       event.preventDefault();
       let files = [...event.dataTransfer.files];
-      filel = files[0];
-      console.log("---files-2---", filel, "*****");
+      chosenFile = files[0];
+      console.log("---files-2---", chosenFile, "*****");
       console.log("---files[0].name---", files[0].name, "*****");
       setDrag(false);
     } else {
       //event.preventDefault();
-      filel = event.target.files[0];
-      console.log("file", filel);
+      chosenFile = event.target.files[0];
+      console.log("file", chosenFile);
     }
-    console.log("file**********************", filel);
+    console.log("file**********************", chosenFile);
 
-    if (!filel || filel.type !== "application/pdf") {
+    if (!chosenFile || chosenFile.type !== "application/pdf") {
       alert("Please select a valid PDF file");
       return;
     }
     dispatch(
       setFileData({
-        fileName: filel.name,
-        fileType: filel.type,
-        fileSize: filel.size,
+        fileName: chosenFile.name,
+        fileType: chosenFile.type,
+        fileSize: chosenFile.size,
         // or actual base64 string if you generate it
       })
     );
-    if (filel) {
+    if (chosenFile) {
       try {
-        await saveFileToIndexedDB("current-pdf", filel);
+        await saveFileToIndexedDB("current-pdf", chosenFile);
 
-        showToast("PDF saved to IndexedDB..");
+        console.log("PDF saved to IndexedDB..");
         router.push("/pages/viewer");
       } catch (err) {
         showToast(err);
       }
     }
-    // setChosenFile(filel);
-    // setFile(filel);
-    // const formData = new FormData();
-    // formData.append("file", filel);
-
-    // const res = await fetch("/api/upload", {
-    //   method: "POST",
-    //   body: formData,
-    // });
-
-    // const data = await res.json();
-    // alert(JSON.stringify(data));
-    // console.log("---------------------------", data);
-    // console.log("---------------------------", data.fileSaved);
-    // console.log("---------------------------", data.fileSaved.insertedId);
-    // dispatch(setFileData({ idSavedFileToMongo: data.fileSaved.insertedId }));
-
-    //console.log("---pdfBuffer---", pdfBuffer, "------*****");
-    // savePdfToDb(file);
-    // const reader = new FileReader();
-    // reader.readAsArrayBuffer(filel); // ***  !!!!
-    // reader.onload = async (e) => {
-    //   const typedArray = new Uint8Array(e.target.result);
-    //   try {
-    //     const loadingTask = pdfjsLib.getDocument(typedArray);
-    //     const pdf = await loadingTask.promise;
-    //     console.log("pdf=========", pdf);
-    //     setPdfDoc(pdf);
-    //     setTotalPages(pdf.numPages);
-    //     //     setPageNum(1);
-    //     let fullText = "";
-    //     for (let i = 1; i <= pdf.numPages; i++) {
-    //       const page = await pdf.getPage(i);
-    //       const textContent = await page.getTextContent();
-    //       fullText += textContent.items.map((item) => item.str).join(" ");
-    //     }
-
-    //     setExtractedTexts(fullText);
-    //   } catch (error) {
-    //     console.error("Error loading PDF:", error);
-    //     alert("Error loading PDF file");
-    //   }
-    // };
-    //reader.readAsArrayBuffer(file);
   };
   return (
     <div>

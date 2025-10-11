@@ -76,28 +76,7 @@ export function NavbarN() {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
-  const extractTextFromPdf = async (file) => {
-    console.log("c*****************---sextractTex", file, "tFromPdf---*****");
-    const fileReader = new FileReader();
 
-    fileReader.onload = async function (e) {
-      console.log("^^^^^^^^^^^^^^^^^^^^^^^^");
-      const typedarray = new Uint8Array(this.result);
-
-      const pdf = await pdfjsLib.getDocument(typedarray).promise;
-      console.log("^^^^^^^^^^^^^^^^^^^^^^^^");
-      let fullText = "";
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        fullText += textContent.items.map((item) => item.str).join(" ");
-      }
-
-      console.log("fulltext--", fullText);
-      setExtractedTexts(fullText);
-      setIsLoading(true);
-    };
-  };
   // Navigation functions
 
   // Re-render when page number, scale or rotation changes

@@ -1,7 +1,9 @@
+"use server";
 import { clearUser, setError, setLoading, setUser } from "@/redux/store";
 import { apiFetch } from "./apiFetch";
+import { getCookie } from "./cookies";
 
-export function fetchCurrentUser() {
+export async function fetchCurrentUser() {
   return async (dispatch) => {
     dispatch(setLoading());
     try {

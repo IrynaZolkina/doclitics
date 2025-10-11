@@ -6,7 +6,6 @@ import ReactMarkdown from "react-markdown";
 import * as pdfjsLib from "pdfjs-dist";
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
-import OpenAI from "openai";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -20,12 +19,22 @@ import Eye1 from "@/components-ui/svg-components/Eye1";
 import EyeOff1 from "@/components-ui/svg-components/EyeOff1";
 import SliderRange from "../../../components-ui/SliderRange";
 import { promptMd } from "@/lib/promptMd";
-import { setFileData } from "@/redux/store";
+import { setFileData, setLastPage, setSummary } from "@/redux/store";
 import Popup from "@/components-ui/Popup";
 import { useRouter } from "next/navigation";
 import Arrowleft from "./Arrowleft";
 import { apiFetch } from "@/utils/apiFetch";
 import { toastSuperFunctionJS } from "@/components-ui/toastSuperFunctionJS";
+import { showLoginPopup } from "@/components/PopupLogin";
+import PopupLoginInner from "@/components/PopupLoginInner";
+import IndeterminateProgressBar from "@/components-ui/IndeterminateProgressBar";
+
+import PulseIndicator from "@/components-ui/PulseIndicator";
+import { Spinnaker } from "next/font/google";
+import Arrowright from "./Arrowright";
+import ArrRight from "./ArrRight";
+import ArrLeft from "./ArrLeft";
+import Estimate from "./Estimate";
 
 export default function ViewerPage() {
   const [pageUrl, setPageUrl] = useState(null);
@@ -38,57 +47,94 @@ export default function ViewerPage() {
   const [openViewer, setOpenViewer] = useState(true);
 
   const [chosenFile, setChosenFile] = useState(null);
-  const [extractedText, setExtractedTexts] = useState();
+  // const [extractedText, setExtractedTexts] = useState();
   const [pdfDoc, setPdfDoc] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
 
   const [pageNum, setPageNum] = useState(1);
-  const [activeIndexType, setActiveIndexType] = useState(5);
+  const [activeIndexType, setActiveIndexType] = useState(0);
   const [activeIndexTone, setActiveIndexTone] = useState(3);
   const [activeIndexSize, setActiveIndexSize] = useState(0);
   const [inputAdditional, setInputAdditional] = useState("");
   const [researchType, setResearchType] = useState(0);
 
-  const [value, setValue] = useState(500);
-
+  const [value, setValue] = useState(800);
+  const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [choices, setChoices] = useState("");
+  const [choices, setChoices] = useState([]);
   // const [choices, setChoices] = useState([]);
 
   const [showPopup, setShowPopup] = useState(false);
+  const [openPopupLogin, setOpenPopupLogin] = useState(false);
 
   const canvasRef = useRef(null);
   const dispatch = useDispatch();
-  const fileName = useSelector((state) => state.file.fileName);
-  const fileType = useSelector((state) => state.file.fileType);
-  const fileSize = useSelector((state) => state.file.fileSize);
-  const user = useSelector((state) => state.user);
+  const formattedPrompt = useSelector((state) => state.file.formattedPrompt);
+  const userName = useSelector((state) => state.userNameSlice.username);
   const router = useRouter();
   console.log("chosenFile---", chosenFile, typeof chosenFile, "*****");
-  console.log("fulltext--", extractedText);
 
+  // console.log("fileName--", fileName);
+  // console.log("fileType--", fileType);
+  // console.log("fulltext--", extractedText);
+  //let fileName,fileType,fileSize
+  const [fileMeta, setFileMeta] = useState({
+    name: "",
+    type: "",
+    size: 0,
+  });
   const documentTypes = [
-    "Business Report",
-    "Literature",
-    "Research Paper / Notes",
-    "Concept Document",
-    "Resume / CV",
-    "Meeting Transcript",
-    "Other",
+    // Order is crucial, must match promptMd keys NUMBERS!!!
+    {
+      emoji: "📊",
+      title: "Report",
+      par: "Business reports, summaries, and formal write-ups.",
+    },
+    {
+      emoji: "🔬",
+      title: "Research",
+      par: "Academic studies, scientific papers, or citations",
+    },
+    {
+      emoji: "📕",
+      title: "Literature",
+      par: "Meeting notes, memos, essays, or reflective writing.",
+    },
+    {
+      emoji: "️📑",
+      title: "Resume",
+      par: "Professional profiles, portfolios, or CV documents",
+    },
+    {
+      emoji: "️📰",
+      title: "Meeting Transcript",
+      par: "Conversations, interviews, or collaborative discussions",
+    },
+    {
+      emoji: "🧬",
+      title: "Conceptual",
+      par: "Abstract, theoretical, or documents with conceptual topics. ",
+    },
+    {
+      emoji: "📃",
+      title: "Other",
+      par: "Any document that doesn’t fit the above types",
+    },
   ];
+
   const documentTones = [
+    "Neutral",
     "Formal",
     "Casual",
     "Academic",
     "Friendly",
     "Persuasive",
-    "Neural",
   ];
   const documentSize = ["Normal", "Advanced "];
 
-  useEffect(() => {
-    setResearchType(activeIndexType);
-  }, [activeIndexType]);
+  // useEffect(() => {
+  //   setResearchType(activeIndexType);
+  // }, [activeIndexType]);
 
   const renderPage = useCallback(
     async (pageNumber) => {
@@ -140,33 +186,52 @@ export default function ViewerPage() {
   }, [pdfDoc, pageNum, renderPage, openViewer, scale]);
 
   // useEffect(() => {
-  //   if (pdfDoc) {
-  //     renderPage(pageNum);
+  //   if (formattedPrompt) {
+  //     console.log("----formattedPrompt----", formattedPrompt);
   //   }
-  // }, [pdfDoc, pageNum, scale, rotation, numPages, renderPage]);
+  // }, [formattedPrompt]);
+  useEffect(() => {
+    const saved = localStorage.getItem("myData");
+    if (saved) {
+      const { activeIndexType, activeIndexTone, value } = JSON.parse(saved);
+      console.log("Restored:", activeIndexType, activeIndexTone, value);
 
-  // const renderPage = async (pageNumber) => {
-  //   if (!pdfDoc) return;
+      // Optionally, put them back into state
+      setActiveIndexType(activeIndexType);
+      setActiveIndexTone(activeIndexTone);
+      setValue(value);
+      localStorage.removeItem("myData");
+    }
 
-  //   const page = await pdfDoc.getPage(pageNumber);
-  //   const canvas = canvasRef.current;
-  //   const context = canvas.getContext("2d");
+    (async () => {
+      try {
+        const file = await getFileFromIndexedDB("current-pdf");
+        if (!file) {
+          router.push("/");
+          return;
+        }
+        console.log("File name from IndexedDB:-------", file.name);
+        console.log("chosenFile:-------", chosenFile);
+        setFileMeta({
+          name: file.name,
+          type: file.type,
+          size: file.size,
+        });
+        setChosenFile(file);
 
-  //   // Apply rotation
-  //   const viewport = page.getViewport({ scale, rotation: rotation });
+        // render PDF with pdfjsLib
+        const arrayBuffer = await file.arrayBuffer();
+        const typedArray = new Uint8Array(arrayBuffer);
+        const loadingTask = pdfjsLib.getDocument(typedArray);
+        const pdf = await loadingTask.promise;
 
-  //   // Set canvas dimensions to match the viewport
-  //   canvas.height = viewport.height;
-  //   canvas.width = viewport.width;
-
-  //   // Render the PDF page
-  //   const renderContext = {
-  //     canvasContext: context,
-  //     viewport: viewport,
-  //   };
-
-  //   await page.render(renderContext).promise;
-  // };
+        setPdfDoc(pdf);
+        setTotalPages(pdf.numPages);
+      } catch (error) {
+        console.error("Error getting file from IndexedDB:", error);
+      }
+    })();
+  }, []);
 
   const goToPrevPage = () => {
     if (pageNum > 1) {
@@ -207,56 +272,45 @@ export default function ViewerPage() {
   //     await renderPage(arrayBuffer, newPage, scale, rotation);
   //   }
   // };
-  const filePreposition = async () => {
-    if (!chosenFile) {
-      try {
-        const file = await getFileFromIndexedDB("current-pdf");
-        console.log("File name from IndexedDB:-------", file.name);
-        await deleteFileFromIndexedDB("current-pdf");
-        setChosenFile(file);
-        const reader = new FileReader();
-        reader.readAsArrayBuffer(file); // ***  !!!!
-        reader.onload = async (e) => {
-          const typedArray = new Uint8Array(e.target.result);
-          try {
-            const loadingTask = pdfjsLib.getDocument(typedArray);
-            const pdf = await loadingTask.promise;
-            console.log("pdf=========", pdf);
-            setPdfDoc(pdf);
-            setTotalPages(pdf.numPages);
-            //     setPageNum(1);
-            let fullText = "";
-            for (let i = 1; i <= pdf.numPages; i++) {
-              const page = await pdf.getPage(i);
-              const textContent = await page.getTextContent();
-              fullText += textContent.items.map((item) => item.str).join(" ");
-            }
+  const extractPdfText = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const typedArray = new Uint8Array(arrayBuffer);
+    const loadingTask = pdfjsLib.getDocument(typedArray);
+    const pdf = await loadingTask.promise;
 
-            setExtractedTexts(fullText);
-            dispatch(
-              setFileData({
-                storeExtractedTexts: fullText,
-              })
-            );
-          } catch (error) {
-            console.error("Error loading PDF:", error);
-            alert("Error loading PDF file");
-          }
-        };
-        //read
-      } catch (error) {
-        console.error("Error getting file from IndexedDB:", error);
-      }
+    let fullText = "";
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      fullText += textContent.items.map((item) => item.str).join(" ");
     }
+    return fullText;
   };
 
-  // if (error) return <p style={{ color: "red" }}>{error}</p>;
-  // if (!pageUrl) return <p>Загрузка PDF...</p>;
-
   const sendFile = async () => {
+    if (!userName) {
+      // localStorage.setItem("lastPage", "/pages/viewer");
+      // dispatch(setLastPage("/pages/viewer"));
+      // toastSuperFunctionJS("Please, sign in", "warning");
+      localStorage.setItem(
+        "myData",
+        JSON.stringify({
+          activeIndexType,
+          activeIndexTone,
+          value,
+        })
+      );
+      setOpenPopupLogin(true);
+      return;
+    }
+
+    if (!chosenFile) return;
+
+    const extractedText = await extractPdfText(chosenFile);
+
     const inputPrompt = promptMd[activeIndexType].prompt;
     // const inputPrompt = promptMd[researchType].prompt;
-    console.log("/////    inputPrompt.   //////. ", inputPrompt);
+    // console.log("/////    inputPrompt.   //////. ", inputPrompt);
     const TONE = documentTones[activeIndexTone];
     const WORDCOUNT = value;
     console.log("/////    TONE.   //////. ", TONE);
@@ -264,10 +318,19 @@ export default function ViewerPage() {
     const formattedPrompt = inputPrompt
       .replace("{TONE}", TONE)
       .replace("{WORD COUNT}", WORDCOUNT);
-    console.log("/////    formattedPrompt.   //////. ", formattedPrompt);
+    // console.log("/////    formattedPrompt.   //////. ", formattedPrompt);
+    // dispatch(
+    //   setFileData({
+    //     formattedPrompt: formattedPrompt,
+    //   })
+    // );
     const additionalNotes = inputAdditional.trim();
-    // console.log("/////    extractedText.   //////. ", extractedText);
+
     // const response = await fetch("/api/chat", {
+    // setLoading(true);
+    console.log("/////    Uername   //////. ", userName);
+    router.replace("/pages/summary");
+    dispatch(setSummary(""));
     const response = await apiFetch("/api/chat", {
       method: "POST",
       credentials: "include",
@@ -279,27 +342,53 @@ export default function ViewerPage() {
         prompt: formattedPrompt,
       }),
     });
-    setIsLoading(false);
+    // setIsLoading(false);
+    // setLoading(false);
+    //await deleteFileFromIndexedDB("current-pdf");
+    const result1 = await deleteFileFromIndexedDB("current-pdf");
+    if (result1.success) {
+      console.log("File deleted!");
+    } else {
+      console.error("Delete failed:", result1.error);
+    }
+    dispatch(
+      setFileData({
+        type: documentTypes[activeIndexType].title,
+        style: "",
+        depth: WORDCOUNT,
+        tone: TONE,
+        // or actual base64 string if you generate it
+      })
+    );
     if (response) {
       const result = await response.json();
       // const result1 = await response.json();
       console.log("///////////", result);
       // console.log("///////////", result[0].message.content);
       ///////
-      setChoices(result);
+
+      // const filteredChoices = Array.isArray(result)
+      //   ? result.filter(
+      //       (c) => c.message && typeof c.message.content === "string"
+      //     )
+      //   : [];
+      // setChoices(filteredChoices);
+
+      // dispatch(setSummary(filteredChoices));
+      dispatch(setSummary(result));
+
+      // setChoices(result);
+      // setChoices(Array.isArray(result) ? result : []);
     } else {
       toastSuperFunctionJS("Please, sign in", "warning");
     }
   };
-  const handleChoice = (choice) => {
-    console.log("User chose:", choice);
-    setShowPopup(false);
-
-    // router.push("/pages/register");
-  };
 
   return (
-    <div className={styles.viewerPage}>
+    <div className={styles.viewerPageContainer}>
+      {openPopupLogin && (
+        <PopupLoginInner setOpenPopupLogin={setOpenPopupLogin} />
+      )}
       <div
         className="navButtonContainer"
         style={{ width: "96px", height: "36px" }}
@@ -308,99 +397,136 @@ export default function ViewerPage() {
           <button className="navButton">Home Page</button>
         </Link>
       </div>
-      <h1>Ready to Summarize Smarter?</h1>
+      <h1>Let’s Summarize This File 🚀</h1>
       <p>
-        Choose your style, and let our AI do the heavy lifting. You can explore
-        the options below
+        Choose your document type, style, and depth — our AI will do the rest.
       </p>
-      <p>
+      {/* <p>
         to see how summaries are customized — when you are ready to generate
         your first one,
       </p>
-      <p>simply create a free account to unlock the magic.</p>
+      <p>simply create a free account to unlock the magic.</p> */}
 
-      <div className={styles.pageWrapper}>
-        <div className={styles.pageContainer}>
-          <div className={styles.blockWrapper}>
+      <div className={styles.pageContainer}>
+        <div className={styles.blockWrapper}>
+          <div className={styles.blockLargeContainer}>
             <h2>Selected File:</h2>
-            <div className={styles.blockContainer}>
-              <div>
-                <Paper />
+            <div className={styles.fileBlockSmallContainer}>
+              <div className={styles.fileNameContainer}>
+                <div className={styles.svgContainer}>
+                  <Paper width={"50px"} height={"33px"} />
+                </div>
+                <div>
+                  <h4>{fileMeta.name}</h4>
+                  <div className={styles.fileDetails}>
+                    {fileMeta.type === "application/pdf" ? "PDF" : ""}
+                    <span
+                      style={{
+                        display: "inline-block",
+                        width: "5px",
+                        height: "5px",
+                        backgroundColor: "white",
+                        borderRadius: "50%",
+                        margin: "0 8px",
+                      }}
+                    ></span>
+                    <span className={styles.fileSize}>
+                      {fileMeta.size > 0 ? formatBytes(fileMeta.size) : ""}
+                    </span>{" "}
+                    <span
+                      style={{
+                        display: "inline-block",
+                        width: "5px",
+                        height: "5px",
+                        backgroundColor: "white",
+                        borderRadius: "50%",
+                        margin: "0 8px",
+                      }}
+                    ></span>
+                    <span className={styles.ready}>
+                      <PulseIndicator />
+                      Ready
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div>{fileName}</div>
-              <div className={styles.block}>
-                {fileSize > 0 ? formatBytes(fileSize) : ""}
-              </div>
-              <div className={styles.block}>.{fileType}</div>
               <div>
                 <Button
                   onClick={() => {
                     setOpenViewer(!openViewer);
-                    filePreposition();
+                    // filePreposition();
                   }}
                   bg={"rgba(60, 131, 246, 0.05)"}
                   borderColor={"rgba(85, 147, 247, 0.3)"}
-                  height={"55px"}
-                  width={"151px"}
+                  height={"36px"}
+                  width={"136px"}
                   radius={"13px"}
                 >
                   <span className={styles.buttonInside}>
                     {openViewer ? <Eye1 /> : <EyeOff1 />}
                     <span className={styles.preview}>
-                      {openViewer ? "Preview" : "Close Preview"}
+                      {openViewer ? "Preview File" : "Close Preview"}
                     </span>
                   </span>
                 </Button>
               </div>
             </div>
+            <div className={styles.blueLine}></div>
           </div>
-          {!openViewer && (
-            <div className={styles.controlsContainer}>
-              <div className={styles.controlsBox}></div>
-              <div className={styles.pageControls}>
-                <button
-                  className={styles.buttonPageLeft}
-                  onClick={goToPrevPage}
-                  disabled={pageNum <= 1}
-                >
-                  <Arrowleft />
-                </button>
+        </div>
+        {!openViewer && (
+          <div className={styles.controlsContainer}>
+            <div className={styles.controlsPanel}>
+              <div className={styles.controlsBox}>
+                <div className={styles.pageControls}>
+                  <button
+                    className={styles.buttonPage}
+                    onClick={goToPrevPage}
+                    disabled={pageNum <= 1}
+                  >
+                    <ArrLeft />
+                  </button>
 
-                <button
-                  className={styles.buttonPageRight}
-                  onClick={goToNextPage}
-                  disabled={pageNum >= totalPages}
-                >
-                  <Arrowleft />
-                </button>
-                <span>
-                  Page {pageNum} of {totalPages}
-                </span>
-              </div>
-
-              <div className={styles.pdfContainer}>
-                {/* {console.log("pdf-doc---", pdfDoc)} */}
-                <canvas ref={canvasRef} />
-              </div>
-              <div className={styles.zoomControls}>
-                <button onClick={zoomOut}>Zoom Out</button>
-                <span>{Math.round(scale * 100)}%</span>
-                <button onClick={zoomIn}>Zoom In</button>
-              </div>
-
-              <div className={styles.rotationControls}>
-                <button onClick={rotateCounterClockwise}>Rotate Left</button>
-                <button onClick={rotateClockwise}>Rotate Right</button>
-              </div>
-              <div className={styles.container}>
-                <Button>hello</Button>
+                  <button
+                    className={styles.buttonPage}
+                    onClick={goToNextPage}
+                    disabled={pageNum >= totalPages}
+                  >
+                    <ArrRight />
+                  </button>
+                </div>
+                {pageNum}
+                &nbsp;&nbsp; / &nbsp;&nbsp;{totalPages}
+                <span
+                  style={{
+                    width: "1px",
+                    height: "30px",
+                    backgroundColor: "#aaa",
+                    margin: "0 6px",
+                  }}
+                />
+                <div className={styles.rotationControls}>
+                  <button onClick={rotateCounterClockwise}>
+                    <Arrowright />
+                  </button>
+                  <button onClick={rotateClockwise}>
+                    <Arrowleft />
+                  </button>
+                </div>
               </div>
             </div>
-          )}
-          <div className={styles.blockWrapper}>
+
+            <div className={styles.pdfContainer}>
+              {/* {console.log("pdf-doc---", pdfDoc)} */}
+              <canvas ref={canvasRef} />
+            </div>
+          </div>
+        )}
+        <div className={styles.blockWrapper}>
+          <div className={styles.blockLargeContainer}>
             <h2>Document Type</h2>
-            <p>What kind of document is this?</p>
-            <div className={styles.blockContainer2}>
+            <p>Select the type that best matches your document</p>
+            <div className={styles.typeBlockSmallContainer}>
               {documentTypes.map((item, index) => (
                 <div
                   key={index}
@@ -409,106 +535,136 @@ export default function ViewerPage() {
                     activeIndexType === index ? styles.active : ""
                   }`}
                 >
-                  <div>
-                    <div className={styles.chooseButton}>{item}</div>
-                  </div>
+                  {/* <div> */}
+                  <h6>{item.emoji}</h6>
+                  <div>{item.title}</div>
+                  <p>{item.par}</p>
                 </div>
+                // </div>
               ))}
             </div>
           </div>
-          <div className={styles.blockWrapper}>
-            <h2>Tone & Style</h2>
-            <p>Choose a tone or a style for the Summary</p>
-            <div className={styles.blockContainer3}>
+        </div>
+        <div className={styles.blockWrapper}>
+          <div className={styles.blockLargeContainer}>
+            <h2>Summary Style</h2>
+            <p>Choose the tone and writing style for your summary</p>
+            <div className={styles.toneBlockSmallContainer}>
               {documentTones.map((item, index) => (
                 <div
                   key={index}
                   onClick={() => setActiveIndexTone(index)}
-                  className={`${styles.chooseButtonContainer} ${
+                  className={`${styles.chooseButtonToneContainer} ${
                     activeIndexTone === index ? styles.active : ""
                   }`}
                 >
-                  <div>
-                    <div className={styles.chooseButton}>{item}</div>
-                  </div>
+                  <div className={styles.chooseButton}>{item}</div>
                 </div>
               ))}
             </div>
-          </div>
-          <div className={styles.blockWrapper}>
-            <h2>Size & Depth</h2>
-            <p>How deep do you want your summary to go?</p>
-            <div className={styles.blockContainer3}>
-              {documentSize.map((item, index) => (
-                <div
-                  key={index}
-                  onClick={() => setActiveIndexSize(index)}
-                  className={`${styles.chooseButtonContainer} ${
-                    activeIndexSize === index ? styles.active : ""
-                  }`}
-                >
-                  <div>
-                    <div className={styles.chooseButton}>{item}</div>
-                  </div>
-                </div>
-              ))}
-              <div className={styles.sliderRange}>
-                <SliderRange
-                  min={300}
-                  max={2000}
-                  thumbWidth={20}
-                  step={20}
-                  value={value}
-                  setValue={setValue}
-                  initial={500}
-                />
-              </div>
-            </div>
-          </div>
-          <div className={styles.blockWrapper}>
-            <h2>Additional Notes</h2>
-            <p>Any additional details you whould like the AI to focus on</p>
-            <div
-              className={`${styles.blockContainer} ${styles.blockContainer4}`}
-            >
-              <input
-                type="text"
-                value={inputAdditional}
-                className={styles.inputAdditional}
-                onChange={(e) => setInputAdditional(e.target.value)}
-                placeholder="E.g. “Focus on marketing trends” or “Skip boilerplate intros”"
-              />
-            </div>
-          </div>
-          <button onClick={() => setShowPopup(true)}>Open Popup</button>
-          {showPopup && (
-            <Popup
-              // onChoice={(choice) => handleChoice(choice)}
-              onCancel={() => setShowPopup(false)}
-              option1={() => router.push("/pages/register")}
-              option2={() => router.push("/pages/login")}
-            />
-          )}
-          <div
-            onClick={sendFile}
-            // className={`${styles.chooseButtonContainer} ${styles.activeRed}`}
-          >
-            <button className={styles.button}>Generate Summary!</button>
           </div>
         </div>
-        <div className={styles.summaryContainer}>
-          {choices &&
-            choices.map((choice) => {
+        <div className={styles.blockWrapper}>
+          <div className={styles.blockLargeContainer}>
+            <h2>Summary Size & Depth</h2>
+            <p>Adjust the length and detail level of your summary</p>
+            {/* {documentSize.map((item, index) => (
+              <div
+                key={index}
+                onClick={() => setActiveIndexSize(index)}
+                className={`${styles.chooseButtonContainer} ${
+                  activeIndexSize === index ? styles.active : ""
+                }`}
+              >
+                <div>
+                  <div className={styles.chooseButton}>{item}</div>
+                </div>
+              </div>
+            ))} */}
+            <div className={styles.sliderRange}>
+              <SliderRange
+                min={300}
+                max={1300}
+                thumbWidth={20}
+                step={1}
+                value={value}
+                setValue={setValue}
+                initial={800}
+              />
+            </div>
+            <div className={styles.estimatedBox}>
+              <span
+                style={{
+                  fontSize: "20px",
+                  color: "#3C83F6",
+                  fontWeight: "bold",
+                }}
+              >
+                ⓘ <span style={{ color: "white" }}>&nbsp;Estimated Length</span>
+              </span>
+              <span
+                style={{
+                  fontSize: "24px",
+                  color: "#3C83F6",
+                  fontWeight: "bold",
+                }}
+              >
+                ~&nbsp;{Math.round(value / 100) * 100}&nbsp;
+                <span
+                  style={{
+                    fontSize: "16px",
+
+                    fontWeight: "normal",
+                  }}
+                >
+                  words
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className={styles.blockWrapper}>
+          <h2>Additional Notes</h2>
+          <p>Any additional details you whould like the AI to focus on</p>
+          <div className={`${styles.blockContainer} ${styles.blockContainer4}`}>
+            <input
+              type="text"
+              value={inputAdditional}
+              className={styles.inputAdditional}
+              onChange={(e) => setInputAdditional(e.target.value)}
+              placeholder="E.g. “Focus on marketing trends” or “Skip boilerplate intros”"
+            />
+          </div>
+        </div>
+        <button onClick={() => setShowPopup(true)}>Open Popup</button>
+        {showPopup && (
+          <Popup
+            // onChoice={(choice) => handleChoice(choice)}
+            onCancel={() => setShowPopup(false)}
+            option1={() => router.push("/pages/register")}
+            option2={() => router.push("/pages/login")}
+          />
+        )}
+        <div
+          onClick={sendFile}
+          // className={`${styles.chooseButtonContainer} ${styles.activeRed}`}
+        >
+          <button className={styles.button}>Generate Summary!</button>
+        </div>
+      </div>
+      {/* <div className={styles.summaryContainer}>
+          {choices.length > 0 &&
+            choices.map((choice, index) => {
+              const content = choice?.message?.content || "";
               return (
                 // <div className="markdown">
-                <div className="markdown" key={choice.index}>
-                  {/* <ReactMarkdown>{choices}</ReactMarkdown> */}
-                  <ReactMarkdown>{choice.message.content}</ReactMarkdown>
+                <div className="markdown" key={index}>
+                  // <ReactMarkdown>{choices}</ReactMarkdown> 
+                  <ReactMarkdown>{content}</ReactMarkdown>
                 </div>
               );
             })}
-        </div>
-      </div>
+        </div> */}
     </div>
   );
 }

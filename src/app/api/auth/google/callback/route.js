@@ -109,7 +109,7 @@ export async function GET(req) {
     // );
     // set cookies
     const res = NextResponse.redirect(
-      new URL("/pages/test", process.env.API_URL)
+      new URL("/api/auth/login/success", process.env.API_URL)
     );
     // const res = NextResponse.json({ success: true, userInfo });
     // access token as non-httpOnly cookie so client JS can read and hydrate Redux

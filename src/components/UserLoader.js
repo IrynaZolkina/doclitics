@@ -26,7 +26,7 @@ export default function UserLoader({ children }) {
         const result = await res.json();
 
         if (!result.success) {
-          console.error(result.error.message);
+          //console.error(result.error.message);
           // optional toast, depends if you want UX feedback on failed auth
           // toastSuperFunction(result.error.message, "error");
           //toastSuperFunction(result.error.message, "error");

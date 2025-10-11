@@ -8,10 +8,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 
 import DocliticLogo from "@/components-ui/svg-components/DocliticLogo";
-import { setUserLogout } from "@/redux/store";
+import { setUserLogin, setUserLogout } from "@/redux/store";
 import { apiFetch } from "@/utils/apiFetch";
 import Doclitic2 from "@/components-ui/svg-components/Doclitic2";
 import UserLoader from "./UserLoader";
+import { useEffect } from "react";
+import { toastSuperFunctionJS } from "@/components-ui/toastSuperFunctionJS";
 
 const Header = () => {
   const router = useRouter();
@@ -19,6 +21,47 @@ const Header = () => {
 
   const username = useSelector((state) => state.userNameSlice.username);
   const picture = useSelector((state) => state.userNameSlice.picture);
+  console.log("username in header:", username);
+  console.log("picture in header:", picture);
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      // Call protected route; credentials include HttpOnly cookie automatically
+      try {
+        const res = await apiFetch("/api/auth/me", {
+          method: "GET",
+          credentials: "include",
+        });
+        // apiFetch may return undefined if refresh failed
+        if (!res) return;
+        console.log("UserLoader /api/auth/me response: ", res);
+        // const data = await res.json();
+        const result = await res.json();
+        console.log("User: ", result.data);
+        if (!result.success) {
+          //console.error(result.error.message);
+          // optional toast, depends if you want UX feedback on failed auth
+          // toastSuperFunction(result.error.message, "error");
+          //toastSuperFunction(result.error.message, "error");
+          return;
+        }
+        const { user } = result.data;
+
+        dispatch(
+          setUserLogin({
+            username: user.username,
+            email: user.email,
+            userCategory: user.category,
+            picture: user.picture || "",
+          })
+        );
+      } catch (err) {
+        toastSuperFunctionJS("Failed to fetch user:" + err);
+        //console.error("÷Failed to fetch user:", err);
+      }
+    };
+
+    fetchCurrentUser();
+  }, [dispatch]);
 
   async function uLogout() {
     // const dispatch = useDispatch();
@@ -30,10 +73,7 @@ const Header = () => {
         method: "POST",
         credentials: "include",
       });
-      await fetch("/api/auth/logout1", {
-        method: "POST",
-        credentials: "include",
-      });
+
       // Clear Redux user state
       dispatch(setUserLogout());
 
@@ -74,7 +114,7 @@ const Header = () => {
       ) : (
         <p className={styles.initials}>{"ANDREW".slice(0, 2)}</p>
       )} */}
-      <UserLoader />
+      {/* <UserLoader /> */}
       <div className={styles.headerContainer}>
         <div className={styles.container}>
           <div className={styles.flexContainer}>

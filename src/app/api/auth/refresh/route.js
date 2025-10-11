@@ -6,8 +6,9 @@ import {
   signRefreshToken,
 } from "@/lib/jwt";
 import { getRefreshTokensCollection } from "@/lib/mongodb";
-import { errorResponse } from "@/utils/apiFetch";
+
 import { hashTokenSha256 } from "@/utils/tokens";
+import { errorResponse } from "@/utils/errorHandler";
 
 // Load from env with defaults
 const ACCESS_TOKEN_MINUTES = parseInt(
@@ -26,6 +27,16 @@ const refreshTokenCookieMaxAge = REFRESH_TOKEN_DAYS * 24 * 60 * 60; // in second
 
 export async function POST(req) {
   const refreshToken = req.cookies.get("refreshToken")?.value;
+
+  const csrfHeader = req.headers.get("x-csrf-token");
+  const csrfCookie = req.cookies.get("csrfToken")?.value;
+
+  console.log("csrfHeader----", csrfHeader, "csrfCookie----", csrfCookie);
+
+  // CSRF check
+  if (!csrfHeader || csrfHeader !== csrfCookie)
+    return errorResponse("CSRF_MISMATCH", "CSRF mismatch. Not authorized", 403);
+
   console.log("Refresh token:------------ ", refreshToken);
   if (!refreshToken) {
     return errorResponse("NO_TOKEN", "No refresh token", 401);
@@ -61,9 +72,14 @@ export async function POST(req) {
       //   "Refresh token reuse detected for user: " + payload.email,
       //   401
       // );
-      const res = NextResponse.json(
-        { error: "Token reuse detected. Logged out." },
-        { status: 401 }
+      // const res = NextResponse.json(
+      //   { error: "Token reuse detected. Logged out." },
+      //   { status: 401 }
+      // );
+      const res = errorResponse(
+        "TOKEN_REUSE",
+        "Token reuse detected. Logged out.",
+        401
       );
       res.cookies.set("accessToken", "", { maxAge: 0, path: "/" });
       res.cookies.set("refreshToken", "", { maxAge: 0, path: "/" });
@@ -77,10 +93,11 @@ export async function POST(req) {
     const noww = Date.now();
     if (tokenDoc.expiresAt && noww > new Date(tokenDoc.expiresAt).getTime()) {
       await tokensCollection.deleteOne({ _id: tokenDoc._id });
-      return NextResponse.json(
-        { error: "Refresh token expired" },
-        { status: 401 }
-      );
+      return errorResponse("TOKEN_EXPIRED", "Refresh token expired", 401);
+      // return NextResponse.json(
+      //   { error: "Refresh token expired" },
+      //   { status: 401 }
+      // );
     }
 
     const newAccessToken = signAccessToken({
@@ -170,7 +187,12 @@ export async function POST(req) {
     //   },
     //   { upsert: true }
     // );
-    const res = NextResponse.json({ message: "Tokens refreshed" });
+    //  return NextResponse.json(
+    //   { success: true, data: { user } },
+    //   { status: 200 }
+    // );
+    // const res = NextResponse.json({ message: "Tokens refreshed" });
+    const res = NextResponse.json({ success: true }, { status: 200 });
     res.cookies.set("accessToken", newAccessToken, {
       httpOnly: true,
       secure: true,
@@ -194,6 +216,7 @@ export async function POST(req) {
 
     return res;
   } catch (err) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return errorResponse("UNAUTHORIZED", "Unauthorized", 401);
+    // return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 }

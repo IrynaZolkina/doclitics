@@ -1,32 +1,55 @@
 "use client";
 
 import Popup from "./Popup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./Popup.module.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import Link from "next/link";
+import IndeterminateProgressBar from "@/components-ui/IndeterminateProgressBar";
+import { clearSummary } from "@/redux/store";
 
-export default function Home() {
-  const [popup, setPopup] = useState(null);
+export default function Test() {
+  const router = useRouter();
+  const [redirecting, setRedirecting] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const showPopup = () => {
-    const newPopup = {
-      id: Date.now(),
-      message: "This popup will disappear in 10s",
-    };
-    setPopup(newPopup);
+  const choices = useSelector((state) => state.summary.choices);
 
-    setTimeout(() => {
-      setPopup(null); // remove popup after 10 seconds
-    }, 5000);
-  };
+  // Clear summary once when component mounts
+  useEffect(() => {
+    dispatch(clearSummary());
+  }, [dispatch]);
+
+  // Update loading state whenever choices change
+  useEffect(() => {
+    if (!choices || choices.length === 0) {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
+  }, [choices]);
+
+  if (!choices || choices.length === 0) {
+    return (
+      <div>
+        <p style={{ marginTop: "150px", textAlign: "center" }}>
+          <IndeterminateProgressBar isLoading={isLoading} />
+        </p>
+        <Link href="/pages/viewer">Back to Viewer</Link>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ marginTop: "200px" }}>
-      <h1>Popup Example</h1>
-      <button onClick={showPopup}>Show Popup</button>
-
-      {popup && <div className={styles.popup}>{popup.message}</div>}
+    <div className={styles.summaryPage}>
+      <h1>Your AI Summary</h1>
+      {choices.map((choice, index) => (
+        <ReactMarkdown key={index}>{choice.message.content}</ReactMarkdown>
+      ))}
+      <Link href="/pages/viewer">Back to Viewer</Link>
     </div>
   );
 }
