@@ -126,9 +126,9 @@ const Header = () => {
                 LOGOUT
               </button>
               {/* <Image src="Group 1.svg" alt="Logo" width={40} height={40} /> */}
-              <button className={styles.stest} onClick={getSummary}>
+              {/* <button className={styles.stest} onClick={getSummary}>
                 SUMMARY
-              </button>
+              </button> */}
               <Link href="/" className={styles.logoBox}>
                 <Doclitic2 width={30} height={30} />
                 {/* <Image src="Rectangle.svg" width={30} height={30} alt="Logo" /> */}

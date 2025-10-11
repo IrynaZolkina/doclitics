@@ -30,14 +30,14 @@ export default function SliderRange({
   return (
     <div className={styles.sliderContainer}>
       <div className={styles.sliderWrapper}>
-        <div
+        {/* <div
           className={styles.valueLabel}
           style={{
             left: `calc(${percent}% )`,
           }}
         >
           {value} Words
-        </div>
+        </div> */}
         <input
           ref={sliderRef}
           type="range"

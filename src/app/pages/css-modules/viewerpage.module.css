@@ -116,7 +116,7 @@
   padding-bottom: 20px;
 }
 
-.viewerPageContainer h1 {
+.viewerPageContainer > h1 {
   margin: 0px 0 0 0;
   padding: 110px 200px 0px 200px;
   font-size: 49px;

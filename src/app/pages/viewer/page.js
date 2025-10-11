@@ -34,7 +34,6 @@ import { Spinnaker } from "next/font/google";
 import Arrowright from "./Arrowright";
 import ArrRight from "./ArrRight";
 import ArrLeft from "./ArrLeft";
-import Estimate from "./Estimate";
 
 export default function ViewerPage() {
   const [pageUrl, setPageUrl] = useState(null);
@@ -404,8 +403,8 @@ export default function ViewerPage() {
       {/* <p>
         to see how summaries are customized — when you are ready to generate
         your first one,
-      </p>
-      <p>simply create a free account to unlock the magic.</p> */}
+        </p>
+        <p>simply create a free account to unlock the magic.</p> */}
 
       <div className={styles.pageContainer}>
         <div className={styles.blockWrapper}>
@@ -570,17 +569,17 @@ export default function ViewerPage() {
             <p>Adjust the length and detail level of your summary</p>
             {/* {documentSize.map((item, index) => (
               <div
-                key={index}
-                onClick={() => setActiveIndexSize(index)}
-                className={`${styles.chooseButtonContainer} ${
-                  activeIndexSize === index ? styles.active : ""
+              key={index}
+              onClick={() => setActiveIndexSize(index)}
+              className={`${styles.chooseButtonContainer} ${
+                activeIndexSize === index ? styles.active : ""
                 }`}
-              >
+                >
                 <div>
-                  <div className={styles.chooseButton}>{item}</div>
+                <div className={styles.chooseButton}>{item}</div>
                 </div>
-              </div>
-            ))} */}
+                </div>
+                ))} */}
             <div className={styles.sliderRange}>
               <SliderRange
                 min={300}
@@ -636,7 +635,7 @@ export default function ViewerPage() {
             />
           </div>
         </div>
-        <button onClick={() => setShowPopup(true)}>Open Popup</button>
+        {/* <button onClick={() => setShowPopup(true)}>Open Popup</button> */}
         {showPopup && (
           <Popup
             // onChoice={(choice) => handleChoice(choice)}
@@ -654,17 +653,17 @@ export default function ViewerPage() {
       </div>
       {/* <div className={styles.summaryContainer}>
           {choices.length > 0 &&
-            choices.map((choice, index) => {
-              const content = choice?.message?.content || "";
-              return (
-                // <div className="markdown">
-                <div className="markdown" key={index}>
-                  // <ReactMarkdown>{choices}</ReactMarkdown> 
-                  <ReactMarkdown>{content}</ReactMarkdown>
-                </div>
+          choices.map((choice, index) => {
+            const content = choice?.message?.content || "";
+            return (
+              // <div className="markdown">
+              <div className="markdown" key={index}>
+              // <ReactMarkdown>{choices}</ReactMarkdown> 
+              <ReactMarkdown>{content}</ReactMarkdown>
+              </div>
               );
-            })}
-        </div> */}
+              })}
+              </div> */}
     </div>
   );
 }
