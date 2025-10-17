@@ -34,7 +34,7 @@ import { Spinnaker } from "next/font/google";
 import Arrowright from "./Arrowright";
 import ArrRight from "./ArrRight";
 import ArrLeft from "./ArrLeft";
-import FourStar from "./fourStar";
+import FourStar from "./FourStar";
 
 export default function ViewerPage() {
   const [pageUrl, setPageUrl] = useState(null);
