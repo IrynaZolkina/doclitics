@@ -5,6 +5,9 @@
   /* background: rgba(28, 39, 64, 0.2); */
   padding-top: 80px;
   height: 590px;
+  width: 100vw;
+  position: relative;
+  z-index: 10;
 }
 .box {
   width: 1392px;

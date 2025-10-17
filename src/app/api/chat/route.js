@@ -59,6 +59,7 @@ export async function POST(request) {
     // );
     const response = completion.choices[0]?.message?.content || "";
     console.log("response-----", response);
+    // return NextResponse.json(completion);
     return NextResponse.json(response);
   } catch (err) {
     // console.log("err-----", err);

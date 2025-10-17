@@ -34,6 +34,7 @@ import { Spinnaker } from "next/font/google";
 import Arrowright from "./Arrowright";
 import ArrRight from "./ArrRight";
 import ArrLeft from "./ArrLeft";
+import FourStar from "./fourStar";
 
 export default function ViewerPage() {
   const [pageUrl, setPageUrl] = useState(null);
@@ -450,24 +451,20 @@ export default function ViewerPage() {
                 </div>
               </div>
               <div>
-                <Button
+                <button
+                  className={styles.buttonPdfViewer}
                   onClick={() => {
                     setOpenViewer(!openViewer);
                     // filePreposition();
                   }}
-                  bg={"rgba(60, 131, 246, 0.05)"}
-                  borderColor={"rgba(85, 147, 247, 0.3)"}
-                  height={"36px"}
-                  width={"136px"}
-                  radius={"13px"}
                 >
                   <span className={styles.buttonInside}>
                     {openViewer ? <Eye1 /> : <EyeOff1 />}
                     <span className={styles.preview}>
-                      {openViewer ? "Preview File" : "Close Preview"}
-                    </span>
+                      {openViewer ? "Preview File " : "Close Preview"}
+                    </span>{" "}
                   </span>
-                </Button>
+                </button>
               </div>
             </div>
             <div className={styles.blueLine}></div>
@@ -591,6 +588,17 @@ export default function ViewerPage() {
                 initial={800}
               />
             </div>
+            <div className={styles.smallMediumLargeBox}>
+              <span>Small</span>
+              <span
+                style={{
+                  color: "#3C83F6",
+                }}
+              >
+                Medium
+              </span>
+              <span>Large</span>
+            </div>
             <div className={styles.estimatedBox}>
               <span
                 style={{
@@ -623,16 +631,27 @@ export default function ViewerPage() {
           </div>
         </div>
         <div className={styles.blockWrapper}>
-          <h2>Additional Notes</h2>
-          <p>Any additional details you whould like the AI to focus on</p>
-          <div className={`${styles.blockContainer} ${styles.blockContainer4}`}>
-            <input
-              type="text"
-              value={inputAdditional}
-              className={styles.inputAdditional}
-              onChange={(e) => setInputAdditional(e.target.value)}
-              placeholder="E.g. “Focus on marketing trends” or “Skip boilerplate intros”"
-            />
+          <div className={styles.blockLargeContainer}>
+            <h2>Additional Instructions</h2>
+            <p>Add any specific requirements or focus areas for your summary</p>
+            <div
+              className={`${styles.blockContainer} ${styles.blockContainer4}`}
+            >
+              <input
+                type="text"
+                value={inputAdditional}
+                className={styles.inputAdditional}
+                onChange={(e) => setInputAdditional(e.target.value)}
+                placeholder="E.g. focus on key metrics, skip introductions, highlight action items..."
+              />
+            </div>
+            <p
+              style={{
+                fontSize: "11.6px",
+              }}
+            >
+              Optional, but helps improve accuracy
+            </p>
           </div>
         </div>
         {/* <button onClick={() => setShowPopup(true)}>Open Popup</button> */}
@@ -644,26 +663,28 @@ export default function ViewerPage() {
             option2={() => router.push("/pages/login")}
           />
         )}
+      </div>
+      <div className={styles.smallFooter}>
         <div
-          onClick={sendFile}
+          className={styles.smallFooterButtons}
+
           // className={`${styles.chooseButtonContainer} ${styles.activeRed}`}
         >
-          <button className={styles.button}>Generate Summary!</button>
+          <div className={styles.buttonAndText}>
+            <div className={styles.buttonTokenCost}>
+              Token Cost
+              <div className={styles.tokenCostNumber}>12</div>
+            </div>
+            {/* <div> */}
+            <FourStar /> Your tokens will be deducted only after the summary is
+            generated
+            {/* </div> */}
+          </div>
+          <button onClick={sendFile} className={styles.buttonGenerateSummary}>
+            <FourStar /> Generate Summary!
+          </button>
         </div>
       </div>
-      {/* <div className={styles.summaryContainer}>
-          {choices.length > 0 &&
-          choices.map((choice, index) => {
-            const content = choice?.message?.content || "";
-            return (
-              // <div className="markdown">
-              <div className="markdown" key={index}>
-              // <ReactMarkdown>{choices}</ReactMarkdown> 
-              <ReactMarkdown>{content}</ReactMarkdown>
-              </div>
-              );
-              })}
-              </div> */}
     </div>
   );
 }

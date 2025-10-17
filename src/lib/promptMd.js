@@ -17,7 +17,8 @@ Return your response in the following format:
 
 ---
 
-##📘 Report Summary: Insert Report Title
+## 📘 Report Summary: 
+Insert Report Title
 
 ## 🔹 Executive Summary  
 Summarize the report in **3–5 high-impact sentences**. Convey the strategic goal, key findings, and overall tone or implications.
@@ -31,7 +32,7 @@ Bullet-style list of the **most important insights**. Prioritize metrics, outcom
 ## 📈 Data Highlights  
 Provide **notable statistics, KPIs, or financials** mentioned in the report. Use bullet format or short data tables.
 
-## ⚠️ Risks or Challenges  
+## 📈 Risks or Challenges  
 Clearly list any risks, weaknesses, or critical concerns raised. Use bold or italics for high-priority items.
 
 ## ✅ Strategic Recommendations  
@@ -106,7 +107,7 @@ Provide a concise overview of supporting data:
 - Major evidence supporting conclusions.
     
 
-⚠️ **Limitations & Challenges**  
+📈 **Limitations & Challenges**  
 List the acknowledged weaknesses, constraints, or risks in the study. Use bold or italics for particularly important ones.
 
 ✅ **Implications & Applications**  
@@ -173,7 +174,7 @@ List the central purpose or themes (e.g., love, alienation, identity, mortality,
 🌟 **Characters / Central Figures**  
 List main characters or key figures (if non-fiction/essay, note central concepts or thinkers). Provide 1–2 sentences about their role or significance.
 
-🎨 **Literary Style & Devices**  
+😄 **Literary Style & Devices**  
 Analyze important stylistic choices:
 
 - Use of imagery, symbolism, metaphor.
@@ -183,7 +184,7 @@ Analyze important stylistic choices:
 - How these devices shape meaning or emotional impact.
     
 
-⚠️ **Conflicts & Tensions**  
+😄 **Conflicts & Tensions**  
 Clearly state the main conflicts, tensions, or philosophical questions driving the text.
 
 ✅ **Interpretation & Takeaways**  
@@ -251,7 +252,7 @@ Bullet-style list of the candidate’s top skills.
 - Phrase them as professional strengths.
     
 
-💼 **Work Experience Highlights**  
+😄 **Work Experience Highlights**  
 Summarize main roles and achievements:
 
 - List companies, roles, and timeframes.

@@ -1,9 +1,103 @@
+.pageWrapper {
+  padding-top: 150px;
+  background: rgba(13, 17, 23, 1);
+  /* display: flex;
+  flex-direction: column; */
+  /* align-items: center; */
+  width: 100vw;
+  /* font-family: var(--font-manrope); */
+  font-family: var(--font-manrope);
+}
+.pageWrapper > h1 {
+  margin-left: 2.5%;
+  margin-bottom: 40px;
+  /* color: linear-gradient(92.68deg, #3c83f6 0%, #70a5f5 100%); */
+  color: rgba(83, 146, 245);
+  letter-spacing: -1.5px;
+  border-bottom: 1px solid rgba(33, 44, 59, 0.5);
+}
+
+.blurCircle {
+  position: fixed;
+  top: 500px;
+  left: 150px;
+
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 1);
+  filter: blur(170px);
+  z-index: 1;
+}
+.infoBox {
+  width: 430px;
+  height: 370px;
+
+  position: sticky;
+  top: 70px; /* when it hits top, stays fixed there */
+  left: 50%;
+  background: rgba(15, 19, 26, 1);
+  border: 1px solid rgba(60, 131, 246, 0.2);
+  padding: 10px;
+  border-radius: 12px;
+}
+.infoBox div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.2px;
+  border-bottom: 1px solid rgba(33, 44, 59, 0.3);
+}
+.infoBox div:nth-child(1) span:nth-child(2) {
+  color: rgba(83, 146, 245);
+  font-weight: bold;
+}
+.infoBox div:nth-child(2) {
+  font-family: var(--font-geist-mono), sans-serif;
+}
+.infoBox div:nth-child(3) {
+  font-family: var(--font-roboto), sans-serif;
+}
+.infoBox div:nth-child(4) {
+  font-family: var(--font-inter), sans-serif;
+}
+
+.infoBox div:nth-child(5) {
+  border: none;
+}
 .summaryContainer {
-  width: 60%;
+  width: 95%;
   /* height: 290vh; */
-  margin: 0 auto;
+  margin: 0px auto;
   color: white;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
 }
 .summaryContainer li {
   margin-bottom: 10px;
+}
+.container {
+  /* Make the page tall so we can scroll */
+  min-height: 240vh;
+  margin: 0;
+  padding: 0;
+  /* font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", */
+  /* Arial; */
+}
+
+/* the sticky bar */
+.stickyBar {
+  position: sticky; /* important */
+  top: 0; /* important: offset where it sticks */
+  z-index: 50; /* ensure it's on top */
+  background: #3c83f6;
+  color: white;
+  padding: 14px 18px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* filler content so page is scrollable */
+.content {
+  padding: 24px;
 }

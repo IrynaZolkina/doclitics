@@ -12,6 +12,7 @@
     "@reduxjs/toolkit": "^2.8.2",
     "bcrypt": "^6.0.0",
     "canvas": "^3.2.0",
+    "emoji-regex": "^10.6.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.19.0",
     "multer": "^2.0.2",
