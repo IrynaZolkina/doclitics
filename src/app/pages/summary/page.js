@@ -11,7 +11,7 @@ import { clearSummary } from "@/redux/store";
 // import remarkGfm from "remark-gfm";
 import emojiRegex from "emoji-regex";
 import MarkdownRenderer from "./MarkdownRenderer";
-import html2pdf from "html2pdf.js";
+// import html2pdf from "html2pdf.js";
 
 // import { Smile, Star, Fire } from "./icons";
 
@@ -63,28 +63,6 @@ export default function Summary() {
     a.remove();
     URL.revokeObjectURL(url);
   }
-
-  const handleDownload = async () => {
-    const element = pdfRef.current;
-    if (!element) {
-      console.error("❌ PDF element not found");
-      return;
-    }
-
-    const options = {
-      margin: 0.5,
-      filename: "document.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-    };
-
-    try {
-      await html2pdf().set(options).from(element).save();
-    } catch (err) {
-      console.error("PDF export failed:", err);
-    }
-  };
 
   // // react-markdown component override for text nodes
   // const components = {
