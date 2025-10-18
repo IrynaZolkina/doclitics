@@ -11,6 +11,7 @@ import { clearSummary } from "@/redux/store";
 // import remarkGfm from "remark-gfm";
 import emojiRegex from "emoji-regex";
 import MarkdownRenderer from "./MarkdownRenderer";
+import html2pdf from "html2pdf.js";
 
 // import { Smile, Star, Fire } from "./icons";
 
@@ -18,6 +19,7 @@ export default function Summary() {
   const router = useRouter();
   const [redirecting, setRedirecting] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDownLoading, setIsDownLoading] = useState(false);
   const dispatch = useDispatch();
   const firstMount = useRef(true);
   const choices = useSelector((state) => state.summary.choices);
@@ -33,124 +35,55 @@ export default function Summary() {
       setIsLoading(false);
     }
   }, [choices]);
-  // Detect Back/Forward navigation
+  const pdfRef = useRef(null);
 
-  // Redirect to dashboard only if the page has finished loading and no choices
-  // useEffect(() => {
-  //   if (!isLoading && (!choices || choices.length === 0)) {
-  //     router.replace("/pages/dashboard"); // 👈 skip back to dashboard
-  //   }
-  // }, [choices, isLoading, router]);
+  async function downloadPdf(markdon, title = "fgfugfufuf") {
+    //     const markdown = `
+    // # Hello World 🎉
+    // This **Markdown** has some emojis, but they will be removed in PDF.
 
-  //  Optionally clear summary after unmount
-  // useEffect(() => {
-  //   if (!isLoading) {
-  //     return () => {
-  //       dispatch(clearSummary());
-  //     };
-  //   }
-  // }, [dispatch, isLoading]);
+    // - Item 1 ✅
+    // - Item 2 ⚠️
+    // `;
+    const markdown = choices;
+    const res = await fetch("/api/export-pdf", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ markdown, title }),
+    });
 
-  // --- Example custom icons (can be your SVG components)
-  // --- Replace these with your real SVG components
-  // const Smile = (props) => (
-  //   <span
-  //     {...props}
-  //     style={{ display: "inline-flex", verticalAlign: "middle" }}
-  //   >
-  //     😊
-  //   </span>
-  // );
-  // const Star = (props) => (
-  //   <span
-  //     {...props}
-  //     style={{ display: "inline-flex", verticalAlign: "middle" }}
-  //   >
-  //     ⭐
-  //   </span>
-  // );
-  // const Fire = (props) => (
-  //   <span
-  //     {...props}
-  //     style={{ display: "inline-flex", verticalAlign: "middle" }}
-  //   >
-  //     🔥
-  //   </span>
-  // );
-  const markdownContent = `
-# Hello 😃
-This is a paragraph with ❤️ and 😎 emojis.
+    if (!res.ok) return console.error("Failed to generate PDF");
 
-- List item 1   😃
-- List item 2  😃
-`;
-
-  function replaceEmojis(children) {
-    console.log("children:", children);
-    if (typeof children === "string") {
-      return children
-        .split(/([\u{1F300}-\u{1FAFF}])/u)
-        .map((part, i) =>
-          emojiMap[part] ? (
-            <span key={i}>{emojiMap[part]}</span>
-          ) : (
-            <span key={i}>{part}</span>
-          )
-        );
-    }
-
-    // If it's an array of children (React nodes)
-    if (Array.isArray(children)) {
-      return children.map((child, i) => {
-        if (typeof child === "string") {
-          return child
-            .split(/([\u{1F300}-\u{1FAFF}])/u)
-            .map((part, j) =>
-              emojiMap[part] ? (
-                <span key={`${i}-${j}`}>{emojiMap[part]}</span>
-              ) : (
-                <span key={`${i}-${j}`}>{part}</span>
-              )
-            );
-        }
-        return child;
-      });
-    }
-
-    // Otherwise (single React element), just return it
-    return children;
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${title}.pdf`;
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   }
 
-  // const replacements = [<Smile />, <Star />, <Fire />];
-  // Replace emojis in a string with React components (cycling)
-  const markdownText = `
-# Markdown Emoji Test
-
-Hey 😄 Welcome to the app 😎 Enjoy 🚀 and smile 🔥 again!  
-And again 😄🚀🔥 for good measure!
-`;
-
-  // Replace emojis in a single plain string with React components (cycled)
-  const renderTextWithSVG = (text) => {
-    if (typeof text !== "string") return text;
-
-    const regex = emojiRegex();
-    const parts = text.split(regex);
-    const emojis = [...text.matchAll(regex)];
-    const result = [];
-
-    let emojiIndex = 0;
-    for (let i = 0; i < parts.length; i++) {
-      result.push(parts[i]);
-      if (emojiIndex < emojis.length) {
-        const Component = replacements[emojiIndex % replacements.length];
-        result.push(
-          React.cloneElement(Component, { key: `emoji-${emojiIndex}` })
-        );
-        emojiIndex++;
-      }
+  const handleDownload = async () => {
+    const element = pdfRef.current;
+    if (!element) {
+      console.error("❌ PDF element not found");
+      return;
     }
-    return result;
+
+    const options = {
+      margin: 0.5,
+      filename: "document.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    };
+
+    try {
+      await html2pdf().set(options).from(element).save();
+    } catch (err) {
+      console.error("PDF export failed:", err);
+    }
   };
 
   // // react-markdown component override for text nodes
@@ -187,9 +120,33 @@ And again 😄🚀🔥 for good measure!
         ))} */}
 
       <h1>Your Summary is Ready 🚀</h1>
-
+      <button
+        // disabled={choices === ""}
+        onClick={downloadPdf}
+        // onClick={handleDownload}
+        style={{
+          background: "#0070f3",
+          color: "white",
+          border: "none",
+          borderRadius: "6px",
+          padding: "10px 20px",
+          cursor: "pointer",
+          marginBottom: "20px",
+        }}
+      >
+        Download PDF
+      </button>
       <div className={styles.summaryContainer}>
-        <div className="markdown">
+        <div
+          ref={pdfRef}
+          id="pdf-content"
+          // style={{
+          //   background: "white",
+          //   padding: "20px",
+          //   color: "black",
+          // }}
+          className="markdown"
+        >
           <MarkdownRenderer content={choices} />
         </div>
         <div className={styles.infoBox}>

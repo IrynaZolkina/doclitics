@@ -25,17 +25,18 @@
   width: 180px;
   height: 180px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 1);
+  background: #70a5f5;
   filter: blur(170px);
   z-index: 1;
 }
 .infoBox {
-  width: 430px;
   height: 370px;
-
+  width: 100%;
+  /* width: 25vw; */
+  /* width: 430px; */
   position: sticky;
   top: 70px; /* when it hits top, stays fixed there */
-  left: 50%;
+  /* left: 50%; */
   background: rgba(15, 19, 26, 1);
   border: 1px solid rgba(60, 131, 246, 0.2);
   padding: 10px;
@@ -100,4 +101,9 @@
 /* filler content so page is scrollable */
 .content {
   padding: 24px;
+}
+.downloding p,
+.downloding ol,
+.downloding ul {
+  background: white;
 }
