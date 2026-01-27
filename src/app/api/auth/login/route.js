@@ -8,12 +8,12 @@ import {
 } from "@/lib/mongodb/mongodb";
 import crypto from "crypto";
 import { hashTokenSha256 } from "@/utils/tokens";
-import { errorResponse } from "@/utils/apiFetch";
+import { errorResponse } from "@/utils/errorHandler";
 
 // Load from env with defaults
 const ACCESS_TOKEN_MINUTES = parseInt(
   process.env.ACCESS_TOKEN_MINUTES || "6",
-  10
+  10,
 );
 const REFRESH_TOKEN_DAYS = parseInt(process.env.REFRESH_TOKEN_DAYS || "20", 10);
 
@@ -37,7 +37,7 @@ export async function POST(req) {
     if (!user)
       return NextResponse.json(
         { error: "Invalid credentials" },
-        { status: 401 }
+        { status: 401 },
       );
     // 2. Check password (skip for Google OAuth users)
     if (user.googleId) {
@@ -47,7 +47,7 @@ export async function POST(req) {
           error:
             "This account was created with Google. Please log in using Google.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     } else {
       // Normal email/password login
@@ -55,7 +55,7 @@ export async function POST(req) {
       if (!isValid) {
         return NextResponse.json(
           { error: "Invalid email or password" },
-          { status: 401 }
+          { status: 401 },
         );
       }
     }

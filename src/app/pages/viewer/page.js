@@ -176,7 +176,7 @@ export default function ViewerPage() {
 
       await page.render(renderContext).promise;
     },
-    [pdfDoc, rotation] // dependencies
+    [pdfDoc, rotation], // dependencies
   );
 
   useEffect(() => {
@@ -233,7 +233,7 @@ export default function ViewerPage() {
         console.error("Error getting file from IndexedDB:", error);
       }
     })();
-  }, []);
+  }, [chosenFile, router]);
 
   const goToPrevPage = () => {
     if (pageNum > 1) {
@@ -300,7 +300,7 @@ export default function ViewerPage() {
           activeIndexType,
           activeIndexTone,
           value,
-        })
+        }),
       );
       setOpenPopupLogin(true);
       return;
@@ -360,7 +360,7 @@ export default function ViewerPage() {
         depth: WORDCOUNT,
         tone: TONE,
         // or actual base64 string if you generate it
-      })
+      }),
     );
     if (response) {
       const result = await response.json();

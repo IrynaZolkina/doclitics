@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { errorResponse } from "@/utils/apiFetch";
+import { errorResponse } from "@/utils/errorHandler";
 
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
 
@@ -21,7 +21,7 @@ export async function GET() {
   } catch {
     return NextResponse.json(
       { error: "Token invalid or expired" },
-      { status: 403 }
+      { status: 403 },
     );
   }
 }

@@ -80,7 +80,7 @@ const LoginPage = () => {
           username: data.user.username,
           email: data.user.email,
           picture: data.user.picture,
-        })
+        }),
       );
     } catch (err) {
       // console.log("err.message", err.message);
@@ -98,7 +98,7 @@ const LoginPage = () => {
     // }
   };
 
-  const logout = async () => {};
+  // const logout = async () => {};
 
   const handleGoogleLogin = () => {
     // Redirect to your backend route that sends user to Google
@@ -139,9 +139,9 @@ const LoginPage = () => {
         />
         <button className={styles.button}>Login</button>
       </form>
-      <button onClick={logout} className={styles.button}>
+      {/* <button onClick={logout} className={styles.button}>
         LogOUT
-      </button>
+      </button> */}
     </div>
   );
 };
