@@ -5,7 +5,7 @@ import {
   getPendingUserCollection,
   getRefreshTokensCollection,
   getVerificationCollection,
-} from "@/lib/mongodb";
+} from "@/lib/mongodb/mongodb";
 
 export async function GET(req) {
   const token = req.cookies.get("accessToken")?.value;

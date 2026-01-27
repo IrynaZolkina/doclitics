@@ -44,11 +44,14 @@ export async function deleteFileFromIndexedDB(key) {
     const request = tx.objectStore("files").delete(key);
 
     request.onsuccess = () => {
-      console.log(`✅ File with key ${key} deleted`);
+      console.log(`✅ File with key "${key}" deleted from Indexed DB`);
       resolve({ success: true });
     };
     request.onerror = () => {
-      console.error("❌ Failed to delete file:", request.error);
+      console.error(
+        `❌ Failed to delete file with key "${key}" from Indexed DB: `,
+        request.error
+      );
       resolve({ success: false, error: request.error });
     };
   });

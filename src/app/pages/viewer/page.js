@@ -35,6 +35,8 @@ import Arrowright from "./Arrowright";
 import ArrRight from "./ArrRight";
 import ArrLeft from "./ArrLeft";
 import FourStar from "./FourStar";
+import FlexibleButton from "@/components-ui/FlexibleButton";
+import TestButton from "@/components-ui/TestButton";
 
 export default function ViewerPage() {
   const [pageUrl, setPageUrl] = useState(null);
@@ -62,7 +64,6 @@ export default function ViewerPage() {
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [choices, setChoices] = useState([]);
-  // const [choices, setChoices] = useState([]);
 
   const [showPopup, setShowPopup] = useState(false);
   const [openPopupLogin, setOpenPopupLogin] = useState(false);
@@ -73,6 +74,7 @@ export default function ViewerPage() {
   const userName = useSelector((state) => state.userNameSlice.username);
   const router = useRouter();
   console.log("chosenFile---", chosenFile, typeof chosenFile, "*****");
+  const currentFileMeta = useSelector((state) => state.currentFileMeta);
 
   // console.log("fileName--", fileName);
   // console.log("fileType--", fileType);
@@ -680,9 +682,21 @@ export default function ViewerPage() {
             generated
             {/* </div> */}
           </div>
-          <button onClick={sendFile} className={styles.buttonGenerateSummary}>
+
+          <FlexibleButton
+            onClick={sendFile}
+            icon={<FourStar />}
+            fontSize={"18px"}
+            fontFamily="Manrope, sans-serif"
+            hoverBackground="#2A3F6A"
+            padding="7px 20px"
+          >
+            Generate Summary!
+          </FlexibleButton>
+
+          {/* <button onClick={sendFile} className={styles.buttonGenerateSummary}>
             <FourStar /> Generate Summary!
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

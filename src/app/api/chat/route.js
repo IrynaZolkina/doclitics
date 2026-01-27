@@ -27,7 +27,7 @@ export async function POST(request) {
     if (!payload) {
       return errorResponse(
         "INVALID_TOKEN",
-        "Access Token Invalid token. Not authorized",
+        "Access Token Invalid. Not authorized",
         401
       );
     }
@@ -38,15 +38,16 @@ export async function POST(request) {
     });
 
     const completion = await openai.chat.completions.create({
-      model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
+      // model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
+      model: "deepseek/deepseek-r1",
       messages: [
         { role: "system", content: params.prompt },
         { role: "user", content: params.content },
       ],
 
       temperature: 0,
-      max_tokens: 4096,
-      // max_tokens: 1024, //4096,
+      // max_tokens: 4096,
+      max_tokens: 1024, //4096,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
@@ -62,7 +63,7 @@ export async function POST(request) {
     // return NextResponse.json(completion);
     return NextResponse.json(response);
   } catch (err) {
-    // console.log("err-----", err);
+    console.log("err-----", err);
     return errorResponse(
       "INVALID_TOKEN",
       "Invalid token. Token verification failed" + err,

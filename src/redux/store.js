@@ -59,6 +59,16 @@ const fileSlice = createSlice({
     clearFileData: () => initialFileState, // reset correctly
   },
 });
+const currentFileMeta = createSlice({
+  name: "currentFileMeta",
+  initialState: initialFileState,
+  reducers: {
+    setCurrentFileMeta: (state, action) => {
+      return { ...state, ...action.payload }; // merge new data
+    },
+    clearCurrentFileMeta: () => initialFileState, // reset correctly
+  },
+});
 
 // User slice
 const userSlice = createSlice({
@@ -104,6 +114,8 @@ const userNameSlice = createSlice({
     useremail: "",
     userIsLoggedIn: false,
     userCategory: "",
+    picture: "",
+    userId: "",
   },
   reducers: {
     setUserLogin: (state, action) => {
@@ -112,6 +124,7 @@ const userNameSlice = createSlice({
       state.userIsLoggedIn = true;
       state.userCategory = action.payload.userCategory; //
       state.picture = action.payload.picture; //
+      state.userId = action.payload.userId; //
     },
     setUserLogout: (state) => {
       state.username = "";
@@ -119,6 +132,7 @@ const userNameSlice = createSlice({
       state.userIsLoggedIn = false;
       state.userCategory = "";
       state.picture = "";
+      state.userId = "";
     },
   },
 });
@@ -154,6 +168,8 @@ export const { setUser, clearUser, setLoading, setError } = authSlice.actions;
 export const { login, logout } = userSlice.actions;
 export const { addToast, removeToast } = toastSlice.actions;
 export const { setFileData, clearFileData } = fileSlice.actions;
+export const { setCurrentFileMeta, clearCurrentFileMeta } =
+  currentFileMeta.actions;
 export const { setUserLogin, setUserLogout } = userNameSlice.actions;
 export const { setLastPage } = pageSlice.actions;
 export const { setSummary, clearSummary } = summarySlice.actions;

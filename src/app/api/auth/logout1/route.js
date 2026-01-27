@@ -1,6 +1,8 @@
 // src/app/api/auth/logout/route.js
 import { NextResponse } from "next/server";
-import clientPromise, { getRefreshTokensCollection } from "@/lib/mongodb"; // your Mongo client
+import clientPromise, {
+  getRefreshTokensCollection,
+} from "@/lib/mongodb/mongodb"; // your Mongo client
 import { verifyRefreshToken } from "@/lib/jwt";
 import { verifyRefreshTokenHashed } from "@/utils/tokens";
 import { errorResponse } from "@/utils/apiFetch";

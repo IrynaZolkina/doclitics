@@ -1,4 +1,45 @@
 :root {
+  /* Primary */
+  --btn-primary-bg: linear-gradient(101deg, #3c83f6 0%, #70a5f5) 100%;
+  /* --button-blue-background: linear-gradient(
+    110.64deg,
+    #5593f7 0%,
+    #85b2f9 100%
+  ); */
+  --btn-primary-hover: #2a3f6a;
+  --btn-primary-color: white;
+  --btn-primary-color-blue: #3c83f6; /* because of gradient use in hover8*/
+  --btn-primary-border: #3c83f6;
+
+  /* Secondary */
+  --btn-secondary-bg: linear-gradient(101deg, #3c83f6 0%, #70a5f5) 100%;
+  --btn-secondary-hover: #2a3f6a;
+  --btn-secondary-color: #090d15;
+  --btn-secondary-border: #090d15;
+
+  /* TERTIARY */
+  --btn-tertiary-bg: none;
+  --btn-tertiary-hover: rgba(85, 147, 247, 1);
+  --btn-tertiary-color: var(--text-color-white);
+  --btn-tertiary-border: rgba(85, 147, 247, 0.3);
+
+  /* QUATERNARY */
+  --btn-quaternary-bg: #8e44ad;
+  --btn-quaternary-hover: #732d91;
+  --btn-quaternary-color: white;
+  --btn-quaternary-border: #8e44ad;
+
+  /* QUINARY */
+  --btn-quinary-bg: #2ecc71;
+  --btn-quinary-hover: #27ae60;
+  --btn-quinary-color: white;
+  --btn-quinary-border: #2ecc71;
+
+  /* DISABLED */
+  --btn-disabled-bg: #ccc;
+  --btn-disabled-color: #eee;
+  --btn-disabled-border: #aaa;
+
   /* input-section-module */
   --background-input-text: rgba(28, 36, 49, 1);
   --input-text-color: rgba(255, 255, 255, 0.6);
@@ -182,34 +223,6 @@ a {
   background-color: var(--gradient-hero);
 }
 
-.navButtonContainer {
-  position: fixed;
-  top: 20px;
-  /* left: 1200px; */
-  left: 80%;
-  background: var(--button-blue-background);
-  /* width: 96px;
-  height: 36px; */
-  border-radius: 14px;
-  color: var(--background-one);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 120;
-}
-.navButton {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  color: inherit;
-  font: inherit;
-  font-size: 13.02px;
-}
-.navButton:hover {
-  color: var(--text-color-white);
-}
-
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
@@ -258,8 +271,8 @@ a {
   color: rgb(139, 116, 0);
 }
 .markdown p,
-ol,
-ul {
+.markdown ol,
+.markdown ul {
   font-size: 14.6px;
   line-height: 26px;
   margin-bottom: 20px;

@@ -7,21 +7,26 @@ export function toastSuperFunctionJS(
   duration = 3000
 ) {
   // remove any existing toast
-  const existing = document.getElementById("toast-super-overlay");
-  if (existing) existing.remove();
+  // const existing = document.getElementById("toast-super-overlay");
+  // if (existing) existing.remove();
+  const FADE_DURATION = 1300;
 
+  document.getElementById("toast-super-overlay")?.remove();
+  document.getElementById("toast-super")?.remove();
   // overlay
   const overlay = document.createElement("div");
   overlay.id = "toast-super-overlay";
   overlay.style.position = "fixed";
-  overlay.style.top = "0";
-  overlay.style.left = "0";
-  overlay.style.width = "100vw";
-  overlay.style.height = "100vh";
+  //  overlay.style.top = "0";
+  //   overlay.style.left = "0";
+  //   overlay.style.width = "100vw";
+  //   overlay.style.height = "100vh" ;
+  overlay.style.inset = "0";
   overlay.style.background = "rgba(0,0,0,0.4)";
-  overlay.style.zIndex = "9998"; // just below toast box
   overlay.style.opacity = "0";
-  overlay.style.transition = "opacity 0.3s ease";
+  overlay.style.zIndex = "9998"; // just below toast box
+  // overlay.style.transition = "opacity 1.3s ease";
+  overlay.style.transition = `opacity ${FADE_DURATION}ms ease`;
 
   // toast box
   const toast = document.createElement("div");
@@ -30,16 +35,18 @@ export function toastSuperFunctionJS(
   toast.style.top = "50%";
   toast.style.left = "50%";
   toast.style.transform = "translate(-50%, -50%)";
+  toast.style.opacity = "0";
+  // toast.style.transition = "opacity 1.3s ease";
+  toast.style.transition = `opacity ${FADE_DURATION}ms ease`;
+  toast.style.zIndex = "9999";
+
   toast.style.padding = "16px 24px";
   toast.style.borderRadius = "12px";
   toast.style.color = "#fff";
-  toast.style.fontSize = "16px";
-  toast.style.maxWidth = "400px";
   toast.style.textAlign = "center";
+  toast.style.maxWidth = "400px";
+  toast.style.fontSize = "16px";
   toast.style.boxShadow = "0 8px 24px rgba(0,0,0,0.3)";
-  toast.style.opacity = "0";
-  toast.style.transition = "opacity 0.3s ease";
-  toast.style.zIndex = "9999";
 
   // background color per type
   toast.style.background =
@@ -53,6 +60,29 @@ export function toastSuperFunctionJS(
 
   toast.innerText = message;
 
+  // ✅ define close ONCE
+  const close = () => {
+    toast.style.opacity = "0";
+    overlay.style.opacity = "0";
+    setTimeout(() => {
+      overlay.remove();
+      toast.remove();
+    }, FADE_DURATION);
+  };
+
+  // // auto close after duration
+  // setTimeout(() => {
+  //   toast.style.opacity = "0";
+  //   overlay.style.opacity = "0";
+  //   setTimeout(() => {
+  //     overlay.remove();
+  //     toast.remove();
+  //   }, FADE_DURATION);
+  // }, duration);
+
+  // THEN attach handlers
+  overlay.onclick = () => close();
+  toast.onclick = (e) => e.stopPropagation();
   // add to DOM
   document.body.appendChild(overlay);
   document.body.appendChild(toast);
@@ -63,13 +93,6 @@ export function toastSuperFunctionJS(
     toast.style.opacity = "1";
   });
 
-  // auto close after duration
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    overlay.style.opacity = "0";
-    setTimeout(() => {
-      overlay.remove();
-      toast.remove();
-    }, 300);
-  }, duration);
+  // auto close
+  setTimeout(close, duration);
 }

@@ -1,71 +1,43 @@
-"use client";
-import Image from "next/image";
-import "./globals.css";
-// import styles from "./page.module.css";
+import ScrollAnimatedSection from "@/components-ui/ScrollAnimatedSection";
 
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-
-import { NavbarN } from "@/components/NavbarN";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import NavbarN from "@/components/homepage/NavbarN";
+import HeroSection from "@/components/homepage/HeroSection";
+import HowWorksSection from "@/components/homepage/HowWorksSection";
+import SupportSection from "@/components/homepage/SupportSection";
+import PrivateSection from "@/components/homepage/PrivateSection";
+import PriceSection from "@/components/homepage/PriceSection";
+import Loved from "@/components/homepage/Loved";
+import FaqSection from "@/components/homepage/FaqSection";
 
 export default function Home() {
-  useScrollAnimation();
-  const router = useRouter();
-
-  // useEffect(() => {
-  //   const lastPage = localStorage.getItem("lastPage");
-  //   if (lastPage && lastPage !== router.pathname) {
-  //     localStorage.removeItem("lastPage"); // cleanup
-  //     router.push(lastPage); // client-side redirect
-  //   }
-  // }, [router]);
-  // useEffect(() => {
-  //   const lastPage = localStorage.getItem("lastPage") || "/";
-  //   localStorage.removeItem("lastPage"); // cleanup
-  //   window.location.href = lastPage; // redirect user
-  // }, []);
-
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   const fetchCurrentUser = async () => {
-  //     try {
-  //       const res = await apiFetch("/api/auth/me", {
-  //         method: "GET",
-  //         credentials: "include", // ensures cookies are sent
-  //       });
-
-  //       if (!res.ok) return; // not logged in or session expired
-
-  //       const data = await res.json();
-
-  //       console.log("useeffect---", {
-  //         username: data.user.username,
-  //         email: data.user.email,
-  //         userCategory: data.user.category,
-  //       });
-
-  //       dispatch(
-  //         setUserLogin({
-  //           username: data.user.username,
-  //           email: data.user.email,
-  //           userCategory: data.user.category,
-  //           picture: data.user.picture || "",
-  //         })
-  //       );
-  //     } catch (err) {
-  //       console.error("Failed to fetch user:", err);
-  //     }
-  //   };
-
-  //   fetchCurrentUser();
-  // }, [dispatch]);
-
   return (
-    <div>
+    <main>
+      <ScrollAnimatedSection>
+        <NavbarN />
+
+        <div id="dashboard" className="section">
+          <HeroSection />
+        </div>
+
+        <div id="features" className="section">
+          <HowWorksSection />
+          <SupportSection />
+        </div>
+
+        <div id="security" className="section">
+          <PrivateSection />
+        </div>
+        <div id="pricing" className="section">
+          <PriceSection />
+        </div>
+        <div id="reviews" className="section">
+          <Loved />
+        </div>
+        <div id="faq" className="section">
+          <FaqSection />
+        </div>
+      </ScrollAnimatedSection>
       {/* <HomePage /> */}
-      <NavbarN />
-    </div>
+    </main>
   );
 }

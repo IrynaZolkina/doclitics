@@ -5,9 +5,10 @@ import {
   getPendingUsersCollection,
   getUserCollection,
   getVerificationCollection,
-} from "@/lib/mongodb";
+} from "@/lib/mongodb/mongodb";
 // import { sendVerificationEmail } from "@/lib/email";
 import { sendActivationMail } from "@/actions/mailservice";
+import { createPendingUser } from "@/lib/mongodb/createPendingUser";
 
 export async function POST(req) {
   try {
@@ -19,12 +20,12 @@ export async function POST(req) {
       );
     }
     const { email, username, password } = body;
-    console.log(
-      "username: enteredUsername,email: enteredEmail.toLowerCase(),password: enteredPassword",
-      username,
-      email,
-      password
-    );
+    // console.log(
+    //   "username: enteredUsername,email: enteredEmail.toLowerCase(),password: enteredPassword",
+    //   username,
+    //   email,
+    //   password
+    // );
     //jjvjgjghkhv
     // 2. Validate input
     if (!email || !password || !username) {
@@ -34,51 +35,60 @@ export async function POST(req) {
       );
     }
 
+    // 1. Check if email already exists in main users
     const users = await getUserCollection();
-    const pendingusers = await getPendingUsersCollection();
-
-    // 1. Check if email already exists
-    const existing = await users.findOne({ email });
-    if (existing) {
+    if (await users.findOne({ email })) {
       return NextResponse.json(
         { error: "Email already registered", code: "EMAIL_EXISTS" },
-        { status: 409 } // 409 Conflict
+        { status: 409 }
       );
     }
-    const existingPending = await pendingusers.findOne({ email });
-    if (existingPending) {
+
+    // 2. Check if email already exists in pending users
+    const pendingUsers = await getPendingUsersCollection();
+    if (await pendingUsers.findOne({ email })) {
       return NextResponse.json(
         { error: "Email pending verification", code: "EMAIL_PENDING" },
-        { status: 409 } // also a conflict
+        { status: 409 }
       );
     }
 
     // 2. Hash password
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // 3. Create user (unverified)
-    const newUser = {
+    // // 3. Create user (unverified)
+    // const newUser = {
+    //   email,
+    //   username,
+    //   passwordHash,
+    //   category: "no",
+    //   stripeCustomerId: "",
+    //   docsAmount: 0,
+    //   // verified: false,
+    //   createdAt: new Date(),
+    // };
+    // Create pending user using helper
+    const pendingUser = await createPendingUser({
       email,
       username,
       passwordHash,
-      category: "free",
-      // verified: false,
-      createdAt: new Date(),
-    };
-    // const newUserAdded = await users.insertOne(newUser);
-    const newPendingUserAdded = await pendingusers.insertOne(newUser);
-    //console.log("newUserAdded", newUserAdded);
+      provider: "local",
+    });
+
+    // // const newUserAdded = await users.insertOne(newUser);
+    // const newPendingUserAdded = await pendingusers.insertOne(newUser);
+    // //console.log("newUserAdded", newUserAdded);
 
     // 4. Generate verification code
     const code = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digits
-
-    const verifications = await getVerificationCollection();
-    // await verifications.insertOne({ email, code, expiresAt: new Date(Date.now() + 15*60*1000) });
-
     // 5. Hash the code before saving
     const codeHash = await bcrypt.hash(code, 10);
     // const codes = await getCollection("verificationCodes");
     console.log(`Verification code for ${email}: ${code}`);
+
+    const verifications = await getVerificationCollection();
+    // await verifications.insertOne({ email, code, expiresAt: new Date(Date.now() + 15*60*1000) });
+
     await verifications.insertOne({
       email,
       codeHash,

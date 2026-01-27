@@ -1,5 +1,5 @@
 import { signRefreshToken } from "@/lib/jwt";
-import { getRefreshTokensCollection } from "@/lib/mongodb";
+import { getRefreshTokensCollection } from "@/lib/mongodb/mongodb";
 import crypto from "crypto";
 
 // Hash function (SHA-256)

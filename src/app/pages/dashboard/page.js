@@ -117,7 +117,7 @@ const DashboardPage = () => {
     }
   }
 
-  if (!file) return <p>No PDF found</p>;
+  if (!file) return <p style={{ paddingTop: "200px" }}>No PDF found</p>;
   return (
     <div style={{ color: "white" }}>
       <div className={styles.viewerWrapper}>

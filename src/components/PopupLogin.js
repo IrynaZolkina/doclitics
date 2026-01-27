@@ -9,17 +9,11 @@ import { GoogleIcon } from "@/components-ui/svg-components/GoogleIcon";
 import InputSectionLogin from "@/components-ui/InputSectionLogin";
 import Link from "next/link";
 import Protect from "@/components-ui/svg-components/Protect";
+import { toastManualFunctionJS } from "@/components-ui/toastManualFunctionJS";
+import ToastWithManualClose from "@/components-ui/ToastWithManualClose";
+import { toastSuperFunctionJS } from "@/components-ui/toastSuperFunctionJS";
 
-let showLoginPopupExternal;
-
-export const showLoginPopup = (callback) => {
-  if (showLoginPopupExternal) showLoginPopupExternal(callback);
-};
-
-export default function PopupLogin({ currentPath }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [callbackOnSuccess, setCallbackOnSuccess] = useState(null);
-
+export default function PopupLogin({ onClose, error }) {
   const [enteredEmail, setEnteredEmail] = useState("");
 
   const [enteredEmailTouched, setEnteredEmailTouched] = useState(false);
@@ -27,21 +21,28 @@ export default function PopupLogin({ currentPath }) {
   const [enteredPasswordTouched, setEnteredPasswordTouched] = useState(false);
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [closing, setClosing] = useState(false);
   const dispatch = useDispatch();
-  useEffect(() => {
-    // expose globally
-    showLoginPopupExternal = (callback) => {
-      setCallbackOnSuccess(() => callback);
-      setIsOpen(true);
-    };
-    return () => {
-      showLoginPopupExternal = null;
-    };
-  }, []);
 
-  if (!isOpen) return null;
+  const [localError, setLocalError] = useState("");
+
+  useEffect(() => {
+    if (error === "email") {
+      setLocalError("Please verify your email before logging in.");
+    }
+  }, [error]);
+
+  // useEffect(() => {
+  //   showLoginPopupExternal = (callback) => {
+  //     setCallbackOnSuccess(() => callback);
+  //     setIsOpen(true);
+  //   };
+  //   return () => {
+  //     showLoginPopupExternal = null;
+  //   };
+  // }, []);
+
+  // if (!isOpen) return null;
 
   // const currentPath = window.location.pathname + window.location.search;
 
@@ -49,20 +50,16 @@ export default function PopupLogin({ currentPath }) {
   // dispatch(setLastPage(currentPath));
 
   const handleClose = () => {
-    // setIsOpen(false);
-    // setClosing(true);
-    setClosing(true); // start fade-out animation
+    setClosing(true); // start animation
     setTimeout(() => {
-      setIsOpen(false); // unmount popup
-      setClosing(false); // reset for next open
-      // callback?.(); // optional callback after close
-    }, 300); // match your CSS animation duration
+      onClose?.(); // parent unmounts popup after animation
+    }, 300); // match CSS
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    setLocalError("");
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -77,9 +74,9 @@ export default function PopupLogin({ currentPath }) {
       console.log("Login response: ", data);
 
       if (!res.ok) {
-        setError(data.error || "Login failed");
-        toastSuperFunction(data.error, "error");
-        setLoading(false);
+        // setLocalError(data.error || "Login failed");
+        toastSuperFunctionJS(data.error, "error");
+
         return;
       }
 
@@ -91,46 +88,20 @@ export default function PopupLogin({ currentPath }) {
           userCategory: data.userInfo.category,
         })
       );
-      setIsOpen(false); // close popup immediately
-      handleClose(); // no callback needed if you just want to close
-      toastSuperFunction("✅ Logged in successfully!", "success");
-      // close popup
-      return;
-      // Optional callback in parent
-      // callbackOnSuccess?.(data); // trigger optional callback
 
-      // Auto-close after fade-in toast duration (e.g., 2s)
-      // setTimeout(handleClose, 2000);
+      toastSuperFunction("✅ Logged in successfully!", "success");
+      handleClose(); // no callback needed if you just want to close
     } catch (err) {
-      setError("Network error. Please try again.");
+      setLocalError("Network error. Please try again.");
     } finally {
       setLoading(false);
+      window.location.href = "/";
     }
   };
 
   const handleGoogleLogin = () => {
     // Redirect to your backend route that sends user to Google
     window.location.href = "/api/auth/google";
-    // const width = 500;
-    // const height = 600;
-    // const left = window.screenX + (window.innerWidth - width) / 2;
-    // const top = window.screenY + (window.innerHeight - height) / 2;
-
-    // const popup = window.open(
-    //   "/api/auth/google",
-    //   "GoogleLogin",
-    //   `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes,status=yes`
-    // );
-    // // Listen for message from popup
-    // window.addEventListener("message", function handler(event) {
-    //   if (event.origin !== window.location.origin) return; // security
-    //   const { type, userInfo } = event.data;
-    //   if (type === "google-login-success") {
-    //     console.log("User logged in:", userInfo);
-    //     // update Redux or UI
-    //     window.removeEventListener("message", handler);
-    //   }
-    // });
   };
 
   return (
@@ -151,7 +122,7 @@ export default function PopupLogin({ currentPath }) {
           <div className={styles.continueText}>or continue with email</div>
           <span></span>
         </div>
-        {error && <p className={styles.error}>{error}</p>}
+        {/* {localError && <p className={styles.error}>{localError}</p>} */}
 
         <div className={styles.formBox}>
           <form onSubmit={handleSubmit} className={styles.form}>
@@ -167,7 +138,7 @@ export default function PopupLogin({ currentPath }) {
                 fieldLength={50}
                 correctMessage="Please enter a valid email address"
                 placeholder="Enter your email address..."
-              />{" "}
+              />
               <div className={styles.inputWrapper}>
                 <div className={styles.passwordAndEye}>
                   <InputSectionLogin
@@ -177,7 +148,6 @@ export default function PopupLogin({ currentPath }) {
                     labelText="Your Password"
                     touched={enteredPasswordTouched}
                     setTouched={setEnteredPasswordTouched}
-                    //inputType="password"
                     inputType={visiblePassword ? "text" : "password"}
                     fieldLength={50}
                     correctMessage="Please enter min 8 chars, at least 1 uppercase, 1 lowercase, 1 number, 1 symbol, no spaces"
@@ -204,7 +174,8 @@ export default function PopupLogin({ currentPath }) {
                 <Protect />
                 Your data is protected with enterprise-grade encryption
               </h6>
-              <Link href={"/pages/auth/register"} onClick={() => handleClose()}>
+              <Link href={"/pages/auth/register"}>
+                {/* onClick={() => handleClose()}> */}
                 New to Doclitic? Create your free account
               </Link>
             </>

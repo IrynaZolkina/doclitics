@@ -12,7 +12,7 @@ import PopupEmailRegistered from "@/components/PopupEmailRegistered";
 import PopupVerification from "@/components/PopupVerification";
 import ToastSuper, { toastSuperFunction } from "@/components-ui/ToastSuper";
 import ToastManual, { toastManualFunction } from "@/components-ui/ToastManual";
-import { showLoginPopup } from "@/components/PopupLogin";
+// import { showLoginPopup } from "@/components/PopupLogin";
 
 const Register = () => {
   const [userEmail, setUserEmail] = useState("");
@@ -135,7 +135,7 @@ const Register = () => {
     // );
     setUserEmail(enteredEmail);
     try {
-      const res = await fetch("/api/auth/register", {
+      const res = await apiFetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -213,11 +213,11 @@ const Register = () => {
           // onChoice={(choice) => handleChoice(choice)}
           onCancel={() => setShowPopupEmailRegistered({ status: false })}
           // option1={() => router.push("/pages/register")}
-          option2={() =>
-            showLoginPopup(() => {
-              console.log("User logged in!");
-            })
-          }
+          // option2={() =>
+          //   showLoginPopup(() => {
+          //     console.log("User logged in!");
+          //   })
+          // }
           message={showPopupEmailRegistered.message}
           // option2={() => router.push("/pages/login")}
         />

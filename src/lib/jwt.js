@@ -25,9 +25,14 @@ export function generateAccessToken(payload) {
 }
 
 export function generateRefreshToken(payload) {
-  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
-    expiresIn: `${REFRESH_TOKEN_DAYS}d`,
-  });
+  try {
+    return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
+      expiresIn: `${REFRESH_TOKEN_DAYS}d`,
+    });
+  } catch (err) {
+    console.log("generateRefreshToken failed:", err.message);
+    return null; // don't throw, just return null
+  }
 }
 
 // export function verifyAccessToken(token) {
@@ -42,5 +47,10 @@ export function verifyAccessToken(token) {
   }
 }
 export function verifyRefreshToken(token) {
-  return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+  try {
+    return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+  } catch (err) {
+    console.log("verifyRefreshToken failed-------------:", err.message);
+    return null; // don't throw, just return null
+  }
 }

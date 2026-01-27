@@ -1,14 +1,15 @@
 // app/api/auth/google/callback/route.js
 import { NextResponse } from "next/server";
-import clientPromise, {
+import {
   getRefreshTokensCollection,
   getUserCollection,
-} from "@/lib/mongodb";
+} from "@/lib/mongodb/mongodb";
 import { exchangeCodeForTokens, fetchGoogleUser } from "@/lib/oauth";
 import { signAccessToken, signRefreshToken } from "@/lib/jwt";
-import { ObjectId } from "mongodb";
+
 import crypto from "crypto";
 import { hashTokenSha256 } from "@/utils/tokens";
+import { createUser } from "@/lib/mongodb/createUser";
 
 // Load from env with defaults
 const ACCESS_TOKEN_MINUTES = parseInt(
@@ -26,8 +27,16 @@ const refreshTokenExpiryMs = REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000;
 const refreshTokenCookieMaxAge = REFRESH_TOKEN_DAYS * 24 * 60 * 60; // in seconds for cookies
 
 export async function GET(req) {
+  const url = new URL(req.url);
+  const state = url.searchParams.get("state");
+  const cookieState = req.cookies.get("oauth_state")?.value;
+
+  if (!state || !cookieState || state !== cookieState) {
+    return NextResponse.redirect(
+      new URL("/login?error=state", process.env.API_URL)
+    );
+  }
   try {
-    const url = new URL(req.url);
     const code = url.searchParams.get("code");
     if (!code)
       return NextResponse.redirect(
@@ -36,25 +45,36 @@ export async function GET(req) {
 
     const tokens = await exchangeCodeForTokens(code);
     const profile = await fetchGoogleUser(tokens.access_token);
-    console.log("profiel---------------------", profile);
-    // upsert user in MongoDB (driver)
-    // const client = await clientPromise;
-    // const db = client.db(process.env.MONGODB_DB);
+    if (!profile.email || profile.email_verified !== true) {
+      return NextResponse.redirect(
+        new URL("/login?error=email", process.env.API_URL)
+      );
+    }
+    //console.log("profiel---------------------", profile);
+
     const users = await getUserCollection();
 
     let user = await users.findOne({ email: profile.email });
     if (!user) {
-      const newUser = {
+      // const newUser = {
+      //   email: profile.email,
+      //   username: profile.name || "",
+      //   googleId: profile.sub,
+      //   category: "no",
+      //   picture: profile.picture,
+      //   createdAt: new Date(),
+      //   updatedAt: new Date(),
+      // };
+      // const r = await users.insertOne(newUser);
+      // user = { ...newUser, _id: r.insertedId };
+      user = await createUser({
         email: profile.email,
         username: profile.name || "",
+        provider: "google",
         googleId: profile.sub,
-        category: "free",
         picture: profile.picture,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      const r = await users.insertOne(newUser);
-      user = { ...newUser, _id: r.insertedId };
+        verified: true,
+      });
     } else {
       // If no googleId present, update it and mark verified
       const update = {};
@@ -66,23 +86,24 @@ export async function GET(req) {
       }
     }
 
-    const tokenscollection = await getRefreshTokensCollection();
-
+    // ── TOKENS ─────────────────────────────
     // create tokens
     const payload = {
       userId: user._id.toString(),
       username: user.username,
       email: user.email,
     };
-    const userInfo = {
-      username: user.username,
-      email: user.email,
-    };
+    // const userInfo = {
+    //   username: user.username,
+    //   email: user.email,
+    // };
+    const tokenscollection = await getRefreshTokensCollection();
+
     const accessToken = signAccessToken(payload);
     const refreshToken = signRefreshToken(payload);
     const hashedToken = hashTokenSha256(refreshToken);
     const csrfToken = crypto.randomBytes(24).toString("hex");
-    console.log("Generated tokens for userId:------", payload, refreshToken);
+    //console.log("Generated tokens for userId:------", payload, refreshToken);
 
     // 4. Insert new refresh token (multi-device)
     await tokenscollection.insertOne({
@@ -93,29 +114,12 @@ export async function GET(req) {
       expiresAt: new Date(Date.now() + refreshTokenExpiryMs), // 20 days
     });
 
-    // Save refresh token in DB
-    // await tokenscollection.updateOne(
-    //   { userId: user._id.toString() },
-    //   {
-    //     $set: {
-    //       refreshToken: refreshToken,
-    //       hashedToken: hashedToken,
-    //       createdAt: new Date(),
+    const res = NextResponse.redirect(new URL("/", process.env.API_URL));
 
-    //       expiresAt: new Date(Date.now() + REFRESH_EXPIRES * 1000),
-    //     },
-    //   },
-    //   { upsert: true }
-    // );
-    // set cookies
-    const res = NextResponse.redirect(
-      new URL("/api/auth/login/success", process.env.API_URL)
-    );
-    // const res = NextResponse.json({ success: true, userInfo });
-    // access token as non-httpOnly cookie so client JS can read and hydrate Redux
     res.cookies.set("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
+      //secure: true,
+      secure: process.env.NODE_ENV === "production",
       //sameSite: "strict",
       sameSite: "lax",
       path: "/",
@@ -125,7 +129,8 @@ export async function GET(req) {
     // refresh token as HttpOnly cookie
     res.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
+      //secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
 
       //sameSite: "strict",
@@ -139,12 +144,15 @@ export async function GET(req) {
       //sameSite: "strict",
       path: "/",
     });
-
+    res.cookies.set("oauth_state", "", {
+      maxAge: 0,
+      path: "/",
+    });
     return res;
   } catch (err) {
     console.error("Google callback error:", err);
     return NextResponse.redirect(
-      new URL("/pages/login?error=oauth", process.env.API_URL)
+      new URL("/login?error=oauth", process.env.API_URL)
     );
   }
 }

@@ -26,13 +26,18 @@ export default function Summary() {
   const type = useSelector((state) => state.file.tone);
   const depth = useSelector((state) => state.file.depth);
 
+  const [isPdfReady, setIsPdfReady] = useState(false);
   // Stop loading when choices arrive
   useEffect(() => {
     // if (choices && choices.length > 0) {
     //   setIsLoading(false);
     // }
-    if (choices) {
+    if (choices && choices.length > 0) {
+      setIsPdfReady(true);
       setIsLoading(false);
+    } else {
+      setIsPdfReady(false);
+      setIsLoading(true);
     }
   }, [choices]);
   const pdfRef = useRef(null);
@@ -76,18 +81,18 @@ export default function Summary() {
   //   },
   // };
 
-  // if (isLoading) {
-  //   return (
-  //     <div>
-  //       <div
-  //         style={{ marginTop: "150px", textAlign: "center", height: "100vh" }}
-  //       >
-  //         <IndeterminateProgressBar isLoading={isLoading} />
-  //       </div>
-  //       <Link href="/pages/viewer">Back to Viewer</Link>
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <div>
+        <div
+          style={{ marginTop: "150px", textAlign: "center", height: "100vh" }}
+        >
+          <IndeterminateProgressBar isLoading={isLoading} />
+        </div>
+        <Link href="/pages/viewer">Back to Viewer</Link>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.pageWrapper}>
@@ -101,14 +106,14 @@ export default function Summary() {
       <button
         // disabled={choices === ""}
         onClick={downloadPdf}
-        // onClick={handleDownload}
+        disabled={!isPdfReady}
         style={{
-          background: "#0070f3",
+          background: isPdfReady ? "#0070f3" : "#aaa",
           color: "white",
           border: "none",
           borderRadius: "6px",
           padding: "10px 20px",
-          cursor: "pointer",
+          cursor: isPdfReady ? "pointer" : "not-allowed",
           marginBottom: "20px",
         }}
       >

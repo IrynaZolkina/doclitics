@@ -1,4 +1,5 @@
 // components-ui/ToastManual.js
+"use client";
 export function toastManualFunctionJS(message, type = "default") {
   // remove old one if exists (only one at a time)
   // components-ui/ToastManual.js
@@ -6,6 +7,8 @@ export function toastManualFunctionJS(message, type = "default") {
   // remove old one if exists
   const existing = document.getElementById("toast-manual-overlay");
   if (existing) existing.remove();
+
+  const DURATION = 400;
 
   // overlay
   const overlay = document.createElement("div");
@@ -21,7 +24,9 @@ export function toastManualFunctionJS(message, type = "default") {
   overlay.style.alignItems = "center";
   overlay.style.justifyContent = "center";
   overlay.style.opacity = "0";
-  overlay.style.transition = "opacity 0.4s ease";
+  // overlay.style.transition = "opacity 0.4s ease";
+
+  overlay.style.transition = `opacity ${DURATION}ms ease`;
 
   // toast box
   const toast = document.createElement("div");
@@ -34,7 +39,8 @@ export function toastManualFunctionJS(message, type = "default") {
   toast.style.textAlign = "center";
   toast.style.boxShadow = "0 8px 24px rgba(0,0,0,0.3)";
   toast.style.opacity = "0";
-  toast.style.transition = "opacity 0.4s ease";
+  // toast.style.transition = "opacity 0.4s ease";
+  toast.style.transition = `opacity ${DURATION}ms ease`;
   toast.style.background =
     type === "error"
       ? "#e74c3c"
@@ -64,7 +70,7 @@ export function toastManualFunctionJS(message, type = "default") {
   const closeToast = () => {
     toast.style.opacity = "0";
     overlay.style.opacity = "0";
-    setTimeout(() => overlay.remove(), 400);
+    setTimeout(() => overlay.remove(), DURATION);
   };
 
   btn.onclick = closeToast;

@@ -3,7 +3,7 @@ import styles from "./css-modules/VerificationCodeInput.module.css";
 import ToastSuper, { toastSuperFunction } from "@/components-ui/ToastSuper";
 import ToastManual, { toastManualFunction } from "@/components-ui/ToastManual";
 
-import { showLoginPopup } from "./PopupLogin";
+// import { showLoginPopup } from "./PopupLogin";
 import { useRouter } from "next/navigation";
 
 export default function VerificationCodeInput({
@@ -116,7 +116,7 @@ export default function VerificationCodeInput({
         router.back();
 
         // Re-open login popup (small delay so navigation finishes first)
-        setTimeout(() => showLoginPopup(), 200);
+        // setTimeout(() => showLoginPopup(), 200);
         return;
       }
 

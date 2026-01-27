@@ -11,6 +11,8 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "@sparticuz/chromium": "^141.0.0",
+    "@stripe/react-stripe-js": "^5.4.0",
+    "@stripe/stripe-js": "^8.1.0",
     "bcrypt": "^6.0.0",
     "canvas": "^3.2.0",
     "emoji-regex": "^10.6.0",
@@ -31,6 +33,7 @@
     "react-markdown": "^10.1.0",
     "react-pdf": "^10.1.0",
     "react-redux": "^9.2.0",
+    "stripe": "^19.1.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

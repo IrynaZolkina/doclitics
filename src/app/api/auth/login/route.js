@@ -2,7 +2,10 @@ import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
 import { setAuthCookies } from "@/lib/cookies";
-import { getUserCollection, getRefreshTokensCollection } from "@/lib/mongodb";
+import {
+  getUserCollection,
+  getRefreshTokensCollection,
+} from "@/lib/mongodb/mongodb";
 import crypto from "crypto";
 import { hashTokenSha256 } from "@/utils/tokens";
 import { errorResponse } from "@/utils/apiFetch";
@@ -30,7 +33,7 @@ export async function POST(req) {
     const tokensCollection = await getRefreshTokensCollection();
 
     // 1. Find user
-    const user = await usersCollection.findOne({ email });
+    const user = await usersCollection.findOne({ email: email.toLowerCase() });
     if (!user)
       return NextResponse.json(
         { error: "Invalid credentials" },
@@ -63,8 +66,10 @@ export async function POST(req) {
       email: user.email,
     };
     const userInfo = {
+      userId: user._id,
       username: user.username,
       email: user.email,
+      hasStripeCustomer: user.stripeCustomerId ? true : false,
     };
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
@@ -81,44 +86,12 @@ export async function POST(req) {
       expiresAt: new Date(Date.now() + refreshTokenExpiryMs), // 20 days
     });
 
-    // // setAuthCookies(accessToken, refreshToken);
-
-    // // Save hashed refresh token in DB
-    // await tokensCollection.updateOne(
-    //   { userId: user._id.toString() },
-    //   {
-    //     $set: {
-    //       refreshToken: refreshToken,
-    //       hashedToken: hashedToken,
-    //       createdAt: new Date(),
-    //       expiresAt: new Date(Date.now() + REFRESH_EXPIRES * 1000),
-    //     },
-    //   },
-    //   { upsert: true }
-    // );
-
-    // const user = await users.findOne(
-    //       { email: payload.email },
-    //       {
-    //         projection: {
-    //           _id: 0,          // hide MongoDB _id
-    //           username: 1,
-    //           email: 1,
-    //           category: 1,
-    //           picture: 1,
-    //         },
-    //       }
-    //     );
-
-    // set cookies
-    // const res = NextResponse.redirect(
-    //   new URL("/pages/dashboard", process.env.API_URL)
-    // );
     const res = NextResponse.json({ success: true, userInfo }); //don't sent all user!!!
 
     res.cookies.set("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
+      //secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
       maxAge: accessTokenCookieMaxAge,
@@ -127,7 +100,8 @@ export async function POST(req) {
     // refresh token as HttpOnly cookie
     res.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
+      //secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
       maxAge: refreshTokenCookieMaxAge,
