@@ -1,4 +1,4 @@
-"use server";
+"use client";
 import Image from "next/image";
 import styles from "@/z-css-modules/components/homepage/herosection.module.css";
 import DropZoneN from "./DropZoneN";

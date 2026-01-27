@@ -3,9 +3,13 @@ import "../../globals.css";
 import styles from "../css-modules/viewerpage.module.css";
 
 import ReactMarkdown from "react-markdown";
+
 import * as pdfjsLib from "pdfjs-dist";
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+// pdfjsLib.GlobalWorkerOptions.workerSrc =
+//   "//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry"; // <-- worker bundled
+// Set the worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -146,7 +150,12 @@ export default function ViewerPage() {
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
 
-      /* insert here */
+      // Cancel previous render task if exists
+      if (canvas.renderTask && canvas.renderTask.cancel) {
+        canvas.renderTask.cancel();
+      }
+
+      // Calculate viewport based on container
       const container = canvas.parentElement;
       const containerWidth = container.clientWidth;
       const containerHeight = container.clientHeight;
@@ -156,11 +165,6 @@ export default function ViewerPage() {
       const scaleX = containerWidth / viewport.width;
       const scaleY = containerHeight / viewport.height;
       const newScale = Math.min(scaleX, scaleY);
-
-      /* insert here */
-
-      // Apply rotation
-      /* */
       viewport = page.getViewport({ scale: newScale, rotation });
       // const viewport = page.getViewport({ scale, rotation });
 
@@ -168,13 +172,23 @@ export default function ViewerPage() {
       canvas.height = viewport.height;
       canvas.width = viewport.width;
 
-      // Render the PDF page
+      // Start new render task
       const renderContext = {
         canvasContext: context,
         viewport,
       };
 
-      await page.render(renderContext).promise;
+      canvas.renderTask = page.render(renderContext);
+
+      try {
+        await canvas.renderTask.promise;
+      } catch (err) {
+        if (err?.name === "RenderingCancelledException") {
+          // Ignore cancelled renders
+        } else {
+          console.error(err);
+        }
+      }
     },
     [pdfDoc, rotation], // dependencies
   );

@@ -46,10 +46,15 @@
   -webkit-box-shadow: 0 0 0px 1000px var(--background-input-text) inset !important;
   -webkit-text-fill-color: var(--input-text-color) !important;
 }
-.formControl input:focus::after:-webkit-autofill {
+/* .formControl input:focus::after:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px var(--background-input-text) inset !important;
+  -webkit-text-fill-color: var(--input-text-color) !important;
+} */
+.formControl input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0px 1000px var(--background-input-text) inset !important;
   -webkit-text-fill-color: var(--input-text-color) !important;
 }
+
 .formControl input:focus {
   outline: none;
   border-color: var(--border-color-input-focus);
