@@ -9,11 +9,11 @@ import {
   getUserCollection,
   getRefreshTokensCollection,
 } from "@/lib/mongodb/mongodb";
-import { hashTokenSha256 } from "@/utils/tokens";
+import { hashTokenSha256 } from "@/lib/tokens";
 
 const ACCESS_TOKEN_MINUTES = parseInt(
   process.env.ACCESS_TOKEN_MINUTES || "6",
-  10
+  10,
 );
 const REFRESH_TOKEN_DAYS = parseInt(process.env.REFRESH_TOKEN_DAYS || "20", 10);
 

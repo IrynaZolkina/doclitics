@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
 import { marked } from "marked";
-import { stripEmojis } from "@/utils/stripEmojis";
+import { stripEmojis } from "@/lib/stripEmojis";
 
 export async function POST(req) {
   try {
@@ -96,7 +96,7 @@ export async function POST(req) {
     console.error("PDF generation error:", error);
     return NextResponse.json(
       { error: "Failed to generate PDF" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

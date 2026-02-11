@@ -1,4 +1,4 @@
-import { activate } from "@/actions/userservice";
+import { activate } from "@/lib/userservice";
 import { getCollection } from "@/lib/db";
 import { redirect } from "next/navigation";
 
@@ -32,7 +32,7 @@ const Activated = async ({ params }) => {
         isActivated: true,
       },
       $unset: { activationLink: "", activationExpires: "" },
-    }
+    },
   );
   // activate(link);
   redirect("/login?registered=1");

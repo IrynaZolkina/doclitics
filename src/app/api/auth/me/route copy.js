@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyAccessToken } from "@/lib/jwt";
 import { getUserCollection } from "@/lib/mongodb/mongodb";
-import { errorResponse } from "@/utils/errorHandler";
+import { errorResponse } from "@/lib/responsehandlers/errorResponse";
 import { getCsrfTokens, validateCsrf } from "@/lib/auth/csrf";
 // import { errorResponse } from "@/utils/apiFetch";
 
@@ -26,7 +26,7 @@ export async function GET(req) {
       return errorResponse(
         "INVALID_TOKEN",
         "Access Token Invalid. Not authorized",
-        401
+        401,
       );
     }
 
@@ -38,18 +38,18 @@ export async function GET(req) {
       return errorResponse(
         "USER_NOT_FOUND",
         "User not found. Not authorized",
-        404
+        404,
       );
     // }
     return NextResponse.json(
       { success: true, data: { user } },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (err) {
     return errorResponse(
       "INVALID_TOKEN",
       "Invalid token. Token verification failed",
-      401
+      401,
     );
   }
 }

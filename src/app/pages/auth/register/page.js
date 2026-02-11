@@ -1,17 +1,20 @@
 "use client";
-import "../../../globals.css";
-import styles from "../../css-modules/registerpage.module.css";
+import styles from "./registerpage.module.css";
 
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-import InputSection from "@/components-ui/InputSection";
-import PopupEmailRegistered from "@/components/PopupEmailRegistered";
-import PopupVerification from "@/components/PopupVerification";
-import ToastSuper, { toastSuperFunction } from "@/components-ui/ToastSuper";
-import ToastManual, { toastManualFunction } from "@/components-ui/ToastManual";
+import InputSection from "@/components-ui/inputs/InputSection";
+import PopupEmailRegistered from "@/components/pages-components/register/PopupEmailRegistered";
+import PopupVerification from "@/components/pages-components/register/PopupVerification";
+import ToastSuper, {
+  toastSuperFunction,
+} from "@/components-ui/toasts/ToastSuper";
+import ToastManual, {
+  toastManualFunction,
+} from "@/components-ui/toasts/ToastManual";
 // import { showLoginPopup } from "@/components/PopupLogin";
 
 const Register = () => {
@@ -89,8 +92,8 @@ const Register = () => {
       ((length > 0) & (length < 3)
         ? setValidationCheckUserName(2)
         : (length >= 3) & (length <= 16)
-        ? setValidationCheckUserName(1)
-        : setValidationCheckUserName(0)); ///// ???????
+          ? setValidationCheckUserName(1)
+          : setValidationCheckUserName(0)); ///// ???????
     // : length === setValidationCheckUserName(0)); ///// ???????
   };
   const validationPassword = (value) => {
@@ -135,7 +138,7 @@ const Register = () => {
     // );
     setUserEmail(enteredEmail);
     try {
-      const res = await apiFetch("/api/auth/register", {
+      const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

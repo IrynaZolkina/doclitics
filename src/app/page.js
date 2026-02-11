@@ -1,20 +1,31 @@
-import ScrollAnimatedSection from "@/components-ui/ScrollAnimatedSection";
+import ScrollAnimatedSection from "@/components-ui/z-others/ScrollAnimatedSection";
 
-import NavbarN from "@/components/homepage/NavbarN";
-import HeroSection from "@/components/homepage/HeroSection";
-import HowWorksSection from "@/components/homepage/HowWorksSection";
-import SupportSection from "@/components/homepage/SupportSection";
-import PrivateSection from "@/components/homepage/PrivateSection";
-import PriceSection from "@/components/homepage/PriceSection";
-import Loved from "@/components/homepage/Loved";
-import FaqSection from "@/components/homepage/FaqSection";
+import NavbarN from "@/components/pages-components/homepage/navbar/NavbarN";
+
+import HeroSection from "@/components/pages-components/homepage/herosection/HeroSection";
+import HowWorksSection from "@/components/pages-components/homepage/howworkssection/HowWorksSection";
+import SupportSection from "@/components/pages-components/homepage/supportsection/SupportSection";
+import PrivateSection from "@/components/pages-components/homepage/privatesection/PrivateSection";
+import PriceSection from "@/components/pages-components/homepage/pricesection/PriceSection";
+import Loved from "@/components/pages-components/homepage/lovedsection/Loved";
+import FaqSection from "@/components/pages-components/homepage/faqsection/FaqSection";
 
 export default function Home() {
   return (
     <main>
       <ScrollAnimatedSection>
         <NavbarN />
-
+        {/* <div
+          style={{
+            fontSize: "40px",
+            color: "white",
+            padding: "40px",
+            marginTop: "80px",
+            background: "linear-gradient(90deg, red, blue)",
+            }}
+            >
+            THIS SHOULD BLUR
+            </div> */}
         <div id="dashboard" className="section">
           <HeroSection />
         </div>
@@ -37,6 +48,7 @@ export default function Home() {
           <FaqSection />
         </div>
       </ScrollAnimatedSection>
+
       {/* <HomePage /> */}
     </main>
   );

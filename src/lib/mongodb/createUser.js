@@ -18,8 +18,8 @@ export async function createUser(data, insertToUsers = true) {
     googleId: data.googleId || null,
     picture: data.picture || null,
     verified: data.verified ?? false,
-
-    plan: data.plan || "no",
+    docsAmount: data.docsAmount || 0,
+    plan: data.plan || "Free",
     subscriptionStatus: data.subscriptionStatus || "passive",
     stripeCustomerId: data.stripeCustomerId || null,
     stripeSubscriptionId: data.stripeSubscriptionId || null,

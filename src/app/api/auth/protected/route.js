@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { errorResponse } from "@/utils/errorHandler";
+import { errorResponse } from "@/lib/responsehandlers/errorResponse";
 
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
 

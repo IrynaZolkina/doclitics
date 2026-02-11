@@ -2,9 +2,13 @@ import { Geist, Geist_Mono, Inter, Roboto, Manrope } from "next/font/google";
 import "./globals.css";
 
 import { ReduxProvider } from "../redux/Providers";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer/Footer";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import HeaderServer from "@/components/header/HeaderServer";
+import { Suspense } from "react";
+import UserHydrator from "@/lib/auth/UserHydrator";
+import Header from "@/components/header/header/Header";
+import PopupLogin from "@/components/auth/login/PopupLogin";
+import LoginPopupHost from "@/components/auth/login/LoginPopupHost";
 
 // import StripeProvider from "@/components/StripeProvider";
 
@@ -39,26 +43,35 @@ const roboto = Roboto({
 // };
 
 export default async function RootLayout({ children }) {
-  const user = await getCurrentUser();
-  // console.log("ROOT LAYOUT USER:", user);
+  // const user = await getCurrentUser();
+  // const safeUser = user
+  //   ? {
+  //       ...user,
+  //       _id: user._id.toString(),
+  //       createdAt: user.createdAt?.toISOString(),
+  //       updatedAt: user.updatedAt?.toISOString(),
+  //     }
+  //   : null;
+  console.log("ROOT LAYOUT -------------------------:");
   return (
     <html lang="en" className="test">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable} ${manrope.variable} `}
-      >
-        <ReduxProvider>
-          {/* <StripeProvider> */}
-
-          <div className="page-wrapper">
-            {/* <Header /> */}
-            <HeaderServer user={user} />
-            {/* {console.log("RENDERING ROOT LAYOUT*************")} */}
-            {children}
-            <Footer />
-          </div>
-          {/* </StripeProvider> */}
-        </ReduxProvider>
-      </body>
+      <ReduxProvider>
+        <Suspense fallback={null}>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable} ${manrope.variable} `}
+          >
+            <div className="page-wrapper">
+              {/* <UserHydrator user={safeUser} /> */}
+              <Header />
+              {children}
+              <Footer />
+            </div>
+            <div id="modal-root"></div>
+            {/* ✅ GLOBAL MODAL HOST */}
+            <LoginPopupHost />
+          </body>
+        </Suspense>
+      </ReduxProvider>
     </html>
   );
 }

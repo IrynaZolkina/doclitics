@@ -8,13 +8,13 @@ import { exchangeCodeForTokens, fetchGoogleUser } from "@/lib/oauth";
 import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 
 import crypto from "crypto";
-import { hashTokenSha256 } from "@/utils/tokens";
+import { hashTokenSha256 } from "@/lib/tokens";
 import { createUser } from "@/lib/mongodb/createUser";
 
 // Load from env with defaults
 const ACCESS_TOKEN_MINUTES = parseInt(
   process.env.ACCESS_TOKEN_MINUTES || "6",
-  10
+  10,
 );
 const REFRESH_TOKEN_DAYS = parseInt(process.env.REFRESH_TOKEN_DAYS || "20", 10);
 
@@ -33,21 +33,21 @@ export async function GET(req) {
 
   if (!state || !cookieState || state !== cookieState) {
     return NextResponse.redirect(
-      new URL("/login?error=state", process.env.API_URL)
+      new URL("/login?error=state", process.env.API_URL),
     );
   }
   try {
     const code = url.searchParams.get("code");
     if (!code)
       return NextResponse.redirect(
-        new URL("/login?error=oauth", process.env.API_URL)
+        new URL("/login?error=oauth", process.env.API_URL),
       );
 
     const tokens = await exchangeCodeForTokens(code);
     const profile = await fetchGoogleUser(tokens.access_token);
     if (!profile.email || profile.email_verified !== true) {
       return NextResponse.redirect(
-        new URL("/login?error=email", process.env.API_URL)
+        new URL("/login?error=email", process.env.API_URL),
       );
     }
     //console.log("profiel---------------------", profile);
@@ -152,7 +152,7 @@ export async function GET(req) {
   } catch (err) {
     console.error("Google callback error:", err);
     return NextResponse.redirect(
-      new URL("/login?error=oauth", process.env.API_URL)
+      new URL("/login?error=oauth", process.env.API_URL),
     );
   }
 }

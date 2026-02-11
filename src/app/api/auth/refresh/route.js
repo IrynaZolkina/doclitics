@@ -1,7 +1,7 @@
 // /api/auth/refresh/route.js
 import { NextResponse } from "next/server";
 
-import { errorResponse } from "@/utils/errorHandler";
+import { errorResponse } from "@/lib/responsehandlers/errorResponse";
 import { getCsrfTokens, validateCsrf } from "@/lib/auth/csrf";
 import { getStoredRefreshToken } from "@/lib/auth/refreshHelpers/getStoredRefreshToken";
 import { revokeAllUserSessions } from "@/lib/auth/refreshHelpers/revokeAllUserSessions";
@@ -10,6 +10,7 @@ import { rotateRefreshToken } from "@/lib/auth/refreshHelpers/rotateRefreshToken
 import { verifyRefreshTokenAndGetPayload } from "@/lib/auth/refreshHelpers/verifyRefreshTokenAndGetPayload";
 
 export async function POST(req) {
+  console.log("Running token refresh - BACKend ............");
   try {
     // 1️⃣ CSRF check
     const { csrfHeader, csrfCookie } = getCsrfTokens(req);
@@ -64,7 +65,7 @@ export async function POST(req) {
     return errorResponse(
       err.code || "UNAUTHORIZED",
       err.message || "Unauthorized",
-      401
+      401,
     );
   }
 }

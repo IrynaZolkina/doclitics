@@ -1,38 +1,60 @@
 "use client";
-import React from "react";
-import styles from "../css-modules/summarypage.module.css";
-import { useEffect, useRef, useState } from "react";
+import styles from "./summarypage.module.css";
+
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
-import IndeterminateProgressBar from "@/components-ui/IndeterminateProgressBar";
+import IndeterminateProgressBar from "@/components-ui/z-others/IndeterminateProgressBar";
 import { clearSummary } from "@/redux/store";
 // import remarkGfm from "remark-gfm";
 import emojiRegex from "emoji-regex";
 import MarkdownRenderer from "./MarkdownRenderer";
+import GeneratingScreen from "@/components/pages-components/summary/GeneratingScreen/GeneratingScreen";
+import { apiFetch } from "@/lib/apiFetch";
 // import html2pdf from "html2pdf.js";
-
+// function countWords(str) {
+//   if (!str.trim()) return 0;
+//   return str.trim().split(/+/).length;
+// }
+function countWords(str) {
+  if (!str || typeof str !== "string") return 0;
+  return str.split(/[ \t\n]+/).filter(Boolean).length;
+}
 // import { Smile, Star, Fire } from "./icons";
 
 export default function Summary() {
   const router = useRouter();
   const [redirecting, setRedirecting] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
   const [isDownLoading, setIsDownLoading] = useState(false);
   const dispatch = useDispatch();
   const firstMount = useRef(true);
+  // const choices = useSelector((state) => state.summary);
   const choices = useSelector((state) => state.summary.choices);
   const type = useSelector((state) => state.file.tone);
   const depth = useSelector((state) => state.file.depth);
+  const style = useSelector((state) => state.file.style);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [isPdfReady, setIsPdfReady] = useState(false);
-  // Stop loading when choices arrive
+
+  // ✅ prevents double-saving (Strict Mode + re-renders)
+  const savedKeyRef = useRef(null);
+  // Create a stable “key” for current summary
+  const summaryKey =
+    typeof choices === "string" && choices.length > 0
+      ? `${choices.length}:${choices.slice(0, 120)}`
+      : null;
+
   useEffect(() => {
     // if (choices && choices.length > 0) {
     //   setIsLoading(false);
     // }
     if (choices && choices.length > 0) {
+      console.log("choices arrived:", choices);
+      console.log("........choices.length:", choices.length);
+      console.log("countWords:", countWords(choices));
       setIsPdfReady(true);
       setIsLoading(false);
     } else {
@@ -40,9 +62,50 @@ export default function Summary() {
       setIsLoading(true);
     }
   }, [choices]);
-  const pdfRef = useRef(null);
 
-  async function downloadPdf(markdon, title = "fgfugfufuf") {
+  const save_summary_to_db = useCallback(async () => {
+    if (!choices || choices.length === 0) return;
+
+    // ✅ already saved this exact summary
+    if (savedKeyRef.current === summaryKey) return;
+    savedKeyRef.current = summaryKey;
+
+    const res = await apiFetch("/api/save-summary-db", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        summary_text: choices,
+        summary_text_length: countWords(choices),
+      }),
+    });
+
+    // optional: if save failed, allow retry next render
+    if (!res || !res.ok) {
+      savedKeyRef.current = null;
+      return;
+    }
+
+    const data = await res.json();
+
+    // ✅ if your API returns remaining docsAmount
+    if (typeof data?.docsAmount === "number") {
+      dispatch(setDocsAmount(data.docsAmount));
+    }
+  }, [choices, summaryKey]);
+
+  useEffect(() => {
+    // if (choices && choices.length > 0) {
+    //   setIsLoading(false);
+    // }
+    if (choices && choices.length > 0) {
+      // save_summary_to_db();
+    }
+  }, [choices]);
+  // }, [choices, save_summary_to_db]);
+
+  // const pdfRef = useRef(null);
+
+  async function downloadPdf(markdon, title = "summary") {
     //     const markdown = `
     // # Hello World 🎉
     // This **Markdown** has some emojis, but they will be removed in PDF.
@@ -51,7 +114,7 @@ export default function Summary() {
     // - Item 2 ⚠️
     // `;
     const markdown = choices;
-    const res = await fetch("/api/export-pdf", {
+    const res = await apiFetch("/api/export-pdf", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ markdown, title }),
@@ -80,14 +143,14 @@ export default function Summary() {
   //     return <>{renderTextWithSVG(text)}</>;
   //   },
   // };
-
   if (isLoading) {
     return (
       <div>
         <div
-          style={{ marginTop: "150px", textAlign: "center", height: "100vh" }}
+          style={{ marginTop: "150px", textAlign: "center", height: "60vh" }}
         >
-          <IndeterminateProgressBar isLoading={isLoading} />
+          {/* <IndeterminateProgressBar isLoading={isLoading} /> */}
+          <GeneratingScreen />;
         </div>
         <Link href="/pages/viewer">Back to Viewer</Link>
       </div>
@@ -121,7 +184,7 @@ export default function Summary() {
       </button>
       <div className={styles.summaryContainer}>
         <div
-          ref={pdfRef}
+          // ref={pdfRef}
           id="pdf-content"
           // style={{
           //   background: "white",
@@ -139,20 +202,20 @@ export default function Summary() {
           </div>
           <div>
             <span>Summary Length</span>
-            <span>750 words</span>
+            <span>{countWords(choices)} words</span>
           </div>
           <div>
             <span>Document Type</span>
-            <span>Business Report</span>
+            <span>{type}</span>
           </div>
           <div>
             <span>Summary Style</span>
-            <span>Formal</span>
+            <span>{style}</span>
           </div>
-          <div>
+          {/* <div>
             <span>Time Taken</span>
             <span>12s</span>
-          </div>
+          </div> */}
         </div>
       </div>
       {/* <Link href="/pages/viewer">Back to Viewer</Link> */}

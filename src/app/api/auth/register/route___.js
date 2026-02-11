@@ -3,13 +3,13 @@ import { NextResponse } from "next/server";
 
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
-import { sendActivationMail } from "@/actions/mailservice";
-import { generateTokens, saveTokenToDB } from "@/actions/tokenservice";
+import { sendActivationMail } from "@/lib/mailservice";
+import { generateTokens, saveTokenToDB } from "@/lib/tokenservice";
 import {
   validateEmail,
   validatePassword,
   validateUserName,
-} from "@/actions/userservice";
+} from "@/lib/userservice";
 // import clientPromise from "@/lib/mongodb";
 // import bcrypt from "bcryptjs";
 // import nodemailer from "nodemailer";
@@ -23,7 +23,7 @@ export async function POST(req) {
       console.log("All fields are required");
       return NextResponse.json(
         { error: "All fields are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -52,14 +52,14 @@ export async function POST(req) {
       return NextResponse.json(
         // { message: "Email already registered" }
         { error: `Email already registered ${email}` },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const hashedPassword = await bcrypt.hash(password, 3);
     const activationLink = uuidv4();
     const verificationCode = Math.floor(
-      100000 + Math.random() * 900000
+      100000 + Math.random() * 900000,
     ).toString();
 
     const result = await userCollection.insertOne({
@@ -88,7 +88,7 @@ export async function POST(req) {
     await sendActivationMail(
       email,
       //   `${process.env.API_URL}/api/auth/link/${activationLink}`
-      verificationCode
+      verificationCode,
     );
 
     // Create JSON response

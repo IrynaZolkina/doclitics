@@ -1,0 +1,24 @@
+.wrapper {
+  background: var(--gradient-section);
+  padding-top: 200px;
+}
+.container {
+  max-width: 896px;
+  margin: 0 auto;
+}
+.info_block {
+  padding: 40px;
+  gap: 20px;
+  margin-bottom: 30px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+}
+.line {
+  width: 95%;
+  border: 1px solid var(--glass-border);
+}
+.info_block h4 {
+  border: 1px solid var(--glass-border);
+  padding: 20px;
+}

@@ -7,7 +7,7 @@ import {
   getVerificationCollection,
 } from "@/lib/mongodb/mongodb";
 // import { sendVerificationEmail } from "@/lib/email";
-import { sendActivationMail } from "@/actions/mailservice";
+import { sendActivationMail } from "@/lib/mailservice";
 import { createPendingUser } from "@/lib/mongodb/createPendingUser";
 
 export async function POST(req) {
@@ -16,7 +16,7 @@ export async function POST(req) {
     if (!body) {
       return NextResponse.json(
         { error: "Invalid request body" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const { email, username, password } = body;
@@ -31,7 +31,7 @@ export async function POST(req) {
     if (!email || !password || !username) {
       return NextResponse.json(
         { error: "Username, Email and password are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -40,7 +40,7 @@ export async function POST(req) {
     if (await users.findOne({ email })) {
       return NextResponse.json(
         { error: "Email already registered", code: "EMAIL_EXISTS" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -49,7 +49,7 @@ export async function POST(req) {
     if (await pendingUsers.findOne({ email })) {
       return NextResponse.json(
         { error: "Email pending verification", code: "EMAIL_PENDING" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 

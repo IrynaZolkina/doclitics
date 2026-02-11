@@ -24,10 +24,10 @@
   --btn-tertiary-border: rgba(85, 147, 247, 0.3);
 
   /* QUATERNARY */
-  --btn-quaternary-bg: #8e44ad;
-  --btn-quaternary-hover: #732d91;
+  --btn-quaternary-bg: rgba(9, 13, 21, 1);
+  --btn-quaternary-hover: rgba(85, 147, 247, 1);
   --btn-quaternary-color: white;
-  --btn-quaternary-border: #8e44ad;
+  --btn-quaternary-border: rgba(85, 147, 247, 0.3);
 
   /* QUINARY */
   --btn-quinary-bg: #2ecc71;
@@ -109,17 +109,23 @@
   --gradient-section: linear-gradient(
     180deg,
     hsl(222 47% 8%) 0%,
-    hsl(222 40% 6%) 100%
+    hsl(220, 40%, 6%) 100%
   );
   --gradient-alt: linear-gradient(
-    135deg,
+    180deg,
     hsl(222 40% 6%) 0%,
     hsl(222 47% 8%) 50%,
     hsl(222 40% 12%) 100%
   );
+  --gradient-test: linear-gradient(
+    180deg,
+    rgba(9, 12, 21, 0.85) 0%,
+    rgba(11, 16, 30, 0.85) 50%,
+    rgba(18, 24, 43, 0.85) 100%
+  );
 
   --glass-bg: hsl(222 40% 15% / 0.8);
-  --glass-border: hsl(217 91% 65% / 0.3);
+  --glass-border: hsla(217, 91%, 65%, 0.3);
 
   --shadow-glow: 0 0 40px hsl(217 91% 65% / 0.4);
   --shadow-card: 0 8px 32px hsl(222 47% 8% / 0.3);
@@ -156,9 +162,9 @@
     #121a2b 16.61%,
     #1e2635 33.21%
   );
-  --text-color-white: #f8fafc;
+  --text-color-white: #f8fafc; /* used */
 
-  --text-color-blue: #85b2f9;
+  --text-color-blue: #85b2f9; /* used */
 
   --button-blue-background: linear-gradient(
     110.64deg,
@@ -181,7 +187,7 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 body {
   /* color: var(--foreground); */
@@ -193,7 +199,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.page-wrapper {
+  background: var(--background-two); /* dark background, gradient, image, etc */
+  min-height: 100vh;
+  width: 100%;
+}
+/* .page-wrapper {
+  transition: filter 0.25s ease;
+} */
 
+.page-wrapper.blurred {
+  filter: blur(7px);
+  pointer-events: none; /* optional: prevent interaction */
+}
 * {
   background-color: var(--gradient-hero);
   box-sizing: border-box;
@@ -319,6 +337,23 @@ ul:hover {
   padding: 2px 4px;
   border-radius: 4px;
 }
+
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.markdown th,
+.markdown td {
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.markdown th {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 /* app/globals.css - IMPORTANT: no overflow/transform on html/body */
 :root,
 html,
@@ -327,11 +362,60 @@ body {
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow: visible; /* make sure no global overflow cuts sticky */
+  /* overflow: visible;  */
+  /* make sure no global overflow cuts sticky */
 }
 
 /* avoid any transform or filter on body/layout */
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+/* .appBlurred {
+  filter: blur(10px);
+  transform: scale(1.02);
+  transition:
+    filter 0.25s ease,
+    transform 0.25s ease;
+  pointer-events: none;
+} */
+
+/* body.modal-open #app-root {
+  filter: blur(12px);
+  transition: filter 0.25s ease;
+  pointer-events: none;
+} */
+/* body.modal-open #app-root {
+  filter: blur(12px);
+  transform: scale(1.03);
+  transition:
+    filter 0.25s ease,
+    transform 0.25s ease;
+  pointer-events: none;
+} */
+
+/* body.modal-open::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 40, 65, 0.2);
+  z-index: 999;
+} */
+/* html {
+  background: white;
+}
+
+body {
+  background: url("https://picsum.photos/1200/800");
+  background-size: cover;
+} */
+/* Blur ONLY the app content, not the modal root */
+.modalOpen .page-wrapper {
+  filter: blur(10px);
+  transform: translateZ(0); /* helps GPU */
+}
+
+/* Optional: disable clicks behind modal */
+.modalOpen .page-wrapper {
+  pointer-events: none;
 }

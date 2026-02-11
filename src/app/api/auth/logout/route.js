@@ -4,7 +4,7 @@ import clientPromise, {
   getRefreshTokensCollection,
 } from "@/lib/mongodb/mongodb"; // your Mongo client
 import { verifyRefreshToken } from "@/lib/jwt";
-import { hashTokenSha256, verifyRefreshTokenHashed } from "@/utils/tokens";
+import { hashTokenSha256, verifyRefreshTokenHashed } from "@/lib/tokens";
 
 export async function POST(req) {
   try {

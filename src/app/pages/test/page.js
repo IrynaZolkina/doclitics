@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
-import IndeterminateProgressBar from "@/components-ui/IndeterminateProgressBar";
+import IndeterminateProgressBar from "@/components-ui/z-others/IndeterminateProgressBar";
 import { clearSummary } from "@/redux/store";
 
 export default function Test() {

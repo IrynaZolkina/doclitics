@@ -4,7 +4,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setUserLogin } from "@/redux/store";
-import { apiFetch } from "@/utils/apiFetch";
+import { apiFetch } from "@/lib/apiFetch";
 import { toastSuperFunction } from "@/components-ui/ToastSuper";
 import { toastSuperFunctionJS } from "@/components-ui/toastSuperFunctionJS";
 
@@ -40,7 +40,7 @@ export default function UserLoader({ children }) {
             email: user.email,
             userCategory: user.category,
             picture: user.picture || "",
-          })
+          }),
         );
       } catch (err) {
         toastSuperFunctionJS("Failed to fetch user:", err);

@@ -7,8 +7,8 @@ import {
   getRefreshTokensCollection,
 } from "@/lib/mongodb/mongodb";
 import crypto from "crypto";
-import { hashTokenSha256 } from "@/utils/tokens";
-import { errorResponse } from "@/utils/errorHandler";
+import { hashTokenSha256 } from "@/lib/tokens";
+import { errorResponse } from "@/lib/responsehandlers/errorResponse";
 
 // Load from env with defaults
 const ACCESS_TOKEN_MINUTES = parseInt(

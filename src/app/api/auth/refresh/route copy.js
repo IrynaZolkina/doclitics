@@ -7,14 +7,14 @@ import {
 } from "@/lib/jwt";
 import { getRefreshTokensCollection } from "@/lib/mongodb/mongodb";
 
-import { hashTokenSha256 } from "@/utils/tokens";
-import { errorResponse } from "@/utils/errorHandler";
+import { hashTokenSha256 } from "@/lib/tokens";
+import { errorResponse } from "@/lib/responsehandlers/errorResponse";
 import { getCsrfTokens, validateCsrf } from "@/lib/auth/csrf";
 
 // Load from env with defaults
 const ACCESS_TOKEN_MINUTES = parseInt(
   process.env.ACCESS_TOKEN_MINUTES || "6",
-  10
+  10,
 );
 const REFRESH_TOKEN_DAYS = parseInt(process.env.REFRESH_TOKEN_DAYS || "20", 10);
 
@@ -74,7 +74,7 @@ export async function POST(req) {
         const res = errorResponse(
           "TOKEN_REUSE",
           "Token reuse detected. Logged out.",
-          401
+          401,
         );
         res.cookies.set("accessToken", "", { maxAge: 0, path: "/" });
         res.cookies.set("refreshToken", "", { maxAge: 0, path: "/" });
@@ -122,7 +122,7 @@ export async function POST(req) {
             expiresAt: expires,
           },
         },
-        { upsert: true }
+        { upsert: true },
       );
 
       // await tokensCollection.deleteOne({ _id: tokenDoc._id }); // remove old token
@@ -189,7 +189,7 @@ export async function POST(req) {
     return errorResponse(
       err.code || "UNAUTHORIZED",
       err.message || "Unauthorized",
-      401
+      401,
     );
   }
 }

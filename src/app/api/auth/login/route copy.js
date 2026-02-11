@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
-import { sendActivationMail } from "@/actions/mailservice";
-import { generateTokens, saveTokenToDB } from "@/actions/tokenservice";
+import { sendActivationMail } from "@/lib/mailservice";
+import { generateTokens, saveTokenToDB } from "@/lib/tokenservice";
 
 export async function POST(req) {
   try {
@@ -13,7 +13,7 @@ export async function POST(req) {
     if (!email || !password) {
       return NextResponse.json(
         { error: "All fields are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -35,7 +35,7 @@ export async function POST(req) {
     if (!isPasswordsEqual) {
       return NextResponse.json(
         { error: "Incorrect password" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 

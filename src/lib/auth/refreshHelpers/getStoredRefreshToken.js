@@ -1,6 +1,6 @@
 // lib/refreshHelpers/getStoredRefreshToken.js. ✅ Looks up the token in DB (multi-device safe).
 import { getRefreshTokensCollection } from "@/lib/mongodb/mongodb";
-import { hashTokenSha256 } from "@/utils/tokens";
+import { hashTokenSha256 } from "@/lib/tokens";
 
 export async function getStoredRefreshToken(token) {
   const tokensCollection = await getRefreshTokensCollection();

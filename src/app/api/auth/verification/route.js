@@ -3,13 +3,13 @@ import { NextResponse } from "next/server";
 
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
-import { sendActivationMail } from "@/actions/mailservice";
-import { generateTokens, saveTokenToDB } from "@/actions/tokenservice";
+import { sendActivationMail } from "@/lib/mailservice";
+import { generateTokens, saveTokenToDB } from "@/lib/tokenservice";
 import {
   validateEmail,
   validatePassword,
   validateUserName,
-} from "@/actions/userservice";
+} from "@/lib/userservice";
 import { redirect } from "next/navigation";
 // import clientPromise from "@/lib/mongodb";
 // import bcrypt from "bcryptjs";
@@ -23,7 +23,7 @@ export async function POST(req) {
     if (!code || !enteredEmail) {
       return NextResponse.json(
         { error: "All fields are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -62,7 +62,7 @@ export async function POST(req) {
           activationExpires: "",
           verificationCode: "",
         },
-      }
+      },
     );
     if (result.modifiedCount === 1) {
       console.log("User activated successfully");

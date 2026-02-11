@@ -1,0 +1,129 @@
+/* .blockWrapper {
+  display: block;
+} */
+.blockWrapper {
+  margin: 0 auto;
+  width: 1104px;
+  margin-top: 20px;
+  /* background: rgba(21, 29, 47); */
+  background: rgba(23, 32, 54, 0.8);
+  border-radius: 20px;
+  transform: scale(1);
+  transition: transform 0.3s ease;
+}
+.blockWrapper:hover {
+  transform: scale(1.02);
+  transition: transform 0.3s ease;
+}
+.blockWrapper p {
+  color: rgba(161, 161, 170, 1);
+}
+.blockLargeContainer {
+  padding: 25px;
+  padding-bottom: 20px;
+  /* position: relative; */
+  color: rgba(161, 161, 170, 1);
+  margin-bottom: 20px;
+}
+.blockLargeContainer > p {
+  font-size: 14px;
+  font-weight: normal;
+}
+/* .blockLargeContainer {
+  width: 100%;
+} */
+.fileBlockSmallContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+.fileNameContainer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.fileNameContainer h4 {
+  font-weight: bold;
+  font-size: 18px;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.fileDetails {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+}
+.fileSize {
+  font-weight: 400;
+  color: rgba(148, 164, 184);
+}
+.ready {
+  color: #22c55e;
+  font-weight: bold;
+}
+.blueLine {
+  height: 4px;
+  background: rgba(83, 146, 245);
+  border-radius: 5px;
+}
+
+.svgContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: white;
+  margin: 0 4px;
+}
+
+.buttonPdfViewer {
+  border: none;
+  cursor: pointer;
+  background: transparent;
+}
+
+.buttonInside {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.preview {
+  white-space: nowrap;
+}
+
+.buttonPdfViewer {
+  background: rgba(60, 131, 246, 0.05);
+  border-color: rgba(85, 147, 247, 0.3);
+  height: 36px;
+  width: 139px;
+  border-radius: 13px;
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.submitButton {
+  width: 260px;
+  height: 50px;
+  color: antiquewhite;
+}
+.buttonInside {
+  display: flex;
+  font-weight: bold;
+  font-size: 14px;
+}
+.buttonInside span {
+  margin-left: 10px;
+}
