@@ -165,6 +165,7 @@
   --text-color-white: #f8fafc; /* used */
 
   --text-color-blue: #85b2f9; /* used */
+  --text-color-light-gray: rgba(148, 163, 184, 1); /*used*/
 
   --button-blue-background: linear-gradient(
     110.64deg,

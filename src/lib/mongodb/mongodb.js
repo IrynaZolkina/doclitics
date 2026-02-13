@@ -34,6 +34,11 @@ export async function getUserCollection() {
   return client.db("doclitic").collection("users");
 }
 
+export async function getSummariesCollection() {
+  const client = await clientPromise;
+  return client.db("doclitic").collection("summaries");
+}
+
 export async function getVerificationCollection() {
   const client = await clientPromise;
   return client.db("doclitic").collection("verifications");

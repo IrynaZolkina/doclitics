@@ -58,6 +58,7 @@ export async function POST(request) {
 
     const prompt = params?.prompt;
     const content = params?.content;
+    const fileName = params?.fileName;
 
     console.log("CHAT HIT ----:------------------ 4 ");
 
@@ -179,11 +180,11 @@ export async function POST(request) {
           { role: "user", content: content },
         ],
 
-        // temperature: 0,
-        // max_tokens: 256, //1024, //4096,
-        // top_p: 1,
-        // frequency_penalty: 0,
-        // presence_penalty: 0,
+        temperature: 0,
+        max_tokens: 256, //1024, //4096,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
       });
 
       // const response = completion.choices;
@@ -221,13 +222,29 @@ export async function POST(request) {
       const insert = await db.collection("summaries").insertOne({
         summary_text: text,
         summary_text_length: countWords(text),
+        fileName: fileName,
         userId,
         createdAt: new Date(),
       });
+      const userSummaries = await db
+        .collection("summaries")
+        .find(
+          { userId: userId },
+          {
+            projection: {
+              _id: 0,
+              fileName: 1,
+              summary_text_length: 1,
+              createdAt: 1,
+            },
+          },
+        )
+        .sort({ createdAt: -1 }) // optional: newest first
+        .toArray();
       // 3) Success: keep credit spent
       return successResponse(
         // { text },
-        { text, docsAmount: updatedDocsAmount.docsAmount },
+        { text, docsAmount: updatedDocsAmount.docsAmount, userSummaries },
         "OK",
         200,
       );

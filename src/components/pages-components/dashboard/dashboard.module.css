@@ -1,4 +1,4 @@
-.wrapper {
+.container {
   background: var(--gradient-section);
   padding: 50px;
   padding-top: 150px;
@@ -10,6 +10,8 @@
   left: 30px;
   width: 250px;
   margin-right: 40px;
+  padding: 30px 20px;
+  color: var(--text-color-light-gray);
   border: 1px solid rgba(33, 44, 59, 0.2);
   height: 30vh;
   border-radius: 20px;
@@ -19,11 +21,80 @@
 }
 .center_panel {
   margin-left: 320px;
-  border: 1px solid rgba(33, 44, 59, 0.2);
-  height: 289vh;
+  /* border: 1px solid rgba(33, 44, 59, 0.2); */
+  /* height: 289vh; */
+}
+.center_panel h1 {
+  font-size: 27.66px;
+  color: var(--text-color-blue);
+}
+.center_panel h1 span {
+  color: var(--text-color-white);
+}
+.center_panel p {
+  font-size: 16.73px;
+  margin-top: 15px;
+  color: var(--text-color-light-gray);
 }
 
-.container {
+.array_panel {
+  padding: 40px 30px;
+  max-width: 888px;
+  /* margin-right: 40px; */
+  margin-top: 30px;
+  border: 1px solid rgba(33, 44, 59, 0.2);
+  /* height: 50vh; */
+  border-radius: 20px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+.array_panel h2 {
+  font-size: 19.53px;
+  color: var(--text-color-blue);
+}
+.array_panel p {
+  font-size: 13.02px;
+  color: var(--text-color-light-gray);
+}
+.array_panel p span {
+  font-weight: bold;
+}
+.check_icon {
+  background: rgba(22, 29, 39, 1);
+
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+.list {
+  margin: 30px 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+.list_item {
+  /* width: 100%; */
+  border-radius: 12px;
+  box-shadow:
+    0 10px 10px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  padding: 17px;
+  margin: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+.list_item_filename {
+  display: flex;
+  justify-content: space-between;
+}
+.list_item_date_number {
+  display: flex;
+  justify-content: space-between;
+}
+/* .container {
   padding-top: 20px;
   display: flex;
   flex-direction: column;
@@ -38,43 +109,4 @@
 .container h1 {
   margin-top: 80px;
   margin-bottom: 20px;
-}
-.gridContainer {
-  margin-top: 40px;
-  display: grid;
-  /* sgrid-template-columns: 200px, 300px; */
-  grid-template-columns: 5fr 12fr;
-  gap: 30px;
-  /* padding: 0 20px; */
-  width: 1152px;
-  height: 700px;
-}
-.flexContainerLeftWrapper {
-  padding: 30px;
-  background: rgba(20, 28, 49, 1);
-  border-radius: 24px;
-}
-.flexContainer {
-  display: flex;
-  flex-direction: column;
-  border-radius: 24px;
-}
-.flexContainerLeft {
-  background: rgba(23, 35, 59, 1);
-  padding: 20px;
-}
-.flexContainerRight {
-  background: rgba(20, 28, 49, 1);
-}
-.flexContainerRight h2 {
-  width: 90%;
-  margin: 0 auto;
-}
-.selectedFileBox {
-  width: 90%;
-  padding: 20px;
-  margin: 0 auto;
-  background: rgba(60, 131, 246, 0.05);
-  color: rgba(161, 161, 170, 1);
-  border-radius: 20px;
-}
+} */

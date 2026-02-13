@@ -17,6 +17,7 @@ import {
   setFileData,
   setLastPage,
   setSummary,
+  setUserSummaries,
 } from "@/redux/store";
 import { apiFetch } from "@/lib/apiFetch";
 import PopupLogin, { showLoginPopup } from "@/components/auth/login/PopupLogin";
@@ -62,7 +63,7 @@ export default function SummaryParams() {
   // const userName = useSelector((state) => state.userNameSlice.username);
   const user = useSelector((state) => state.user);
   const docsAmount = useSelector((state) => state.user.docsAmount);
-  const currentFileMeta = useSelector((state) => state.currentFileMeta);
+  // const currentFileMeta = useSelector((state) => state.currentFileMeta);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   // const isLoginParam = searchParams.get("login") === "1";
@@ -234,7 +235,7 @@ ${additionalNotes}
       //   crypto?.randomUUID?.() ??
       //   `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
-      router.replace("/pages/summary");
+      router.push("/summary");
       // console.log("SEND /api/chat reqId:", reqId);
       const response = await apiFetch("/api/chat", {
         method: "POST",
@@ -245,6 +246,7 @@ ${additionalNotes}
         body: JSON.stringify({
           content: extractedText,
           prompt: formattedPrompt, //finalPrompt,
+          fileName: fileName,
         }),
       });
       // setIsLoading(false);
@@ -259,11 +261,20 @@ ${additionalNotes}
 
       const docsAmount =
         result?.data?.docsAmount ?? result?.error?.details?.docsAmount;
-
+      const userSummaries =
+        result?.data?.userSummaries ?? result?.error?.details?.userSummaries;
+      console.log("SUMMARYPARAMS PAGE --- SUMMARY ARAY----", userSummaries);
+      console.log(
+        "SUMMARYPARAMS PAGE --- SUMMARY ARAY----",
+        typeof userSummaries,
+      );
       if (typeof docsAmount === "number") {
         dispatch(setDocsAmount(docsAmount));
       }
-
+      if (Array.isArray(userSummaries)) {
+        dispatch(setUserSummaries(userSummaries));
+      }
+      // dispatch(setUserSummaries(userSummaries));
       if (!response.ok) {
         toastSuperFunctionJS(
           result?.error?.message || "Request failed",

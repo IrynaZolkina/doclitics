@@ -12,6 +12,7 @@ import Link from "next/link";
 
 const UserProfile = ({ username, plan, docsAmount, picture }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   // const router = useRouter();
 
   const handleLogout = async () => {
@@ -32,6 +33,16 @@ const UserProfile = ({ username, plan, docsAmount, picture }) => {
 
   return (
     <div className={styles.userProfileContainer}>
+      <FlexibleButton
+        onClick={() => router.push("/dashboard")}
+        variant="secondary"
+        fontSize="13px"
+        borderRadius="14px"
+        padding="14px 30px"
+        fontWeight="800"
+      >
+        Dashboard
+      </FlexibleButton>
       <FlexibleButton
         onClick={handleLogout}
         variant="secondary"

@@ -152,7 +152,7 @@ export default function Summary() {
           {/* <IndeterminateProgressBar isLoading={isLoading} /> */}
           <GeneratingScreen />;
         </div>
-        <Link href="/pages/viewer">Back to Viewer</Link>
+        <Link href="/viewer">Back to Viewer</Link>
       </div>
     );
   }

@@ -11,16 +11,29 @@ import UserProfile from "../userprofile/UserProfile";
 import Login from "@/components/auth/login/Login";
 import { useEffect, useRef } from "react";
 import { apiFetch } from "@/lib/apiFetch";
-import { clearUser, setUser } from "@/redux/store";
+import {
+  clearUser,
+  setUser,
+  setUserSummaries,
+  addUserSummary,
+  clearUserSummaries,
+} from "@/redux/store";
 
 const Header = () => {
   const dispatch = useDispatch();
   // const user = useSelector((state) => state.user);
 
-  const { isAuthenticated, authChecked, username, picture, plan, docsAmount } =
-    useSelector((state) => state.user);
+  const {
+    isAuthenticated,
+    authChecked,
+    username,
+    picture,
+    plan,
+    docsAmount,
+    userSummaries,
+  } = useSelector((state) => state.user);
 
-  // console.log("Header user:", user);
+  console.log("Header user.userSummaries:", userSummaries);
   // const isAuthenticated = user.isAuthenticated;
 
   // prevents double execution in React Strict Mode
@@ -43,6 +56,9 @@ const Header = () => {
         if (res.ok) {
           const data = await res.json();
           dispatch(setUser(data.data.user));
+          dispatch(setUserSummaries(data.data.userSummaries));
+
+          // console.log("data-------------------", data.data);
         } else {
           dispatch(clearUser());
         }

@@ -59,6 +59,7 @@ const fileSlice = createSlice({
     clearFileData: () => initialFileState, // reset correctly
   },
 });
+
 const currentFileMeta = createSlice({
   name: "currentFileMeta",
   initialState: initialFileState,
@@ -80,6 +81,7 @@ const initialUserState = {
   plan: null,
   picture: null,
   docsAmount: 0,
+  userSummaries: [], // 👈 add this
 };
 
 const userSlice = createSlice({
@@ -106,7 +108,17 @@ const userSlice = createSlice({
       const n = action.payload ?? 1;
       state.docsAmount = Math.max(0, state.docsAmount - n);
     },
+    setUserSummaries(state, action) {
+      state.userSummaries = action.payload;
+    },
 
+    addUserSummary(state, action) {
+      state.userSummaries.unshift(action.payload);
+    },
+
+    clearUserSummaries(state) {
+      state.userSummaries = [];
+    },
     clearUser(state) {
       // ✅ IMPORTANT: authChecked must become true after we checked
       state.authChecked = true;
@@ -138,8 +150,15 @@ export const { addToast, removeToast } = toastSlice.actions;
 export const { setFileData, clearFileData } = fileSlice.actions;
 export const { setCurrentFileMeta, clearCurrentFileMeta } =
   currentFileMeta.actions;
-export const { setUser, clearUser, setDocsAmount, decrementDocsAmount } =
-  userSlice.actions;
+export const {
+  setUser,
+  clearUser,
+  setDocsAmount,
+  decrementDocsAmount,
+  setUserSummaries,
+  addUserSummary,
+  clearUserSummaries,
+} = userSlice.actions;
 export const { setLastPage } = pageSlice.actions;
 export const { setSummary, clearSummary } = summarySlice.actions;
 

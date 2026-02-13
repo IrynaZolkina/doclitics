@@ -7,7 +7,9 @@ import Dashboard from "@/components/pages-components/dashboard/Dashboard";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { authChecked, isAuthenticated } = useSelector((s) => s.user);
+  const { authChecked, isAuthenticated, username } = useSelector((s) => s.user);
+  const userSummaries = useSelector((state) => state.user.userSummaries);
+  console.log("summaries. -----------------", userSummaries);
 
   useEffect(() => {
     if (authChecked && !isAuthenticated) {
@@ -18,5 +20,5 @@ export default function DashboardPage() {
   if (!authChecked) return null; // waiting for /me
   if (!isAuthenticated) return null; // redirecting
 
-  return <Dashboard />;
+  return <Dashboard userSummaries={userSummaries} userName={username} />;
 }

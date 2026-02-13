@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/apiFetch";
 import { toastSuperFunctionJS } from "@/components-ui/toasts/toastSuperFunctionJS";
+import CheckIcon from "@/components-svg/CheckIcon";
 
 const priceArray = [
   {
@@ -115,12 +116,7 @@ const PriceSection = () => {
                 <ul>
                   {el.planList.map((element, ind) => (
                     <li key={ind}>
-                      <Image
-                        src="check.svg"
-                        alt="01"
-                        width={13.33}
-                        height={13}
-                      />
+                      <CheckIcon />
                       &#160;&#160;&#160; <span> {element}</span>
                     </li>
                   ))}

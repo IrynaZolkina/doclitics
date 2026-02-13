@@ -4,63 +4,58 @@ import styles from "./dashboard.module.css";
 
 import { useSelector } from "react-redux";
 import DropZone from "../homepage/dropzone/DropZone";
+import CheckIcon from "@/components-svg/CheckIcon";
+import DocIcon from "@/components-svg/DocIcon";
 
-const summariesArray = [
-  { fileName: "Sample Business Report.pdf", size: "344" },
-  { fileName: "Sample Business Report1.pdf", size: "344" },
-  { fileName: "Sample Business Report2.pdf", size: "344" },
-  { fileName: "Sample Business Report3.pdf", size: "344" },
-  { fileName: "Sample Business Report4.pdf", size: "344" },
-  { fileName: "Sample Business Report5.pdf", size: "344" },
-];
-const Dashboard = ({ fileName }) => {
-  const user = useSelector((state) => state.user);
+const Dashboard = ({ userSummaries, userName }) => {
+  // const user = useSelector((state) => state.user);
   return (
     <div className={styles._container}>
-      <div className={styles.wrapper}>
+      <div className={styles.container}>
         <div className={styles.left_panel}>
+          <h2>Navigation</h2>
           <div className={styles.controls}></div>
         </div>
         <div className={styles.center_panel}>
+          <h1>
+            <span>Hello,</span> {userName}! 👋{" "}
+          </h1>
+          <p>Ready to transform your documents into intelligent summaries?</p>
           <div className={styles.controls}>
             <DropZone />
-          </div>
-        </div>
-      </div>
-      {/* {user.isLoggedIn ? (
-        <>
-          <p>Username: {user.username}</p>
-          <p>Email: {user.email}</p>
-        </>
-      ) : (
-        <p>User is not logged in</p>
-      )} */}
-      <h1>Welcome to your Dashboard, Andrii</h1>
-      <p>To create your first summary, drag & Drop or select a file</p>
-      <div className={styles.gridContainer}>
-        <div className={styles.flexContainerLeftWrapper}>
-          <div
-            className={`${styles.flexContainer} ${styles.flexContainerLeft}`}
-          >
-            {summariesArray.map((item) => (
-              // <Link href={item.href} key={item.label}>
-              <div key={item.fileName} className="">
-                {item.fileName}
-                <span
-                  onClick={() => {}}
-                  // reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
+          </div>{" "}
+          <div className={styles.array_panel}>
+            <h2>Recent Summaries </h2>
+            <p>
+              Your document processing <span>saved up to 30 days</span>
+            </p>
+            <div className={styles.list}>
+              {userSummaries.map((item) => (
+                // <Link href={item.href} key={item.label}>
+                <div key={item.createdAt} className={styles.list_item}>
+                  <div className={styles.list_item_filename}>
+                    <DocIcon strokeColor={"rgba(248, 113, 113, 1)"} />
+                    <div>
+                      {item.fileName || "mmmmmmmmmmmm"}
+                      <div className={styles.list_item_date_number}>
+                        <span>one</span> two
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    onClick={() => {}}
+                    // reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
 
-                  className={styles.arrow}
-                >
-                  <Image src="/page2_04.svg" alt="01" width={24} height={24} />
-                </span>
-              </div>
-            ))}
+                    className={styles.check_icon}
+                  >
+                    <CheckIcon />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div className={`${styles.flexContainer} ${styles.flexContainerRight}`}>
-          <h2>Selected File:</h2>
-          <div className={styles.selectedFileBox}>{fileName}</div>
+          <h1>Your Analytics</h1>
+          <p>Track your document processing performance and usage patterns</p>
         </div>
       </div>
     </div>
