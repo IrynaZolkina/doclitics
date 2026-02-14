@@ -180,11 +180,11 @@ export async function POST(request) {
           { role: "user", content: content },
         ],
 
-        temperature: 0,
-        max_tokens: 256, //1024, //4096,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
+        // temperature: 0,
+        // max_tokens: 256, //1024, //4096,
+        // top_p: 1,
+        // frequency_penalty: 0,
+        // presence_penalty: 0,
       });
 
       // const response = completion.choices;
