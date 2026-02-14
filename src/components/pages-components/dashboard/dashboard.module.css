@@ -30,17 +30,20 @@
   align-items: center;
   gap: 11px;
   cursor: pointer;
+  color: var(--text-color-light-gray);
+  transition: all 0.25s ease;
+}
+
+.active {
+  background: rgba(60, 131, 246, 0.15);
+  color: var(--text-color-blue-intens);
+  /* border-left: 3px solid #3c83f6; */
 }
 .nav_button:hover {
   background: rgba(59, 130, 246, 0.1);
   color: var(--text-color-blue-intens);
 }
-.navbar_icon:hover {
-  strokecolor: var(--text-color-blue-intens);
-}
-.upload_icon {
-  background: lavender;
-}
+
 .nav_button p {
   font-size: 11.25px;
   margin-top: 3px;
@@ -64,7 +67,11 @@
   margin-top: 15px;
   color: var(--text-color-light-gray);
 }
-
+.history_id {
+  position: absolute;
+  top: 500px;
+  left: 500px;
+}
 .array_panel {
   padding: 40px 30px;
   max-width: 888px;

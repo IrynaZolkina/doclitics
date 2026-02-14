@@ -1,6 +1,6 @@
 export default function PieChartIcon({
   size = 13,
-  color = "#94A2B9",
+  color = "currentColor",
   className = "",
 }) {
   return (
@@ -9,7 +9,6 @@ export default function PieChartIcon({
       height={size}
       viewBox="0 0 13 13"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
       <path

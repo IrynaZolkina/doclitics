@@ -63,6 +63,15 @@ export default function Summary() {
     }
   }, [choices]);
 
+  useEffect(() => {
+    return () => {
+      // runs when user navigates away (menu click -> dashboard)
+      dispatch(clearSummary());
+      // dispatch(clearFileData());
+      // dispatch(clearCurrentFileMeta()); // if you have it
+    };
+  }, [dispatch]);
+
   const save_summary_to_db = useCallback(async () => {
     if (!choices || choices.length === 0) return;
 

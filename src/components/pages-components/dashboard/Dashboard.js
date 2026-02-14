@@ -7,11 +7,14 @@ import DropZone from "../homepage/dropzone/DropZone";
 import CheckIcon from "@/components-svg/CheckIcon";
 import DocIcon from "@/components-svg/DocIcon";
 import UploadIcon from "@/components-svg/UploadIcon";
-import { useRef } from "react";
-import RefreshIcon from "@/components-svg/RefreshIcon";
-import ClockMiniIcon from "@/components-svg/ClockMiniIcon";
+import { useEffect, useRef, useState } from "react";
+
+import HistoryRefreshIcon from "@/components-svg/HistoryRefreshIcon";
+import PieChartIcon from "@/components-svg/PieChartIcon";
 
 const Dashboard = ({ userSummaries, userName }) => {
+  const [activeSection, setActiveSection] = useState("dropzone");
+
   // const user = useSelector((state) => state.user);
   const contentRef = useRef(null);
   const scrollToSection = (href) => {
@@ -29,7 +32,29 @@ const Dashboard = ({ userSummaries, userName }) => {
     //   behavior: "smooth",
     // });
   };
+  // useEffect(() => {
+  //   const sections = ["dropzone", "history", "analitics"];
 
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         if (entry.isIntersecting) {
+  //           setActiveSection(entry.target.id);
+  //         }
+  //       });
+  //     },
+  //     {
+  //       threshold: 0.6,
+  //     },
+  //   );
+
+  //   sections.forEach((id) => {
+  //     const el = document.getElementById(id);
+  //     if (el) observer.observe(el);
+  //   });
+
+  //   return () => observer.disconnect();
+  // }, []);
   return (
     <div className={styles._container}>
       <div className={styles.container}>
@@ -37,51 +62,46 @@ const Dashboard = ({ userSummaries, userName }) => {
           <h2>Navigation</h2>
           <ul className={styles.navbar}>
             <li
-              onClick={() => scrollToSection("dropzone")}
-              className={styles.nav_button}
+              onClick={() => {
+                (scrollToSection("dropzone"), setActiveSection("dropone"));
+              }}
+              className={`${styles.nav_button} ${
+                activeSection === "dropzone" ? styles.active : ""
+              }`}
             >
-              <UploadIcon
-                width="15"
-                height="15"
-                className={styles.navbar_icon}
-                strokeColor={"var(--text-color-light-gray)"}
-              />
+              <UploadIcon width="15" height="15" />
               <div>
                 Upload
                 <p>Process new documents</p>
               </div>
             </li>
             <li
-              onClick={() => scrollToSection("history")}
-              className={styles.nav_button}
+              onClick={() => {
+                (scrollToSection("history"), setActiveSection("history"));
+              }}
+              className={`${styles.nav_button} ${
+                activeSection === "history" ? styles.active : ""
+              }`}
             >
-              <RefreshIcon
-                width="15"
-                height="15"
-                className={styles.refresh_icon}
-                strokeColor={"var(--text-color-blue-intens)"}
-              >
-                <ClockMiniIcon />
-              </RefreshIcon>
+              <HistoryRefreshIcon width="15" height="15" />
 
               <div>
-                Upload
-                <p>Process new documents</p>
+                History
+                <p>View past summaries</p>
               </div>
             </li>
             <li
-              onClick={() => scrollToSection("analitics")}
-              className={styles.nav_button}
+              onClick={() => {
+                (scrollToSection("analitics"), setActiveSection("analitics"));
+              }}
+              className={`${styles.nav_button} ${
+                activeSection === "analitics" ? styles.active : ""
+              }`}
             >
-              <UploadIcon
-                width="15"
-                height="15"
-                // className={styles.upload_icon}
-                strokeColor={"var(--text-color-light-gray)"}
-              />
+              <PieChartIcon />
               <div>
-                Upload
-                <p>Process new documents</p>
+                Analytics
+                <p>View your stats</p>
               </div>
             </li>
           </ul>
@@ -94,7 +114,8 @@ const Dashboard = ({ userSummaries, userName }) => {
           <div className={styles.controls}>
             <DropZone />
           </div>
-          <div id="history" className={styles.array_panel}>
+          <div id="history" className={styles.history_id}></div>
+          <div className={styles.array_panel}>
             <h2>Recent Summaries </h2>
             <p>
               Your document processing <span>saved up to 30 days</span>
