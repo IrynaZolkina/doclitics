@@ -6,11 +6,11 @@
 
 .left_panel {
   position: fixed;
-  top: 100px;
-  left: 30px;
-  width: 250px;
+  top: 257px;
+  left: 50px;
+  width: 256px;
   margin-right: 40px;
-  padding: 30px 20px;
+  padding: 30px 25px;
   color: var(--text-color-light-gray);
   border: 1px solid rgba(33, 44, 59, 0.2);
   height: 30vh;
@@ -19,8 +19,33 @@
     0 10px 30px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.05);
 }
+.nav_button {
+  font-size: 13.23px;
+  color: var(--text-color-blue-intens);
+  /* width: 300px; */
+  border: 1px;
+  border-radius: 12px;
+  padding: 11px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+}
+.nav_button:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+.upload_icon {
+  background: lavender;
+}
+.nav_button p {
+  font-size: 11.25px;
+  margin-top: 3px;
+  color: var(--text-color-light-gray);
+}
 .center_panel {
   margin-left: 320px;
+  scroll-margin-top: 364px;
   /* border: 1px solid rgba(33, 44, 59, 0.2); */
   /* height: 289vh; */
 }

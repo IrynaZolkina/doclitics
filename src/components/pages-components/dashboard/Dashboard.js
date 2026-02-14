@@ -6,25 +6,95 @@ import { useSelector } from "react-redux";
 import DropZone from "../homepage/dropzone/DropZone";
 import CheckIcon from "@/components-svg/CheckIcon";
 import DocIcon from "@/components-svg/DocIcon";
+import UploadIcon from "@/components-svg/UploadIcon";
+import { useRef } from "react";
+import RefreshIcon from "@/components-svg/RefreshIcon";
+import ClockMiniIcon from "@/components-svg/ClockMiniIcon";
 
 const Dashboard = ({ userSummaries, userName }) => {
   // const user = useSelector((state) => state.user);
+  const contentRef = useRef(null);
+  const scrollToSection = (href) => {
+    const element = document.getElementById(href);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // const yOffset = 0; // adjust if needed
+    // const y =
+    //   element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+    // window.scrollTo({
+    //   top: y,
+    //   behavior: "smooth",
+    // });
+  };
+
   return (
     <div className={styles._container}>
       <div className={styles.container}>
         <div className={styles.left_panel}>
           <h2>Navigation</h2>
-          <div className={styles.controls}></div>
+          <ul className={styles.navbar}>
+            <li
+              onClick={() => scrollToSection("dropzone")}
+              className={styles.nav_button}
+            >
+              <UploadIcon
+                width="15"
+                height="15"
+                // className={styles.upload_icon}
+                strokeColor={"var(--text-color-blue-intens)"}
+              />
+              <div>
+                Upload
+                <p>Process new documents</p>
+              </div>
+            </li>
+            <li
+              onClick={() => scrollToSection("history")}
+              className={styles.nav_button}
+            >
+              <RefreshIcon
+                width="15"
+                height="15"
+                className={styles.refresh_icon}
+                strokeColor={"var(--text-color-blue-intens)"}
+              >
+                <ClockMiniIcon />
+              </RefreshIcon>
+
+              <div>
+                Upload
+                <p>Process new documents</p>
+              </div>
+            </li>
+            <li
+              onClick={() => scrollToSection("analitics")}
+              className={styles.nav_button}
+            >
+              <UploadIcon
+                width="15"
+                height="15"
+                // className={styles.upload_icon}
+                strokeColor={"var(--text-color-blue-intens)"}
+              />
+              <div>
+                Upload
+                <p>Process new documents</p>
+              </div>
+            </li>
+          </ul>
         </div>
-        <div className={styles.center_panel}>
+        <div ref={contentRef} id="dropzone" className={styles.center_panel}>
           <h1>
             <span>Hello,</span> {userName}! 👋{" "}
           </h1>
           <p>Ready to transform your documents into intelligent summaries?</p>
           <div className={styles.controls}>
             <DropZone />
-          </div>{" "}
-          <div className={styles.array_panel}>
+          </div>
+          <div id="history" className={styles.array_panel}>
             <h2>Recent Summaries </h2>
             <p>
               Your document processing <span>saved up to 30 days</span>
@@ -54,7 +124,7 @@ const Dashboard = ({ userSummaries, userName }) => {
               ))}
             </div>
           </div>
-          <h1>Your Analytics</h1>
+          <h1 id="analitics">Your Analytics</h1>
           <p>Track your document processing performance and usage patterns</p>
         </div>
       </div>
