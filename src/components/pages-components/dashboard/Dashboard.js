@@ -43,8 +43,8 @@ const Dashboard = ({ userSummaries, userName }) => {
               <UploadIcon
                 width="15"
                 height="15"
-                // className={styles.upload_icon}
-                strokeColor={"var(--text-color-blue-intens)"}
+                className={styles.navbar_icon}
+                strokeColor={"var(--text-color-light-gray)"}
               />
               <div>
                 Upload
@@ -77,7 +77,7 @@ const Dashboard = ({ userSummaries, userName }) => {
                 width="15"
                 height="15"
                 // className={styles.upload_icon}
-                strokeColor={"var(--text-color-blue-intens)"}
+                strokeColor={"var(--text-color-light-gray)"}
               />
               <div>
                 Upload

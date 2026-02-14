@@ -60,7 +60,8 @@ export async function POST(request) {
     const content = params?.content;
     const fileName = params?.fileName;
 
-    console.log("CHAT HIT ----:------------------ 4 ");
+    console.log("CHAT HIT ----:------------------ 4 content ", content);
+    console.log("CHAT HIT ----:------------------ 4 prompt ", prompt);
 
     if (!prompt || !content) {
       return errorResponse("BAD_REQUEST", "Missing prompt or content", 400);
@@ -171,9 +172,9 @@ export async function POST(request) {
       const completion = await openai.chat.completions.create({
         // model: "deepseek/deepseek-r1-0528-qwen3-8b:free", // Reasoning models (slow, but free)
         // model: "mistralai/mistral-7b-instruct:free",
-        //model: "qwen/qwen2.5-7b-instruct:free",
+        model: "qwen/qwen3-next-80b-a3b-instruct",
         // model: "deepseek/deepseek-r1",
-        model: "deepseek/deepseek-r1-0528:free",
+        // model: "deepseek/deepseek-r1-0528:free",
 
         messages: [
           { role: "system", content: prompt },

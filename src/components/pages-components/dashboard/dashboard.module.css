@@ -21,7 +21,6 @@
 }
 .nav_button {
   font-size: 13.23px;
-  color: var(--text-color-blue-intens);
   /* width: 300px; */
   border: 1px;
   border-radius: 12px;
@@ -34,6 +33,10 @@
 }
 .nav_button:hover {
   background: rgba(59, 130, 246, 0.1);
+  color: var(--text-color-blue-intens);
+}
+.navbar_icon:hover {
+  strokecolor: var(--text-color-blue-intens);
 }
 .upload_icon {
   background: lavender;
