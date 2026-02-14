@@ -32,9 +32,10 @@ export default function Summary() {
   const firstMount = useRef(true);
   // const choices = useSelector((state) => state.summary);
   const choices = useSelector((state) => state.summary.choices);
-  const type = useSelector((state) => state.file.tone);
+  const type = useSelector((state) => state.file.type);
   const depth = useSelector((state) => state.file.depth);
   const style = useSelector((state) => state.file.style);
+  const tone = useSelector((state) => state.file.tone);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isPdfReady, setIsPdfReady] = useState(false);
@@ -63,14 +64,14 @@ export default function Summary() {
     }
   }, [choices]);
 
-  useEffect(() => {
-    return () => {
-      // runs when user navigates away (menu click -> dashboard)
-      dispatch(clearSummary());
-      // dispatch(clearFileData());
-      // dispatch(clearCurrentFileMeta()); // if you have it
-    };
-  }, [dispatch]);
+  // useEffect(() => {
+  //   return () => {
+  //     // runs when user navigates away (menu click -> dashboard)
+  //     dispatch(clearSummary());
+  //     // dispatch(clearFileData());
+  //     // dispatch(clearCurrentFileMeta()); // if you have it
+  //   };
+  // }, [dispatch]);
 
   const save_summary_to_db = useCallback(async () => {
     if (!choices || choices.length === 0) return;
@@ -218,7 +219,7 @@ export default function Summary() {
           </div>
           <div>
             <span>Summary Style</span>
-            <span>{style}</span>
+            <span>{tone}</span>
           </div>
           {/* <div>
             <span>Time Taken</span>

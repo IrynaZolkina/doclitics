@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getFileFromIndexedDB, deleteFileFromIndexedDB } from "@/lib/indexeddb";
 import { promptMd } from "@/components/pages-components/summary/promptMd";
 import {
+  clearSummary,
   setDocsAmount,
   setFileData,
   setLastPage,
@@ -50,7 +51,7 @@ export default function SummaryParams() {
     fileMeta: { name: "", type: "", size: 0 },
     inputAdditional: "",
     activeIndexType: 0,
-    activeIndexTone: 3,
+    activeIndexTone: 3, // tone===style
     activeIndexSize: 0,
     value: 800,
     pageNum: 1,
@@ -211,7 +212,8 @@ export default function SummaryParams() {
 - File type: ${fileType}
 - File size: ${fileSize}
 - Target tone: ${TONE}
-- Target length: ~${WORDCOUNT} words`;
+- Target length: ~${WORDCOUNT} words
+`;
 
       const finalPrompt = `${docContext}
 
@@ -234,7 +236,7 @@ ${additionalNotes}
       // const reqId =
       //   crypto?.randomUUID?.() ??
       //   `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-
+      dispatch(clearSummary());
       router.push("/summary");
       // console.log("SEND /api/chat reqId:", reqId);
       const response = await apiFetch("/api/chat", {
@@ -245,7 +247,8 @@ ${additionalNotes}
         },
         body: JSON.stringify({
           content: extractedText,
-          prompt: formattedPrompt, //finalPrompt,
+          prompt: finalPrompt,
+          // prompt: formattedPrompt, //finalPrompt,
           fileName: fileName,
         }),
       });

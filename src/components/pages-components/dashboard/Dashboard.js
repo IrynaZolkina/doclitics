@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 
 import HistoryRefreshIcon from "@/components-svg/HistoryRefreshIcon";
 import PieChartIcon from "@/components-svg/PieChartIcon";
+import CalendarIcon from "@/components-svg/CalendarIcon";
 
 const Dashboard = ({ userSummaries, userName }) => {
   const [activeSection, setActiveSection] = useState("dropzone");
@@ -106,6 +107,11 @@ const Dashboard = ({ userSummaries, userName }) => {
             </li>
           </ul>
         </div>
+        <div className={`${styles.left_panel} ${styles.left_panel_down}`}>
+          {" "}
+          <h2>Quick Stats</h2>
+        </div>
+
         <div ref={contentRef} id="dropzone" className={styles.center_panel}>
           <h1>
             <span>Hello,</span> {userName}! 👋{" "}
@@ -124,12 +130,32 @@ const Dashboard = ({ userSummaries, userName }) => {
               {userSummaries.map((item) => (
                 // <Link href={item.href} key={item.label}>
                 <div key={item.createdAt} className={styles.list_item}>
-                  <div className={styles.list_item_filename}>
+                  <div className={styles.list_item_filename_and_attr}>
                     <DocIcon strokeColor={"rgba(248, 113, 113, 1)"} />
-                    <div>
-                      {item.fileName || "mmmmmmmmmmmm"}
+                    <div className={styles.list_item_filename}>
+                      <h4>{item.fileName || "mmmmmmmmmmmm"}</h4>
                       <div className={styles.list_item_date_number}>
-                        <span>one</span> two
+                        <h4>
+                          <CalendarIcon
+                            size={12}
+                            color={" var(--text-color-blue)"}
+                          />
+                          {new Date(item.createdAt).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </h4>
+                        <h5>
+                          <DocIcon
+                            width={12}
+                            height={12}
+                            strokeColor={" var(--text-color-blue)"}
+                          />
+                          {item.summary_text_length} words
+                        </h5>
                       </div>
                     </div>
                   </div>
@@ -147,6 +173,20 @@ const Dashboard = ({ userSummaries, userName }) => {
           </div>
           <h1 id="analitics">Your Analytics</h1>
           <p>Track your document processing performance and usage patterns</p>
+          <div className={styles.analitics_greed}>
+            <div className={styles.analitics_greed_section}>
+              Total Summaries
+            </div>
+            <div className={styles.analitics_greed_section}>
+              Avg Summary Length
+            </div>
+            <div className={styles.analitics_greed_section}>
+              Summaries Made in the last 30 days.{" "}
+            </div>
+            <div className={styles.analitics_greed_section}>
+              Documents Left in Your Plan
+            </div>
+          </div>
         </div>
       </div>
     </div>

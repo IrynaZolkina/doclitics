@@ -81,14 +81,14 @@ const DropZone = () => {
         toastSuperFunctionJS("File too large (max 10MB)", "error");
         return;
       }
-      dispatch(
-        setCurrentFileMeta({
-          fileName: chosenFile.name,
-          fileType: chosenFile.type,
-          fileSize: chosenFile.size,
-          // or actual base64 string if you generate it
-        }),
-      );
+      // dispatch(
+      //   setCurrentFileMeta({
+      //     fileName: chosenFile.name,
+      //     fileType: chosenFile.type,
+      //     fileSize: chosenFile.size,
+      //     // or actual base64 string if you generate it
+      //   }),
+      // );
       if (chosenFile) {
         try {
           await saveFileToIndexedDB("current-pdf", chosenFile);

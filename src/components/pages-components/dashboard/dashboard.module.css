@@ -10,15 +10,21 @@
   left: 50px;
   width: 256px;
   margin-right: 40px;
-  padding: 30px 25px;
+  padding: 30px 25px 30px;
   color: var(--text-color-light-gray);
   border: 1px solid rgba(33, 44, 59, 0.2);
-  height: 30vh;
+  /* height: 30vh; */
   border-radius: 20px;
   box-shadow:
     0 10px 30px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.05);
 }
+.left_panel_down {
+  top: 590px;
+}
+/* .navbar {
+  padding-bottom: 50px;
+} */
 .nav_button {
   font-size: 13.23px;
   /* width: 300px; */
@@ -73,10 +79,10 @@
   left: 500px;
 }
 .array_panel {
-  padding: 40px 30px;
+  padding: 40px 40px;
   max-width: 888px;
   /* margin-right: 40px; */
-  margin-top: 30px;
+  margin: 30px 0;
   border: 1px solid rgba(33, 44, 59, 0.2);
   /* height: 50vh; */
   border-radius: 20px;
@@ -117,31 +123,50 @@
     0 10px 10px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.05);
   padding: 17px;
-  margin: 6px;
+  margin: 12px;
   display: flex;
   justify-content: space-between;
 }
-.list_item_filename {
+.list_item_filename_and_attr {
+  width: 60%;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+.list_item_filename h4 {
+  color: var(--text-color-white);
+  /* font-weight: bold; */
+  font-size: 15.38px;
 }
 .list_item_date_number {
+  margin-top: 8px;
+  width: 250px;
   display: flex;
   justify-content: space-between;
 }
-/* .container {
-  padding-top: 20px;
+.list_item_date_number h4 {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  background: var(--gradient-hero);
-  color: var(--text-color-white);
-  transition:
-    background 2s,
-    color 2s,
-    border-color 2s;
+  gap: 5px;
+  font-size: 12.91px;
+  color: var(--text-color-light-gray);
 }
-.container h1 {
-  margin-top: 80px;
-  margin-bottom: 20px;
-} */
+.list_item_date_number h5 {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.8px;
+  color: var(--text-color-light-gray);
+}
+.analitics_greed {
+  margin-top: 20px;
+  display: grid;
+  gap: 24px;
+  max-width: 888px;
+  grid-template-columns: 1fr 1fr;
+}
+.analitics_greed_section {
+  background: rgba(15, 19, 26, 1);
+  border-radius: 12px;
+  height: 130px;
+}
