@@ -182,7 +182,7 @@ export async function POST(request) {
         ],
 
         // temperature: 0,
-        // max_tokens: 256, //1024, //4096,
+        max_tokens: 2048, //4096,
         // top_p: 1,
         // frequency_penalty: 0,
         // presence_penalty: 0,
