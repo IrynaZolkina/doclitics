@@ -82,6 +82,8 @@ const initialUserState = {
   picture: null,
   docsAmount: 0,
   userSummaries: [], // 👈 add this
+  cancelAtPeriodEnd: false,
+  currentPeriodEnd: null,
 };
 
 const userSlice = createSlice({
@@ -98,6 +100,8 @@ const userSlice = createSlice({
       state.picture = action.payload.picture ?? null;
       state.docsAmount = action.payload.docsAmount ?? 0;
       state.totalDocs = action.payload.totalDocs ?? 0;
+      state.cancelAtPeriodEnd = action.payload.cancelAtPeriodEnd;
+      state.currentPeriodEnd = action.payload.currentPeriodEnd;
     },
     // ✅ add this
     setDocsAmount(state, action) {

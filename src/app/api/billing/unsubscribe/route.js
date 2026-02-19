@@ -1,6 +1,6 @@
 // app/api/billing/unsubscribe/route.js
 import { stripe } from "@/lib/stripe/stripe";
-import clientPromise from "@/lib/mongodb/mongodb";
+import clientPromise, { getUserCollection } from "@/lib/mongodb/mongodb";
 import { ObjectId } from "mongodb";
 
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
@@ -8,6 +8,8 @@ import { getCsrfTokens, validateCsrf } from "@/lib/auth/csrf";
 
 import { errorResponse } from "@/lib/responsehandlers/errorResponse";
 import { successResponse } from "@/lib/responsehandlers/successResponse";
+import { cookies } from "next/headers";
+import { verifyAccessToken } from "@/lib/jwt";
 
 function getPeriodEndSeconds(sub) {
   return (
@@ -33,12 +35,26 @@ export async function POST(request) {
       );
     }
     console.log("--------------Unsubscribe--- 2");
-    const user = await getCurrentUser();
+    // const user = await getCurrentUser();
+
+    // 1) Auth user (server reads cookies)
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value;
+    if (!accessToken) return errorResponse("UNAUTHORIZED", "Unauthorized", 401);
+
+    const payload = verifyAccessToken(accessToken);
+
+    if (!payload) return errorResponse("UNAUTHORIZED", "Unauthorized", 401);
+
+    const userId = ObjectId.createFromHexString(payload.userId);
+    const users = await getUserCollection();
+    const user = await users.findOne({ _id: userId });
+
     console.log("--------------Unsubscribe--- 3", user);
     if (!user) return errorResponse("UNAUTHORIZED", "Unauthorized", 401);
     console.log("--------------Unsubscribe--- 3-1");
-    const userId =
-      typeof user._id === "string" ? new ObjectId(user._id) : user._id;
+    // const userId =
+    //   typeof user._id === "string" ? new ObjectId(user._id) : user._id;
     console.log("--------------Unsubscribe--- 3-2");
     const subscriptionId = user.stripeSubscriptionId;
 

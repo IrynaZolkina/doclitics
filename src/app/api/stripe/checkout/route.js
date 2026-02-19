@@ -1,19 +1,31 @@
 import { stripe } from "@/lib/stripe/stripe";
 import { PLANS } from "@/lib/stripe/plans";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import clientPromise from "@/lib/mongodb/mongodb";
+import clientPromise, { getUserCollection } from "@/lib/mongodb/mongodb";
 import { ObjectId } from "mongodb";
 
 import { errorResponse } from "@/lib/responsehandlers/errorResponse";
 import { successResponse } from "@/lib/responsehandlers/successResponse";
 
 import { getCsrfTokens, validateCsrf } from "@/lib/auth/csrf";
+import { cookies } from "next/headers";
+import { getUserFromToken } from "@/lib/auth/getUserFromToken";
+import { verifyAccessToken } from "@/lib/jwt";
 
 export async function POST(req) {
   try {
     // ✅ CSRF check (important for cookie-auth POST)
-    const { csrfHeader, csrfCookie } = getCsrfTokens(req);
-    validateCsrf(csrfHeader, csrfCookie);
+    try {
+      const { csrfHeader, csrfCookie } = getCsrfTokens(request);
+      validateCsrf(csrfHeader, csrfCookie);
+    } catch (err) {
+      console.log("CHAT ERROR ----:------------------ 1 ");
+      return errorResponse(
+        "CSRF_MISMATCH",
+        err.message || "CSRF mismatch",
+        403,
+      );
+    }
 
     // 0) Read plan from request
     const { plan } = await req.json(); // "Free", "Pro", "Enterprise"
@@ -39,13 +51,27 @@ export async function POST(req) {
     }
 
     // 1) Auth user (server reads cookies)
-    const user = await getCurrentUser();
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value;
+    if (!accessToken) return errorResponse("UNAUTHORIZED", "Unauthorized", 401);
+
+    const payload = verifyAccessToken(accessToken);
+
+    if (!payload) return errorResponse("UNAUTHORIZED", "Unauthorized", 401);
+
+    const userId = ObjectId.createFromHexString(payload.userId);
+    const users = await getUserCollection();
+    const user = await users.findOne({ _id: userId });
+
+    //  const { user } = await getUserFromToken(accessToken);
+
+    // const user = await getCurrentUser();
     if (!user) {
       return errorResponse("UNAUTHORIZED", "Unauthorized", 401);
     }
 
-    const userId =
-      typeof user._id === "string" ? new ObjectId(user._id) : user._id;
+    // const userId =
+    //   typeof user._id === "string" ? new ObjectId(user._id) : user._id;
 
     // Optional: prevent duplicate subscriptions
     if (user.stripeSubscriptionId && user.subscriptionStatus === "active") {

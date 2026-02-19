@@ -24,6 +24,8 @@ export async function createUser(data, insertToUsers = true) {
     stripeCustomerId: data.stripeCustomerId || null,
     stripeSubscriptionId: data.stripeSubscriptionId || null,
     docsAmount: data.docsAmount || 0,
+    freeResetMonth: null,
+    freeResetAt: null,
 
     createdAt: now,
     updatedAt: now,

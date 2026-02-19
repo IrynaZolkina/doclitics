@@ -13,9 +13,16 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
-  const { username, email, picture, plan, totalDocs, docsAmount } = useSelector(
-    (state) => state.user,
-  );
+  const {
+    username,
+    email,
+    picture,
+    plan,
+    totalDocs,
+    docsAmount,
+    cancelAtPeriodEnd,
+    currentPeriodEnd,
+  } = useSelector((state) => state.user);
   const user = useSelector((state) => state.user);
   console.log("user----", user);
 
@@ -128,12 +135,21 @@ const ProfilePage = () => {
               Plan :<span>{plan}</span>
             </p>
             <p>
-              Plan :<span>{plan}</span>
+              {cancelAtPeriodEnd ? "Your Plan Ends on:" : "Next billing Date"}
+              <span>
+                {new Date(currentPeriodEnd).toLocaleString("en-GB", {
+                  month: "long",
+                  day: "2-digit",
+                  year: "numeric",
+                  // hour: "2-digit",
+                  // minute: "2-digit",
+                })}
+              </span>
             </p>
           </div>
           <div className={styles.line}></div>
           <h3 onClick={handleUnsubscribe} disabled={loading}>
-            Unsubscribe
+            {cancelAtPeriodEnd ? "You Are Unsubscribed" : " Unsubscribe"}
           </h3>
         </div>
         <div className={styles.info_block}>

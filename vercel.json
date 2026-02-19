@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/free-reset",
+      "schedule": "15 2 * * *",
+      "headers": {
+        "Authorization": "Bearer $CRON_SECRET",
+        "x-vercel-protection-bypass": "$VERCEL_AUTOMATION_BYPASS_SECRET"
+      }
+    }
+  ]
+}

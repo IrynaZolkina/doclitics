@@ -269,7 +269,7 @@ export async function POST(req) {
         subscriptionStatus: "active",
         plan,
         creditsGrantedAt: now, // optional: only set this if granting
-        creditsExpireAt: expireAt, // optional: only set this if granting
+        // creditsExpireAt: expireAt, // optional: only set this if granting
         cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
         nextBillingDate: toDateFromSeconds(periodEndSec),
         currentPeriodEnd: toDateFromSeconds(periodEndSec),
@@ -279,7 +279,8 @@ export async function POST(req) {
     const docsToAdd = docsForPlan(plan);
 
     if (shouldGrantCredits) {
-      update.$inc = { docsAmount: docsToAdd };
+      // update.$inc = { docsAmount: docsToAdd };
+      update.$set.docsAmount = docsToAdd;
     } else {
       // ✅ Remove credit fields if you don't want to touch them on non-cycle invoices
       delete update.$set.creditsGrantedAt;
@@ -290,60 +291,13 @@ export async function POST(req) {
       .collection("users")
       .updateOne({ stripeSubscriptionId: subscriptionId }, update);
 
-    //     const resultUser = await db.collection("users").updateOne(
-    //   { stripeSubscriptionId: subscriptionId },
-    //   {
-    //     $set: {
-    //       subscriptionStatus: "active",
-    //       plan,
-
-    //       creditsGrantedAt: now,
-    //       creditsExpireAt: expireAt,
-
-    //       cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
-
-    //       // ✅ NEXT BILLING DATE (what to show user)
-    //       nextBillingDate: toDateFromSeconds(periodEndSec),
-
-    //       // optional
-    //       currentPeriodStart: toDateFromSeconds(periodStartSec),
-    //       currentPeriodEnd: toDateFromSeconds(periodEndSec),
-
-    //       updatedAt: now,
-    //     },
-    //     $inc: { docsAmount: docsToAdd },
-    //   }
-    // );
-
-    // const resultUser = await db.collection("users").updateOne(
-    //   { stripeSubscriptionId: subscriptionId },
-    //   {
-    //     $set: {
-    //       subscriptionStatus: "active",
-
-    //       plan,
-
-    //       creditsGrantedAt: now,
-    //       creditsExpireAt: expireAt,
-
-    //       // ✅ ADD: keep cancel info updated too
-    //       cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
-    //       currentPeriodEnd: subscription.current_period_end
-    //         ? new Date(subscription.current_period_end * 1000)
-    //         : null,
-
-    //       updatedAt: now,
-    //     },
-    //     $inc: { docsAmount: docsToAdd },
-    //   },
-    // );
-    console.log("✅ invoice.payment_succeeded", {
-      invoiceId: invoice.id,
-      billingReason: invoice.billing_reason,
-      subscriptionId,
-      amountPaid: invoice.amount_paid,
-      currency: invoice.currency,
-    });
+    // console.log("✅ invoice.payment_succeeded", {
+    //   invoiceId: invoice.id,
+    //   billingReason: invoice.billing_reason,
+    //   subscriptionId,
+    //   amountPaid: invoice.amount_paid,
+    //   currency: invoice.currency,
+    // });
 
     if (resultUser.matchedCount === 0) {
       console.error("❌ User not found for subscription:", subscriptionId);
