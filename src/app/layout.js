@@ -3,11 +3,8 @@ import "./globals.css";
 
 import { ReduxProvider } from "../redux/Providers";
 import Footer from "@/components/footer/Footer";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { Suspense } from "react";
-import UserHydrator from "@/lib/auth/UserHydrator";
 import Header from "@/components/header/header/Header";
-import PopupLogin from "@/components/auth/login/PopupLogin";
 import LoginPopupHost from "@/components/auth/login/LoginPopupHost";
 
 // import StripeProvider from "@/components/StripeProvider";
@@ -43,15 +40,6 @@ const roboto = Roboto({
 // };
 
 export default async function RootLayout({ children }) {
-  // const user = await getCurrentUser();
-  // const safeUser = user
-  //   ? {
-  //       ...user,
-  //       _id: user._id.toString(),
-  //       createdAt: user.createdAt?.toISOString(),
-  //       updatedAt: user.updatedAt?.toISOString(),
-  //     }
-  //   : null;
   console.log("ROOT LAYOUT -------------------------:");
   return (
     <html lang="en" className="test">

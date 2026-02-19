@@ -1,6 +1,9 @@
 "use client";
 import Image from "next/image";
 import styles from "./supportsection.module.css";
+import BagIcon from "@/components-svg/BagIcon";
+import GraduationIcon from "@/components-svg/GraduationIcon";
+import BookIcon from "@/components-svg/BookIcon";
 
 const SupportSection = () => {
   return (
@@ -15,7 +18,9 @@ const SupportSection = () => {
       <div className={styles.supportGridContainer}>
         <div>
           <section>
-            <Image src="page3_01.svg" alt="01" width={36} height={36} />
+            <BagIcon width={30} height={30} color="#5593F7" />
+
+            {/* <Image src="page3_01.svg" alt="01" width={36} height={36} /> */}
           </section>
           <h3>Business Reports</h3>
           <p>Executive summaries, quarterly reports,</p>
@@ -23,7 +28,8 @@ const SupportSection = () => {
         </div>
         <div>
           <section>
-            <Image src="page3_02.svg" alt="01" width={36} height={36} />
+            <GraduationIcon size={40} color="rgba(168, 85, 247, 1)" />
+            {/* <Image src="page3_02.svg" alt="01" width={36} height={36} /> */}
           </section>
           <h3>Academic Papers</h3>
           <p>Research papers, thesis documents,</p>
@@ -31,7 +37,8 @@ const SupportSection = () => {
         </div>
         <div>
           <section>
-            <Image src="page3_03.svg" alt="01" width={36} height={36} />
+            <BookIcon size={35} color="rgba(34, 197, 94, 1)" />
+            {/* <Image src="page3_03.svg" alt="01" width={36} height={36} /> */}
           </section>
           <h3>Literature Reviews</h3>
           <p>Book summaries, literature analyses,</p>

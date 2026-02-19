@@ -1,5 +1,5 @@
 .heroDivImage {
-  margin-top: 35px;
+  /* margin-top: 35px; */
   position: relative;
   border: 2px dashed rgba(85, 147, 247, 0.4);
   box-shadow: 0px 8px 32px 0px rgba(11, 17, 30, 0.3);
@@ -15,7 +15,7 @@
   width: 888px;
   height: 348px;
 
-  background: rgba(0, 11, 22, 0.55);
+  /* background: rgba(0, 11, 22, 0.55);
   box-shadow: 0px 8px 32px 0px rgba(133, 178, 249, 0.12);
 
   backdrop-filter: blur(12px);
@@ -30,7 +30,7 @@
     50% 50% at 50% 50%,
     rgba(18, 26, 43, 0.19) 0%,
     rgba(61, 88, 145, 0.19) 100%
-  );
+  ); */
 }
 
 .my_upload_icon {
@@ -97,7 +97,7 @@
 }
 .heroDivImage input[type="file"]::file-selector-button {
   /* visibility: hidden; */
-  background: var(--button-blue-background);
+  /* background: var(--button-blue-background); */
   position: absolute;
   /* z-index: 100; */
 

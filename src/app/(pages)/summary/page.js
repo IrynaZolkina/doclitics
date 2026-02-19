@@ -73,35 +73,35 @@ export default function Summary() {
   //   };
   // }, [dispatch]);
 
-  const save_summary_to_db = useCallback(async () => {
-    if (!choices || choices.length === 0) return;
+  // const save_summary_to_db = useCallback(async () => {
+  //   if (!choices || choices.length === 0) return;
 
-    // ✅ already saved this exact summary
-    if (savedKeyRef.current === summaryKey) return;
-    savedKeyRef.current = summaryKey;
+  //   // ✅ already saved this exact summary
+  //   if (savedKeyRef.current === summaryKey) return;
+  //   savedKeyRef.current = summaryKey;
 
-    const res = await apiFetch("/api/save-summary-db", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        summary_text: choices,
-        summary_text_length: countWords(choices),
-      }),
-    });
+  //   const res = await apiFetch("/api/save-summary-db", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       summary_text: choices,
+  //       summary_text_length: countWords(choices),
+  //     }),
+  //   });
 
-    // optional: if save failed, allow retry next render
-    if (!res || !res.ok) {
-      savedKeyRef.current = null;
-      return;
-    }
+  //   // optional: if save failed, allow retry next render
+  //   if (!res || !res.ok) {
+  //     savedKeyRef.current = null;
+  //     return;
+  //   }
 
-    const data = await res.json();
+  //   const data = await res.json();
 
-    // ✅ if your API returns remaining docsAmount
-    if (typeof data?.docsAmount === "number") {
-      dispatch(setDocsAmount(data.docsAmount));
-    }
-  }, [choices, summaryKey]);
+  //   // ✅ if your API returns remaining docsAmount
+  //   if (typeof data?.docsAmount === "number") {
+  //     dispatch(setDocsAmount(data.docsAmount));
+  //   }
+  // }, [choices, summaryKey]);
 
   useEffect(() => {
     // if (choices && choices.length > 0) {

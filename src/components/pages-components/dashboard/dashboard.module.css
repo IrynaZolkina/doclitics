@@ -1,16 +1,20 @@
 .container {
   background: var(--gradient-section);
   padding: 50px;
-  padding-top: 150px;
+  position: relative;
+  /* padding-top: 150px; */
 }
-
-.left_panel {
-  position: fixed;
+.left_panel_container {
+  position: sticky;
   top: 257px;
   left: 50px;
-  width: 256px;
   margin-right: 40px;
+  /* width: 300px; */
+  /* margin-left: 40px; */
+}
+.left_panel {
   padding: 30px 25px 30px;
+  width: 256px;
   color: var(--text-color-light-gray);
   border: 1px solid rgba(33, 44, 59, 0.2);
   /* height: 30vh; */
@@ -20,7 +24,7 @@
     0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 .left_panel_down {
-  top: 590px;
+  margin-top: 40px;
 }
 /* .navbar {
   padding-bottom: 50px;
@@ -55,9 +59,41 @@
   margin-top: 3px;
   color: var(--text-color-light-gray);
 }
+
+.quick_stats_element {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  align-items: center;
+}
+.quick_stats_element h4 {
+  font-size: 14px;
+}
+.quick_stats_element p {
+  font-size: 11.06px;
+}
+.profile {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  align-items: center;
+  border-radius: 12px;
+  padding: 10px;
+}
+.profile:hover {
+  background: rgba(60, 131, 246, 0.15);
+  color: var(--text-color-blue-intens);
+}
+.profile h4 {
+  font-size: 14px;
+}
+.profile p {
+  font-size: 11.06px;
+}
 .center_panel {
   margin-left: 320px;
-  scroll-margin-top: 364px;
+  margin-top: -300px;
+  /* scroll-margin-top: 164px; */
   /* border: 1px solid rgba(33, 44, 59, 0.2); */
   /* height: 289vh; */
 }
@@ -70,7 +106,7 @@
 }
 .center_panel p {
   font-size: 16.73px;
-  margin-top: 15px;
+  margin: 15px 0 25px;
   color: var(--text-color-light-gray);
 }
 .history_id {
@@ -169,4 +205,26 @@
   background: rgba(15, 19, 26, 1);
   border-radius: 12px;
   height: 130px;
+}
+.dropzone_container {
+  margin: 0;
+  padding: 0;
+  width: 888px;
+  /* background: rgba(0, 11, 22, 0.55); */
+  box-shadow: 0px 8px 32px 0px rgba(133, 178, 249, 0.12);
+
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(18, 26, 43, 0.19) 0%,
+    rgba(61, 88, 145, 0.19) 100%
+  );
 }

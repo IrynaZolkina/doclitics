@@ -70,6 +70,26 @@ export async function POST(req) {
     if (plan === "basic") return 15;
     return 3;
   }
+  function getPeriodEndSeconds(sub) {
+    return (
+      sub?.current_period_end ??
+      sub?.items?.data?.[0]?.current_period_end ??
+      null
+    );
+  }
+
+  function getPeriodStartSeconds(sub) {
+    return (
+      sub?.current_period_start ??
+      sub?.items?.data?.[0]?.current_period_start ??
+      null
+    );
+  }
+
+  function toDateFromSeconds(sec) {
+    return sec ? new Date(sec * 1000) : null;
+  }
+
   // ------------------------
   // 1️⃣ Checkout session completed
   // ------------------------
@@ -114,20 +134,46 @@ export async function POST(req) {
       return successResponse({ received: true }, "Missing metadata", 200);
     }
 
+    // await db.collection("users").updateOne(
+    //   { _id: new ObjectId(userId) },
+    //   {
+    //     $set: {
+    //       stripeSubscriptionId: subscriptionId,
+    //       plan: plan,
+    //       subscriptionStatus:
+    //         session.payment_status === "paid" ? "active" : "pending",
+
+    //       // ✅ ADD: store cancel info for UI
+    //       cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
+    //       currentPeriodEnd: subscription.current_period_end
+    //         ? new Date(subscription.current_period_end * 1000)
+    //         : null,
+
+    //       updatedAt: new Date(),
+    //     },
+    //   },
+    // );
+
+    const periodEndSec = getPeriodEndSeconds(subscription);
+    const periodStartSec = getPeriodStartSeconds(subscription);
+
     await db.collection("users").updateOne(
       { _id: new ObjectId(userId) },
       {
         $set: {
           stripeSubscriptionId: subscriptionId,
-          plan: plan,
+          plan,
           subscriptionStatus:
             session.payment_status === "paid" ? "active" : "pending",
 
-          // ✅ ADD: store cancel info for UI
           cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
-          currentPeriodEnd: subscription.current_period_end
-            ? new Date(subscription.current_period_end * 1000)
-            : null,
+
+          // ✅ NEXT BILLING DATE (what to show user)
+          nextBillingDate: toDateFromSeconds(periodEndSec),
+
+          // optional but useful
+          currentPeriodStart: toDateFromSeconds(periodStartSec),
+          currentPeriodEnd: toDateFromSeconds(periodEndSec),
 
           updatedAt: new Date(),
         },
@@ -148,6 +194,20 @@ export async function POST(req) {
     const invoice = event.data.object;
 
     console.log("➡️ Invoice lines:", invoice.lines?.data);
+
+    const billingReason = invoice?.billing_reason ?? null;
+
+    const shouldGrantCredits =
+      billingReason === "subscription_cycle" ||
+      billingReason === "subscription_create";
+
+    if (!shouldGrantCredits) {
+      console.log("🟡 Not granting docs for invoice", {
+        invoiceId: invoice.id,
+        billingReason,
+        subscriptionId: invoice.subscription,
+      });
+    }
 
     // ✅ ADD: idempotency per invoice event
     const firstTime = await markEventProcessed(event, {
@@ -190,34 +250,100 @@ export async function POST(req) {
       return successResponse({ received: true }, "Missing plan", 200);
     }
 
+    const periodEndSecFromSub = getPeriodEndSeconds(subscription);
+
+    // ✅ SUPER RELIABLE fallback: invoice line period end
+    const periodEndSecFromInvoice =
+      invoice?.lines?.data?.[0]?.period?.end ?? null;
+
+    // pick the best available
+    const periodEndSec = periodEndSecFromSub ?? periodEndSecFromInvoice;
+
+    const periodStartSec = getPeriodStartSeconds(subscription);
     const now = new Date();
     const expireAt = new Date(now);
     expireAt.setMonth(expireAt.getMonth() + 1);
 
+    const update = {
+      $set: {
+        subscriptionStatus: "active",
+        plan,
+        creditsGrantedAt: now, // optional: only set this if granting
+        creditsExpireAt: expireAt, // optional: only set this if granting
+        cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
+        nextBillingDate: toDateFromSeconds(periodEndSec),
+        currentPeriodEnd: toDateFromSeconds(periodEndSec),
+        updatedAt: now,
+      },
+    };
     const docsToAdd = docsForPlan(plan);
 
-    const resultUser = await db.collection("users").updateOne(
-      { stripeSubscriptionId: subscriptionId },
-      {
-        $set: {
-          subscriptionStatus: "active",
+    if (shouldGrantCredits) {
+      update.$inc = { docsAmount: docsToAdd };
+    } else {
+      // ✅ Remove credit fields if you don't want to touch them on non-cycle invoices
+      delete update.$set.creditsGrantedAt;
+      delete update.$set.creditsExpireAt;
+    }
 
-          plan,
+    const resultUser = await db
+      .collection("users")
+      .updateOne({ stripeSubscriptionId: subscriptionId }, update);
 
-          creditsGrantedAt: now,
-          creditsExpireAt: expireAt,
+    //     const resultUser = await db.collection("users").updateOne(
+    //   { stripeSubscriptionId: subscriptionId },
+    //   {
+    //     $set: {
+    //       subscriptionStatus: "active",
+    //       plan,
 
-          // ✅ ADD: keep cancel info updated too
-          cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
-          currentPeriodEnd: subscription.current_period_end
-            ? new Date(subscription.current_period_end * 1000)
-            : null,
+    //       creditsGrantedAt: now,
+    //       creditsExpireAt: expireAt,
 
-          updatedAt: now,
-        },
-        $inc: { docsAmount: docsToAdd },
-      },
-    );
+    //       cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
+
+    //       // ✅ NEXT BILLING DATE (what to show user)
+    //       nextBillingDate: toDateFromSeconds(periodEndSec),
+
+    //       // optional
+    //       currentPeriodStart: toDateFromSeconds(periodStartSec),
+    //       currentPeriodEnd: toDateFromSeconds(periodEndSec),
+
+    //       updatedAt: now,
+    //     },
+    //     $inc: { docsAmount: docsToAdd },
+    //   }
+    // );
+
+    // const resultUser = await db.collection("users").updateOne(
+    //   { stripeSubscriptionId: subscriptionId },
+    //   {
+    //     $set: {
+    //       subscriptionStatus: "active",
+
+    //       plan,
+
+    //       creditsGrantedAt: now,
+    //       creditsExpireAt: expireAt,
+
+    //       // ✅ ADD: keep cancel info updated too
+    //       cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
+    //       currentPeriodEnd: subscription.current_period_end
+    //         ? new Date(subscription.current_period_end * 1000)
+    //         : null,
+
+    //       updatedAt: now,
+    //     },
+    //     $inc: { docsAmount: docsToAdd },
+    //   },
+    // );
+    console.log("✅ invoice.payment_succeeded", {
+      invoiceId: invoice.id,
+      billingReason: invoice.billing_reason,
+      subscriptionId,
+      amountPaid: invoice.amount_paid,
+      currency: invoice.currency,
+    });
 
     if (resultUser.matchedCount === 0) {
       console.error("❌ User not found for subscription:", subscriptionId);
@@ -301,6 +427,7 @@ export async function POST(req) {
   ) {
     const subscription = event.data.object;
 
+    // ✅ idempotency FIRST
     const firstTime = await markEventProcessed(event, {
       subscriptionId: subscription?.id ?? null,
     });
@@ -316,9 +443,15 @@ export async function POST(req) {
     const stripeStatus = subscription.status; // active | canceled | past_due | unpaid | ...
     const cancelAtPeriodEnd = !!subscription.cancel_at_period_end;
 
-    const currentPeriodEnd = subscription.current_period_end
-      ? new Date(subscription.current_period_end * 1000)
-      : null;
+    const periodEndSec = getPeriodEndSeconds(subscription);
+    const periodStartSec = getPeriodStartSeconds(subscription);
+
+    const currentPeriodEnd = toDateFromSeconds(periodEndSec);
+    const currentPeriodStart = toDateFromSeconds(periodStartSec);
+
+    // const currentPeriodEnd = subscription.current_period_end
+    //   ? new Date(subscription.current_period_end * 1000)
+    //   : null;
 
     const canceledAt = subscription.canceled_at
       ? new Date(subscription.canceled_at * 1000)
@@ -339,31 +472,95 @@ export async function POST(req) {
       appStatus = "canceling"; // your UI can show "Cancels on ..."
       // keep plan until period end
     }
+    const isDeleted = event.type === "customer.subscription.deleted";
+    const isCanceled = stripeStatus === "canceled" || isDeleted;
 
-    // ✅ ADD: IMMEDIATE CANCEL
-    if (
-      stripeStatus === "canceled" ||
-      event.type === "customer.subscription.deleted"
-    ) {
+    if (isCanceled) {
       appStatus = "canceled";
-      appPlan = "free"; // change to null if you prefer
+      appPlan = "free";
     }
 
-    await db.collection("users").updateOne(
-      { stripeSubscriptionId: subscriptionId },
-      {
-        $set: {
-          subscriptionStatus: appStatus,
-          plan: appPlan,
+    // ✅ IMPORTANT: only set billing dates if we actually have them
+    const setPatch = {
+      subscriptionStatus: appStatus,
+      plan: appPlan,
+      cancelAtPeriodEnd,
+      canceledAt,
+      updatedAt: new Date(),
+    };
 
-          cancelAtPeriodEnd,
-          currentPeriodEnd,
-          canceledAt,
+    if (currentPeriodStart) {
+      setPatch.currentPeriodStart = currentPeriodStart;
+    }
 
-          updatedAt: new Date(),
-        },
-      },
-    );
+    if (!isCanceled) {
+      // active/canceling: keep "next billing"/"access ends" date
+      if (currentPeriodEnd) {
+        setPatch.nextBillingDate = currentPeriodEnd;
+        setPatch.currentPeriodEnd = currentPeriodEnd;
+        // optional: better UI naming
+        if (cancelAtPeriodEnd) setPatch.accessEndsAt = currentPeriodEnd;
+      }
+    } else {
+      // ended: no future billing
+      setPatch.nextBillingDate = null;
+      setPatch.accessEndsAt = null;
+      setPatch.cancelAtPeriodEnd = false;
+
+      // ✅ your requirement: downgrade docs at period end
+      setPatch.docsAmount = 3;
+
+      // optional: either keep end date for history or clear it
+      // setPatch.currentPeriodEnd = currentPeriodEnd ?? null;
+      // or:
+      // setPatch.currentPeriodEnd = null;
+      // setPatch.currentPeriodStart = null;
+    }
+
+    //   // ✅ This is the moment to downgrade docs
+    //   setPatch.docsAmount = 3;
+
+    //   // no future billing
+    //   setPatch.cancelAtPeriodEnd = false;
+    //   setPatch.nextBillingDate = null;
+    //   setPatch.accessEndsAt = null;
+
+    //   // optional: clear period fields (or keep for history)
+    //   // setPatch.currentPeriodEnd = null;
+    //   // setPatch.currentPeriodStart = null;
+
+    // // ✅ ADD: IMMEDIATE CANCEL
+    // if (
+    //   stripeStatus === "canceled" ||
+    //   event.type === "customer.subscription.deleted"
+    // ) {
+    //   appStatus = "canceled";
+    //   appPlan = "free"; // change to null if you prefer
+    // }
+
+    // if (currentPeriodEnd) {
+    //   setPatch.nextBillingDate = currentPeriodEnd; // ✅ show this to user
+    //   setPatch.currentPeriodEnd = currentPeriodEnd;
+    // }
+
+    await db
+      .collection("users")
+      .updateOne({ stripeSubscriptionId: subscriptionId }, { $set: setPatch });
+    // await db.collection("users").updateOne(
+    //   { stripeSubscriptionId: subscriptionId },
+    //   {
+    //     $set: {
+    //       subscriptionStatus: appStatus,
+    //       plan: appPlan,
+
+    //       cancelAtPeriodEnd,
+    //       currentPeriodEnd,
+    //       canceledAt,
+
+    //       updatedAt: new Date(),
+    //     },
+    //   },
+    // );
 
     return successResponse(
       {
@@ -374,6 +571,7 @@ export async function POST(req) {
         appPlan,
         cancelAtPeriodEnd,
         currentPeriodEnd,
+        isCanceled,
       },
       "Subscription processed",
       200,

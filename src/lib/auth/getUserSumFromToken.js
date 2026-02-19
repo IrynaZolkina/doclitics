@@ -6,7 +6,7 @@ import {
 } from "@/lib/mongodb/mongodb";
 import { ObjectId } from "mongodb";
 
-export async function getUserFromToken(token) {
+export async function getUserSumFromToken(token) {
   //const payload = verifyRefreshToken(token);
   // console.log("--------------getUserFromToken payload:", payload);
   console.log("--------------getUserFromToken--- 1");

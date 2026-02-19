@@ -118,7 +118,7 @@ const DropZone = () => {
       <UploadIcon
         width={64}
         height={64}
-        strokeColor="var(--text-color-blue)"
+        color="var(--text-color-blue)"
         className={styles.my_upload_icon}
       />
 

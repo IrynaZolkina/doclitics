@@ -7,7 +7,9 @@ import Dashboard from "@/components/pages-components/dashboard/Dashboard";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { authChecked, isAuthenticated, username } = useSelector((s) => s.user);
+  const { authChecked, isAuthenticated, username, totalDocs } = useSelector(
+    (s) => s.user,
+  );
   const userSummaries = useSelector((state) => state.user.userSummaries);
   console.log("summaries. -----------------", userSummaries);
 

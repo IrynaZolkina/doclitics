@@ -227,15 +227,8 @@ ${additionalNotes}
 """ `
           : ""
       }`;
-      // const response = await fetch("/api/chat", {
-      // setLoading(true);
-      // console.log("/////    Uername   //////. ", userName);
-      // router.replace("/pages/summary");
-      // dispatch(setSummary(""));
-
-      // const reqId =
-      //   crypto?.randomUUID?.() ??
-      //   `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      console.log("----- extractedText ----", extractedText);
+      console.log("----- finalPrompt ----", finalPrompt);
       dispatch(clearSummary());
       router.push("/summary");
       // console.log("SEND /api/chat reqId:", reqId);
@@ -264,15 +257,14 @@ ${additionalNotes}
 
       const docsAmount =
         result?.data?.docsAmount ?? result?.error?.details?.docsAmount;
+      const totalDocs =
+        result?.data?.docsAmount ?? result?.error?.details?.totalDocs;
       const userSummaries =
         result?.data?.userSummaries ?? result?.error?.details?.userSummaries;
       console.log("SUMMARYPARAMS PAGE --- SUMMARY ARAY----", userSummaries);
-      console.log(
-        "SUMMARYPARAMS PAGE --- SUMMARY ARAY----",
-        typeof userSummaries,
-      );
+
       if (typeof docsAmount === "number") {
-        dispatch(setDocsAmount(docsAmount));
+        dispatch(setDocsAmount(docsAmount, totalDocs));
       }
       if (Array.isArray(userSummaries)) {
         dispatch(setUserSummaries(userSummaries));
@@ -289,7 +281,7 @@ ${additionalNotes}
       // result = { success, message, data: { text } }
       const text = result?.data?.text ?? "";
 
-      console.log("Summary text:", text);
+      // console.log("Summary text:", text);
 
       dispatch(setSummary(text));
       dispatch(

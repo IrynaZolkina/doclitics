@@ -15,21 +15,21 @@ const UserProfile = ({ username, plan, docsAmount, picture }) => {
   const router = useRouter();
   // const router = useRouter();
 
-  const handleLogout = async () => {
-    try {
-      await apiFetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (err) {
-      console.error("Logout failed:", err);
-      toastSuperFunctionJS("Logout failed" + err, "error");
-    } finally {
-      dispatch(clearUser());
-      // router.push("/");
-      // window.location.href = "/";
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     await apiFetch("/api/auth/logout", {
+  //       method: "POST",
+  //       credentials: "include",
+  //     });
+  //   } catch (err) {
+  //     console.error("Logout failed:", err);
+  //     toastSuperFunctionJS("Logout failed" + err, "error");
+  //   } finally {
+  //     dispatch(clearUser());
+  //     // router.push("/");
+  //     // window.location.href = "/";
+  //   }
+  // };
 
   return (
     <div className={styles.userProfileContainer}>
@@ -43,7 +43,7 @@ const UserProfile = ({ username, plan, docsAmount, picture }) => {
       >
         Dashboard
       </FlexibleButton>
-      <FlexibleButton
+      {/* <FlexibleButton
         onClick={handleLogout}
         variant="secondary"
         fontSize="13px"
@@ -52,7 +52,7 @@ const UserProfile = ({ username, plan, docsAmount, picture }) => {
         fontWeight="800"
       >
         Logout
-      </FlexibleButton>
+      </FlexibleButton> */}
 
       <div className={styles.userPicture}>
         {picture ? (
@@ -63,10 +63,10 @@ const UserProfile = ({ username, plan, docsAmount, picture }) => {
           <div className={styles.initials}>{username.slice(0, 1)}</div>
         )}
       </div>
-      <div className={styles.userDetails}>
+      {/* <div className={styles.userDetails}>
         <span className={styles.plan}>{plan}</span>
         <span className={styles.docsAmount}>{docsAmount} docs</span>
-      </div>
+      </div> */}
     </div>
   );
 };

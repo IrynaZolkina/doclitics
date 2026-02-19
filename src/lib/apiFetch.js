@@ -52,19 +52,22 @@ export async function apiFetch(url, options = {}) {
   // options.headers["X-CSRF-Token"] = csrfToken;
   // }
 
-  if (!csrfToken) {
-    // console.log("No CSRF token found, please login");
-    toastSuperFunctionJS("No CSRF token found, please login", "error");
-    //toastManualFunctionJS("No CSRF token found, please login", "error");
-    return;
-  }
-
   // Attempt request
   console.log("apiFetch", url, options.method || "GET");
 
   let triedRefresh = false;
 
   try {
+    // If body is a plain object, send JSON
+    // if (
+    //   options.body &&
+    //   typeof options.body === "object" &&
+    //   !(options.body instanceof FormData)
+    // ) {
+    //   options.headers["Content-Type"] =
+    //     options.headers["Content-Type"] || "application/json";
+    //   options.body = JSON.stringify(options.body);
+    // }
     let res = await fetch(url, options);
 
     console.log("apiFetch first status:", res.status, "url:", url);

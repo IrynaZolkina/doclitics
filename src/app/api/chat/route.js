@@ -195,15 +195,22 @@ export async function POST(request) {
       // );
       // const response = completion.choices[0]?.message?.content || "";
       const text = completion.choices?.[0]?.message?.content || "";
-
+      const textWords = countWords(text);
       // ✅ decrement docsAmount AFTER success (basic approach)
       const updatedDocsAmount = await db.collection("users").findOneAndUpdate(
         { _id: userId }, // filter
-        { $inc: { docsAmount: -1 } }, // update
+        {
+          $inc: {
+            docsAmount: -1,
+            totalDocs: 1,
+            // averageWords: averageWords + textWords / 2,
+          },
+        }, // update
         {
           returnDocument: "after",
           projection: {
             docsAmount: 1,
+            totalDocs: 1,
             _id: 0, // optional: hide _id
           },
         }, // ← return updated doc
@@ -245,7 +252,12 @@ export async function POST(request) {
       // 3) Success: keep credit spent
       return successResponse(
         // { text },
-        { text, docsAmount: updatedDocsAmount.docsAmount, userSummaries },
+        {
+          text,
+          docsAmount: updatedDocsAmount.docsAmount,
+          userSummaries,
+          totalDocs: updatedDocsAmount.totalDocs,
+        },
         "OK",
         200,
       );

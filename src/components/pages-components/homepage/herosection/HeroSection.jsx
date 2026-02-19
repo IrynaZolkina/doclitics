@@ -33,7 +33,9 @@ const HeroSection = () => {
         </p>
         <p>tailored precisely to your documents unique style and needs.</p>
       </div>
-      <DropZone />
+      <div className={styles.dropzone}>
+        <DropZone />
+      </div>
 
       <div className={styles.heroTwoButtonsContainer}>
         <button>Start Summarizing for Free</button>

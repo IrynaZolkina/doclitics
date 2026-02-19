@@ -10,8 +10,15 @@ export async function getCurrentUser() {
 
     if (accessToken) {
       console.log("Trying access token...");
-      const { user, summaries } = await getUserFromToken(accessToken);
-      if ((user, summaries)) return (user, summaries); // user._id is ObjectId, convert to string for consistency
+      // const { user, userSummaries } = await getUserFromToken(accessToken);
+      const { user } = await getUserFromToken(accessToken);
+
+      console.log("---user in getcurrentuser---", user);
+      // console.log("---summries in getcurrentuser---", userSummaries);
+
+      // if ((user, userSummaries)) return (user, userSummaries); // user._id is ObjectId, convert to string for consistency
+
+      // if (user) return user;
     }
 
     // Access token invalid → refresh server-side

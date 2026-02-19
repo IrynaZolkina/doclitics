@@ -97,10 +97,12 @@ const userSlice = createSlice({
       state.plan = action.payload.plan ?? null;
       state.picture = action.payload.picture ?? null;
       state.docsAmount = action.payload.docsAmount ?? 0;
+      state.totalDocs = action.payload.totalDocs ?? 0;
     },
     // ✅ add this
     setDocsAmount(state, action) {
-      state.docsAmount = Number(action.payload) || 0;
+      state.docsAmount = Number(action.payload.docsAmount) || 0;
+      state.totalDocs = Number(action.payload.totalDocs) || 0;
     },
 
     // ✅ optional (if you want local decrement)
@@ -130,6 +132,7 @@ const userSlice = createSlice({
       state.plan = null;
       state.picture = null;
       state.docsAmount = 0;
+      state.totalDocs = 0;
       // return initialUserState;
     },
   },

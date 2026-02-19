@@ -22,7 +22,7 @@ const HowWorksSection = () => {
             <UploadIcon
               width={37}
               height={37}
-              strokeColor="var(--background-one)"
+              color="var(--background-one)"
               className={styles.my_upload_icon}
             />
           </div>
@@ -67,7 +67,7 @@ const HowWorksSection = () => {
             <UploadIcon
               width={37}
               height={37}
-              strokeColor="var(--background-one)"
+              color="var(--background-one)"
               className={styles.my_upload_icon}
             />
           </div>
