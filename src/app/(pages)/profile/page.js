@@ -8,6 +8,8 @@ import FlexibleButton from "@/components-ui/buttons/FlexibleButton";
 import { useState } from "react";
 import ConfirmPopup from "@/lib/ConfirmPopup";
 import Image from "next/image";
+import { CardIcon } from "@/components-svg/CardIcon";
+import UploadIcon from "@/components-svg/UploadIcon";
 
 const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
@@ -154,6 +156,7 @@ const ProfilePage = () => {
         </div>
         <div className={styles.info_block}>
           <FlexibleButton
+            icon={<UploadIcon rotate={90} />}
             onClick={handleLogout}
             variant="quaternary"
             fontSize="13px"

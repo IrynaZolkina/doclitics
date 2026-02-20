@@ -5,6 +5,9 @@ import { ObjectId } from "mongodb";
 import { errorResponse } from "@/lib/responsehandlers/errorResponse";
 import { successResponse } from "@/lib/responsehandlers/successResponse";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
@@ -112,110 +115,87 @@ export async function POST(req) {
       );
     }
 
-    // Retrieve subscription to read metadata/price metadata
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription,
-    );
+    // // Retrieve subscription to read metadata/price metadata
+    // const subscription = await stripe.subscriptions.retrieve(
+    //   session.subscription,
+    // );
 
-    const subscriptionId = subscription.id; // new subscription id
+    // const subscriptionId = subscription.id; // new subscription id
 
-    const userId = subscription.metadata?.userId || null;
+    // const userId = subscription.metadata?.userId || null;
 
-    // const plan = subscription.metadata?.plan;
-    // ✅ CHANGE: prefer plan from Price metadata (most reliable)
-    const plan =
-      subscription.items?.data?.[0]?.price?.metadata?.plan ??
-      subscription.metadata?.plan ??
-      null;
+    // // const plan = subscription.metadata?.plan;
+    // // ✅ CHANGE: prefer plan from Price metadata (most reliable)
+    // const plan =
+    //   subscription.items?.data?.[0]?.price?.metadata?.plan ??
+    //   subscription.metadata?.plan ??
+    //   null;
 
+    //   const periodEndSec = getPeriodEndSeconds(subscription);
+    //   const periodStartSec = getPeriodStartSeconds(subscription);
+
+    const subscriptionId = session?.subscription ?? null;
+    const userId =
+      session?.metadata?.userId ?? session?.client_reference_id ?? null;
+
+    const plan = session?.metadata?.plan ?? null;
     if (!subscriptionId || !userId || !plan) {
       console.error("❌ Missing metadata", { subscriptionId, userId, plan });
       // Webhook should still return 2xx to Stripe; log and exit
       return successResponse({ received: true }, "Missing metadata", 200);
     }
-
-    // await db.collection("users").updateOne(
-    //   { _id: new ObjectId(userId) },
-    //   {
-    //     $set: {
-    //       stripeSubscriptionId: subscriptionId,
-    //       plan: plan,
-    //       subscriptionStatus:
-    //         session.payment_status === "paid" ? "active" : "pending",
-
-    //       // ✅ ADD: store cancel info for UI
-    //       cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
-    //       currentPeriodEnd: subscription.current_period_end
-    //         ? new Date(subscription.current_period_end * 1000)
-    //         : null,
-
-    //       updatedAt: new Date(),
-    //     },
-    //   },
-    // );
-
-    const periodEndSec = getPeriodEndSeconds(subscription);
-    const periodStartSec = getPeriodStartSeconds(subscription);
-
     await db.collection("users").updateOne(
       { _id: new ObjectId(userId) },
       {
         $set: {
           stripeSubscriptionId: subscriptionId,
           plan,
+          stripeCustomerId: session?.customer ?? null,
           subscriptionStatus:
             session.payment_status === "paid" ? "active" : "pending",
-
-          cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
-
-          // ✅ NEXT BILLING DATE (what to show user)
-          nextBillingDate: toDateFromSeconds(periodEndSec),
-
-          // optional but useful
-          currentPeriodStart: toDateFromSeconds(periodStartSec),
-          currentPeriodEnd: toDateFromSeconds(periodEndSec),
-
           updatedAt: new Date(),
         },
       },
     );
+
+    // await db.collection("users").updateOne(
+    //   { _id: new ObjectId(userId) },
+    //   {
+    //     $set: {
+    //       stripeSubscriptionId: subscriptionId,
+    //       plan,
+    //       subscriptionStatus:
+    //         session.payment_status === "paid" ? "active" : "pending",
+
+    //       cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
+
+    //       // ✅ NEXT BILLING DATE (what to show user)
+    //       nextBillingDate: toDateFromSeconds(periodEndSec),
+
+    //       // optional but useful
+    //       currentPeriodStart: toDateFromSeconds(periodStartSec),
+    //       currentPeriodEnd: toDateFromSeconds(periodEndSec),
+
+    //       updatedAt: new Date(),
+    //     },
+    //   },
+    // );
 
     console.log("➡️ Subscription saved to user:", userId, subscriptionId);
     return successResponse({ received: true }, "Checkout processed", 200);
   }
 
   // ------------------------
-  // 2️⃣ Invoice payment succeeded
+  // ✅ 1️⃣ invoice.payment_succeeded (stable version)
   // ------------------------
-  if (
-    event.type === "invoice.payment_succeeded"
-    // ||event.type === "invoice_payment.paid"
-  ) {
+  if (event.type === "invoice.payment_succeeded") {
     const invoice = event.data.object;
 
-    console.log("➡️ Invoice lines:", invoice.lines?.data);
-
-    const billingReason = invoice?.billing_reason ?? null;
-
-    const shouldGrantCredits =
-      billingReason === "subscription_cycle" ||
-      billingReason === "subscription_create";
-
-    if (!shouldGrantCredits) {
-      console.log("🟡 Not granting docs for invoice", {
-        invoiceId: invoice.id,
-        billingReason,
-        subscriptionId: invoice.subscription,
-      });
-    }
-
-    // ✅ ADD: idempotency per invoice event
     const firstTime = await markEventProcessed(event, {
       invoiceId: invoice?.id ?? null,
     });
-    if (!firstTime) {
+    if (!firstTime)
       return successResponse({ received: true }, "Already processed", 200);
-    }
 
     const subscriptionId =
       invoice?.subscription ??
@@ -224,17 +204,13 @@ export async function POST(req) {
         ?.find(Boolean) ??
       null;
 
-    console.log("➡️ Extracted subscriptionId:", subscriptionId);
+    const customerId = invoice?.customer ?? null;
 
     if (!subscriptionId) {
-      console.error(
-        "❌ invoice.payment_succeeded missing subscriptionId",
-        invoice?.id,
-      );
+      console.error("❌ Missing subscriptionId", invoice?.id);
       return successResponse({ received: true }, "Missing subscriptionId", 200);
     }
 
-    // ✅ CHANGE: retrieve subscription to resolve plan reliably
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
     const plan =
@@ -243,66 +219,52 @@ export async function POST(req) {
       null;
 
     if (!plan) {
-      console.error(
-        "❌ Could not resolve plan from subscription",
-        subscriptionId,
-      );
+      console.error("❌ Missing plan", subscriptionId);
       return successResponse({ received: true }, "Missing plan", 200);
     }
 
-    const periodEndSecFromSub = getPeriodEndSeconds(subscription);
+    const periodEndSec =
+      getPeriodEndSeconds(subscription) ??
+      invoice?.lines?.data?.[0]?.period?.end ??
+      null;
 
-    // ✅ SUPER RELIABLE fallback: invoice line period end
-    const periodEndSecFromInvoice =
-      invoice?.lines?.data?.[0]?.period?.end ?? null;
-
-    // pick the best available
-    const periodEndSec = periodEndSecFromSub ?? periodEndSecFromInvoice;
-
-    const periodStartSec = getPeriodStartSeconds(subscription);
     const now = new Date();
-    const expireAt = new Date(now);
-    expireAt.setMonth(expireAt.getMonth() + 1);
 
     const update = {
       $set: {
         subscriptionStatus: "active",
         plan,
-        creditsGrantedAt: now, // optional: only set this if granting
-        // creditsExpireAt: expireAt, // optional: only set this if granting
         cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
         nextBillingDate: toDateFromSeconds(periodEndSec),
         currentPeriodEnd: toDateFromSeconds(periodEndSec),
+        stripeSubscriptionId: subscriptionId, // ensure saved
         updatedAt: now,
       },
     };
+
     const docsToAdd = docsForPlan(plan);
+    const billingReason = invoice?.billing_reason ?? null;
+
+    const shouldGrantCredits =
+      billingReason === "subscription_cycle" ||
+      billingReason === "subscription_create";
 
     if (shouldGrantCredits) {
-      // update.$inc = { docsAmount: docsToAdd };
       update.$set.docsAmount = docsToAdd;
-    } else {
-      // ✅ Remove credit fields if you don't want to touch them on non-cycle invoices
-      delete update.$set.creditsGrantedAt;
-      delete update.$set.creditsExpireAt;
+      update.$set.creditsGrantedAt = now;
     }
 
-    const resultUser = await db
-      .collection("users")
-      .updateOne({ stripeSubscriptionId: subscriptionId }, update);
+    const filter = {
+      $or: [
+        { stripeSubscriptionId: subscriptionId },
+        ...(customerId ? [{ stripeCustomerId: customerId }] : []),
+      ],
+    };
 
-    // console.log("✅ invoice.payment_succeeded", {
-    //   invoiceId: invoice.id,
-    //   billingReason: invoice.billing_reason,
-    //   subscriptionId,
-    //   amountPaid: invoice.amount_paid,
-    //   currency: invoice.currency,
-    // });
+    const resultUser = await db.collection("users").updateOne(filter, update);
 
     if (resultUser.matchedCount === 0) {
-      console.error("❌ User not found for subscription:", subscriptionId);
-      // still return 2xx to Stripe
-      return successResponse({ received: true }, "User not found", 200);
+      console.error("❌ User not found for invoice", subscriptionId);
     }
 
     return successResponse(
@@ -311,11 +273,10 @@ export async function POST(req) {
       200,
     );
   }
-
   // ------------------------
-  // 3️⃣ Invoice finalization failed
+  //✅ 2️⃣ invoice.payment_failed (stable version)
   // ------------------------
-  if (event.type === "invoice.finalization_failed") {
+  if (event.type === "invoice.payment_failed") {
     const invoice = event.data.object;
 
     const firstTime = await markEventProcessed(event, {
@@ -325,48 +286,26 @@ export async function POST(req) {
       return successResponse({ received: true }, "Already processed", 200);
 
     const subscriptionId = invoice?.subscription ?? null;
-    if (subscriptionId) {
-      await db
-        .collection("users")
-        .updateOne(
-          { stripeSubscriptionId: subscriptionId },
-          { $set: { subscriptionStatus: "incomplete", updatedAt: new Date() } },
-        );
+    const customerId = invoice?.customer ?? null;
+
+    if (!subscriptionId) {
+      return successResponse({ received: true }, "Missing subscriptionId", 200);
     }
 
-    return successResponse(
-      { received: true },
-      "Invoice finalization failed handled",
-      200,
-    );
-  }
-
-  // ------------------------
-  // 3️⃣ Invoice payment failed
-  // ------------------------
-  if (event.type === "invoice.payment_failed") {
-    const invoice = event.data.object;
-
-    const firstTime = await markEventProcessed(event, {
-      invoiceId: invoice.id ?? null,
-    });
-    if (!firstTime)
-      return successResponse({ received: true }, "Already processed", 200);
-
-    const subscriptionId = invoice.subscription ?? null;
-
-    if (subscriptionId) {
-      await db.collection("users").updateOne(
+    const filter = {
+      $or: [
         { stripeSubscriptionId: subscriptionId },
-        {
-          $set: {
-            subscriptionStatus: "past_due", // ✅ ADD
-            updatedAt: new Date(),
-          },
-        },
-      );
-      console.log("⚠️ Marked past_due for subscription:", subscriptionId);
-    }
+        ...(customerId ? [{ stripeCustomerId: customerId }] : []),
+      ],
+    };
+
+    await db.collection("users").updateOne(filter, {
+      $set: {
+        subscriptionStatus: "past_due",
+        stripeSubscriptionId: subscriptionId,
+        updatedAt: new Date(),
+      },
+    });
 
     return successResponse({ received: true }, "Payment failed handled", 200);
   }
@@ -455,6 +394,7 @@ export async function POST(req) {
         // optional: better UI naming
         if (cancelAtPeriodEnd) setPatch.accessEndsAt = currentPeriodEnd;
       }
+      if (!cancelAtPeriodEnd) setPatch.accessEndsAt = null; // ✅ add this
     } else {
       // ended: no future billing
       setPatch.nextBillingDate = null;
@@ -463,58 +403,11 @@ export async function POST(req) {
 
       // ✅ your requirement: downgrade docs at period end
       setPatch.docsAmount = 3;
-
-      // optional: either keep end date for history or clear it
-      // setPatch.currentPeriodEnd = currentPeriodEnd ?? null;
-      // or:
-      // setPatch.currentPeriodEnd = null;
-      // setPatch.currentPeriodStart = null;
     }
-
-    //   // ✅ This is the moment to downgrade docs
-    //   setPatch.docsAmount = 3;
-
-    //   // no future billing
-    //   setPatch.cancelAtPeriodEnd = false;
-    //   setPatch.nextBillingDate = null;
-    //   setPatch.accessEndsAt = null;
-
-    //   // optional: clear period fields (or keep for history)
-    //   // setPatch.currentPeriodEnd = null;
-    //   // setPatch.currentPeriodStart = null;
-
-    // // ✅ ADD: IMMEDIATE CANCEL
-    // if (
-    //   stripeStatus === "canceled" ||
-    //   event.type === "customer.subscription.deleted"
-    // ) {
-    //   appStatus = "canceled";
-    //   appPlan = "free"; // change to null if you prefer
-    // }
-
-    // if (currentPeriodEnd) {
-    //   setPatch.nextBillingDate = currentPeriodEnd; // ✅ show this to user
-    //   setPatch.currentPeriodEnd = currentPeriodEnd;
-    // }
 
     await db
       .collection("users")
       .updateOne({ stripeSubscriptionId: subscriptionId }, { $set: setPatch });
-    // await db.collection("users").updateOne(
-    //   { stripeSubscriptionId: subscriptionId },
-    //   {
-    //     $set: {
-    //       subscriptionStatus: appStatus,
-    //       plan: appPlan,
-
-    //       cancelAtPeriodEnd,
-    //       currentPeriodEnd,
-    //       canceledAt,
-
-    //       updatedAt: new Date(),
-    //     },
-    //   },
-    // );
 
     return successResponse(
       {
@@ -528,6 +421,51 @@ export async function POST(req) {
         isCanceled,
       },
       "Subscription processed",
+      200,
+    );
+  }
+
+  // ------------------------
+  // ✅ 3️⃣ invoice.finalization_failed (stable version)
+  // ------------------------
+  if (event.type === "invoice.finalization_failed") {
+    const invoice = event.data.object;
+
+    const firstTime = await markEventProcessed(event, {
+      invoiceId: invoice?.id ?? null,
+    });
+    if (!firstTime)
+      return successResponse({ received: true }, "Already processed", 200);
+
+    const subscriptionId = invoice?.subscription ?? null;
+    const customerId = invoice?.customer ?? null;
+
+    const errorMsg =
+      invoice?.last_finalization_error?.message ??
+      invoice?.last_payment_error?.message ??
+      "Invoice finalization failed";
+
+    const filter = {
+      $or: [
+        ...(subscriptionId ? [{ stripeSubscriptionId: subscriptionId }] : []),
+        ...(customerId ? [{ stripeCustomerId: customerId }] : []),
+      ],
+    };
+
+    await db.collection("users").updateOne(filter, {
+      $set: {
+        subscriptionStatus: "incomplete",
+        stripeSubscriptionId: subscriptionId ?? undefined,
+        lastInvoiceId: invoice?.id ?? null,
+        lastInvoiceStatus: invoice?.status ?? null,
+        lastInvoiceError: errorMsg,
+        updatedAt: new Date(),
+      },
+    });
+
+    return successResponse(
+      { received: true },
+      "Invoice finalization failed handled",
       200,
     );
   }

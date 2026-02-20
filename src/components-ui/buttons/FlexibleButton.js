@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import styles from "./FlexibleButton.module.css";
 
 export default function FlexibleButton({
   onClick,
@@ -14,129 +15,27 @@ export default function FlexibleButton({
   gap = "10px",
   padding = "14px 28px",
   border = "none",
+  type = "button",
 }) {
   return (
-    <>
-      <button
-        type="button"
-        onClick={disabled ? undefined : onClick}
-        disabled={disabled}
-        className={`flexible-button ${variant}`}
-        style={{
-          fontSize,
-          fontWeight,
-          fontFamily,
-          borderRadius,
-          gap,
-          padding,
-          border,
-        }}
-      >
-        {icon && (
-          <span
-            style={{ display: "flex", alignItems: "center", marginRight: gap }}
-          >
-            {icon}
-          </span>
-        )}
-        {children}
-      </button>
-
-      <style jsx global>{`
-        .flexible-button {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          line-height: 1.2;
-          white-space: nowrap;
-          cursor: pointer;
-          user-select: none;
-          transform: scale(1);
-          transition:
-            transform 0.12s ease,
-            box-shadow 0.12s ease,
-            filter 0.12s ease;
-        }
-
-        .flexible-button:not(:disabled):hover {
-          transform: scale(1);
-        }
-        .flexible-button:not(:disabled):active {
-          transform: scale(0.96);
-          filter: brightness(0.95);
-        }
-        .flexible-button:focus-visible {
-          outline: none;
-          box-shadow: 0 0 0 3px rgba(100, 100, 255, 0.4);
-        }
-        .flexible-button {
-          -webkit-tap-highlight-color: transparent;
-        }
-        .flexible-button span svg path {
-          stroke: currentColor;
-        }
-
-        /* PRIMARY */
-        .primary {
-          background: var(--btn-primary-bg);
-          color: var(--btn-primary-color);
-          border: 1px solid var(--btn-primary-border, transparent);
-        }
-        .primary:hover {
-          background: var(--btn-primary-hover);
-        }
-
-        /* SECONDARY */
-        .secondary {
-          background: var(--btn-secondary-bg);
-          color: var(--btn-secondary-color);
-          border: 1px solid var(--btn-secondary-border, transparent);
-        }
-        .secondary:hover {
-          background: var(--btn-secondary-hover);
-        }
-
-        /* TERTIARY */
-        .tertiary {
-          background: var(--btn-tertiary-bg);
-          color: var(--btn-tertiary-color);
-          border: 1px solid var(--btn-tertiary-border, transparent);
-        }
-        .tertiary:hover {
-          background: var(--btn-tertiary-hover);
-        }
-
-        /* QUATERNARY */
-        .quaternary {
-          background: var(--btn-quaternary-bg);
-          color: var(--btn-quaternary-color);
-          border: 1px solid var(--btn-quaternary-border);
-          /* border: 1px solid var(--btn-quaternary-border, transparent); */
-        }
-        .quaternary:hover {
-          background: var(--btn-quaternary-hover);
-        }
-
-        /* QUINARY */
-        .quinary {
-          background: var(--btn-quinary-bg);
-          color: var(--btn-quinary-color);
-          border: 1px solid var(--btn-quinary-border, transparent);
-        }
-        .quinary:hover {
-          background: var(--btn-quinary-hover);
-        }
-
-        /* DISABLED */
-        .flexible-button:disabled {
-          background: var(--btn-disabled-bg);
-          color: var(--btn-disabled-color);
-          cursor: not-allowed;
-          opacity: 0.7;
-          border: 1px solid var(--btn-disabled-border, transparent);
-        }
-      `}</style>
-    </>
+    <button
+      type={type}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+      className={`${styles.button} ${styles[variant] ?? ""}`}
+      style={{
+        fontSize,
+        fontWeight,
+        fontFamily,
+        borderRadius,
+        gap,
+        padding,
+        border,
+      }}
+    >
+      {icon && <span className={styles.icon}>{icon}</span>}
+      {children}
+    </button>
   );
 }
 

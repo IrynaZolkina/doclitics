@@ -56,11 +56,11 @@ const UserProfile = ({ username, plan, docsAmount, picture }) => {
 
       <div className={styles.userPicture}>
         {picture ? (
-          <Link href="/pages/profile">
+          <Link href="/profile">
             <Image src={picture} alt="Profile" width={50} height={50} />
           </Link>
         ) : (
-          <div className={styles.initials}>{username.slice(0, 1)}</div>
+          <div className={styles.initials}>{username.slice(0, 2)}</div>
         )}
       </div>
       {/* <div className={styles.userDetails}>
