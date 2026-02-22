@@ -16,6 +16,8 @@ export default function FlexibleButton({
   padding = "14px 28px",
   border = "none",
   type = "button",
+  // ✅ ADD THIS
+  style = {},
 }) {
   return (
     <button

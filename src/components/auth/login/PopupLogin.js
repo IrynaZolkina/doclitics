@@ -214,7 +214,7 @@ export default function PopupLogin({ onClose, error }) {
               Your data is protected with enterprise-grade encryption
             </h6>
 
-            <Link href={"/pages/auth/register"}>
+            <Link href={"/auth/register"}>
               New to Doclitic? Create your free account
             </Link>
           </form>

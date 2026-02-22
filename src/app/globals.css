@@ -27,7 +27,8 @@
   --btn-quaternary-bg: rgba(9, 13, 21, 1);
   --btn-quaternary-hover: rgba(85, 147, 247, 1);
   --btn-quaternary-color: white;
-  --btn-quaternary-border: rgba(85, 147, 247, 0.3);
+  --btn-quaternary-border: rgba(33, 44, 59, 1);
+  --btn-quaternary-disabled-color: rgba(134, 144, 159, 0.3);
 
   /* QUINARY */
   --btn-quinary-bg: #2ecc71;
@@ -201,6 +202,9 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+body {
+  font-family: var(--font-inter), sans-serif;
 }
 .page-wrapper {
   background: var(--background-two); /* dark background, gradient, image, etc */

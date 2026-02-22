@@ -1,4 +1,5 @@
-import { Geist, Geist_Mono, Inter, Roboto, Manrope } from "next/font/google";
+import { Inter } from "next/font/google";
+// import { Geist, Geist_Mono, Inter, Roboto, Manrope } from "next/font/google";
 import "./globals.css";
 
 import { ReduxProvider } from "../redux/Providers";
@@ -9,30 +10,31 @@ import LoginPopupHost from "@/components/auth/login/LoginPopupHost";
 
 // import StripeProvider from "@/components/StripeProvider";
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // choose what you need
-  variable: "--font-manrope",
-});
+// const manrope = Manrope({
+//   subsets: ["latin"],
+//   weight: ["400", "500", "600", "700"], // choose what you need
+//   variable: "--font-manrope",
+// });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// const geistSans = Geist({
+//   variable: "--font-geist-sans",
+//   subsets: ["latin"],
+// });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// });
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const roboto = Roboto({
-  variable: "--font-roboto",
-  subsets: ["latin"],
-});
+// const roboto = Roboto({
+//   variable: "--font-roboto",
+//   subsets: ["latin"],
+// });
 
 // export const metadata = {
 //   title: "Create Next App",
@@ -46,7 +48,8 @@ export default async function RootLayout({ children }) {
       <ReduxProvider>
         <Suspense fallback={null}>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable} ${manrope.variable} `}
+            className={`${inter.variable}  `}
+            // className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable} ${manrope.variable} `}
           >
             <div className="page-wrapper">
               {/* <UserHydrator user={safeUser} /> */}

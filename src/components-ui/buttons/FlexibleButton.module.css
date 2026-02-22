@@ -8,12 +8,15 @@
   user-select: none;
   transform: scale(1);
   transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease,
-    filter 0.12s ease;
+    transform 0.32s ease,
+    box-shadow 0.32s ease,
+    filter 0.32s ease;
+
   -webkit-tap-highlight-color: transparent;
 }
-
+.button span svg path {
+  stroke: currentColor;
+}
 .button:not(:disabled):hover {
   transform: scale(1);
 }
@@ -78,12 +81,18 @@
 
 /* QUATERNARY */
 .quaternary {
-  background: var(--btn-quaternary-bg);
+  /* background: var(--btn-quaternary-bg); */
+  background: transparent;
   color: var(--btn-quaternary-color);
   border: 1px solid var(--btn-quaternary-border);
 }
 .quaternary:hover {
   background: var(--btn-quaternary-hover);
+}
+.quaternary:disabled {
+  background: transparent;
+  border: 1px solid var(--btn-quaternary-border);
+  color: var(--btn-quaternary-disabled-color);
 }
 
 /* QUINARY */

@@ -1,6 +1,6 @@
-export function CardIcon({
+export default function CardIcon({
   size = 20,
-  color = "#3C83F6",
+  color = "currentColor",
   strokeWidth = 1.667,
   className = "",
 }) {

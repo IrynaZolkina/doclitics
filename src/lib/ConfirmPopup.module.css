@@ -1,3 +1,30 @@
+.titleWrapper {
+  margin-bottom: 14px;
+}
+
+.titleLine1 {
+  font-size: 36px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.titleLine2 {
+  font-size: 36px;
+  font-weight: bold;
+  margin: 0px 0 0 0;
+}
+
+.message {
+  font-size: 14px;
+
+  font-weight: bold;
+}
+
+.yesBtn {
+  border: 2px solid;
+  background: transparent;
+}
+
 .backdrop {
   position: fixed;
   inset: 0;
@@ -14,16 +41,20 @@
 }
 
 .modal {
-  width: min(420px, 100%);
-  border-radius: 18px;
+  /* width: min(420px, 100%); */
+  border-radius: 20px;
 
-  background: rgba(20, 20, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  /* background: lavender; */
+  background: rgba(18, 24, 35, 1);
+  font-family: var(--font-inter), sans-serif;
+  /* border: 1px solid rgba(255, 255, 255, 0.12); */
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 
-  padding: 18px;
+  padding: 30px;
 }
-
+.modal p {
+  margin: 0;
+}
 .title {
   margin: 0 0 8px 0;
   font-size: 16px;
@@ -39,8 +70,9 @@
 }
 
 .buttons {
+  margin-top: 20px;
   display: flex;
-  gap: 10px;
+  gap: 30px;
   justify-content: flex-end;
 }
 
@@ -62,4 +94,75 @@
 .yesBtn {
   background: rgba(255, 255, 255, 0.92);
   color: rgba(0, 0, 0, 0.9);
+}
+/* ---------- Animations ---------- */
+@keyframes backdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes backdropOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modalOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+}
+
+/* Enter / Exit hooks */
+.backdropEnter {
+  animation: backdropIn 180ms ease forwards;
+}
+
+.backdropExit {
+  animation: backdropOut 180ms ease forwards;
+}
+
+.modalEnter {
+  animation: modalIn 180ms ease forwards;
+}
+
+.modalExit {
+  animation: modalOut 180ms ease forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .backdropEnter,
+  .backdropExit,
+  .modalEnter,
+  .modalExit {
+    animation: none !important;
+  }
+}
+.titleIcon {
+  /* margin-bottom: 10px; */
+  display: flex;
+  justify-content: center;
+  font-size: 28px;
 }
