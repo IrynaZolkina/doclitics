@@ -7,9 +7,10 @@
 .left_panel_container {
   position: sticky;
   top: 257px;
-  left: 50px;
+  left: 140px;
+  /* background: lavender; */
   margin-right: 40px;
-  /* width: 300px; */
+  width: 300px;
   /* margin-left: 40px; */
 }
 .left_panel {
@@ -90,9 +91,10 @@
 .profile p {
   font-size: 11.06px;
 }
+
 .center_panel {
-  margin-left: 320px;
-  margin-top: -300px;
+  margin-left: 420px;
+  margin-top: -350px;
   /* scroll-margin-top: 164px; */
   /* border: 1px solid rgba(33, 44, 59, 0.2); */
   /* height: 289vh; */
@@ -108,6 +110,17 @@
   font-size: 16.73px;
   margin: 15px 0 25px;
   color: var(--text-color-light-gray);
+}
+.remaining {
+  text-align: right;
+  max-width: 888px;
+  font-size: 14px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 1);
+  margin-bottom: 7px;
+}
+.remaining span {
+  color: var(--text-color-blue-intens);
 }
 .history_id {
   position: absolute;

@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 const Dashboard = ({ userSummaries, userName }) => {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState("dropzone");
+  const user = useSelector((state) => state.user);
 
   // const user = useSelector((state) => state.user);
   const contentRef = useRef(null);
@@ -146,6 +147,9 @@ const Dashboard = ({ userSummaries, userName }) => {
           <span>Hello,</span> {userName}! 👋{" "}
         </h1>
         <p>Ready to transform your documents into intelligent summaries?</p>
+        <div className={styles.remaining}>
+          Summaries Remaining:<span>&nbsp;{user.docsAmount}</span>
+        </div>
         <div className={styles.dropzone_container}>
           <DropZone />
         </div>
