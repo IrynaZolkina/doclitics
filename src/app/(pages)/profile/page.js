@@ -16,6 +16,7 @@ import UserIcon from "@/components-svg/UserIcon";
 import MailIcon from "@/components-svg/MailIcon";
 import ClockSyncIcon from "@/components-svg/ClockSyncIcon";
 import CalendarIcon from "@/components-svg/CalendarIcon";
+import TrashIcon from "@/components-svg/TrashIcon";
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -454,6 +455,9 @@ const ProfilePage = () => {
             fontWeight="800"
             border
           >
+            <span>
+              <TrashIcon />
+            </span>
             <span>Delete Account</span>
           </FlexibleButton>
         </div>
