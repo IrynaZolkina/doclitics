@@ -211,11 +211,11 @@ const ProfilePage = () => {
       noText: "Back to Profile",
 
       onYes: async () => {
-        // try {
-        //   await doLogout();
-        // } catch (e) {
-        //   throw new Error("Logout failed");
-        // }
+        try {
+          await doLogout();
+        } catch (e) {
+          throw new Error("Logout failed");
+        }
       },
     });
   };
@@ -238,7 +238,7 @@ const ProfilePage = () => {
       yesText: "Unsubscribe",
       noText: "Back to Profile",
       onYes: async () => {
-        // await doUnsubscribe();
+        await doUnsubscribe();
       },
     });
   };
