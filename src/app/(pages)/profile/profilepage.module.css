@@ -90,16 +90,6 @@
   border: 2px solid rgba(60, 131, 246, 0.2);
 }
 
-.subscription_block {
-  /* background: rgba(15, 19, 26, 1); */
-  padding: 40px;
-  gap: 20px;
-  margin-bottom: 30px;
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-}
-
 .subscription_grid_left span {
   background: var(--btn-primary-color-blue);
   padding: 7px 25px;
@@ -107,7 +97,8 @@
   margin: 10px 10px;
 }
 .subscription_grid_left h6 {
-  margin-bottom: 70px;
+  margin-bottom: 90px;
+  margin-left: 35px;
 }
 .subscription_grid_right section {
   margin-bottom: 30px;

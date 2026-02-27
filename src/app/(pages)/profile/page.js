@@ -382,7 +382,7 @@ const ProfilePage = () => {
                 padding="14px 30px"
                 fontWeight="800"
                 border
-                // disabled="cancelAtPeriodEnd?true:false"
+                disabled="cancelAtPeriodEnd?true:false"
               >
                 <CardIcon size={16} color="#3C83F6" />
                 {cancelAtPeriodEnd ? "You Are Unsubscribed" : " Unsubscribe"}

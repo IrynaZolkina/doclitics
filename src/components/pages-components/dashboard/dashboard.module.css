@@ -101,6 +101,8 @@
 }
 .center_panel h1 {
   font-size: 27.66px;
+  /* color: linear-gradient(91.66deg, #3c83f6 0%, #70a5f5 100%); */
+
   color: var(--text-color-blue);
 }
 .center_panel h1 span {
@@ -215,9 +217,54 @@
   grid-template-columns: 1fr 1fr;
 }
 .analitics_greed_section {
-  background: rgba(15, 19, 26, 1);
+  /* background: rgba(15, 19, 26, 1); */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px;
   border-radius: 12px;
-  height: 130px;
+  /* height: 130px; */
+  color: var(--text-color-light-gray);
+  border: 1px solid rgba(33, 44, 59, 0.2);
+  /* height: 30vh; */
+  border-radius: 20px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+.analitics_greed_section p {
+  font-size: 13.23px;
+  margin-bottom: 12px;
+}
+.analitics_greed_section h1 {
+  font-size: 27.42px;
+  font-weight: bold;
+  color: linear-gradient(103.17deg, #3c83f6 0%, #70a5f5 100%);
+}
+.icon_circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.analitics_greed_section:nth-child(1) > section {
+  background: rgba(168, 85, 247, 0.1);
+
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+.analitics_greed_section:nth-child(2) > section {
+  background: rgba(81, 246, 59, 0.19);
+  border: 1px solid rgba(112, 245, 132, 0.2);
+}
+.analitics_greed_section:nth-child(3) > section {
+  background: rgba(246, 227, 59, 0.2);
+  border: 1px solid rgba(227, 246, 60, 0.2);
+}
+.analitics_greed_section:nth-child(4) > section {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(96, 165, 250, 0.2);
 }
 .dropzone_container {
   margin: 0;

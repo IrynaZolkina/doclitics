@@ -148,7 +148,8 @@ const Dashboard = ({ userSummaries, userName }) => {
         </h1>
         <p>Ready to transform your documents into intelligent summaries?</p>
         <div className={styles.remaining}>
-          Summaries Remaining:<span>&nbsp;{user.docsAmount}</span>
+          Summaries Remaining:
+          <span>&nbsp;{user.docsAmount ? user.docsAmount : ""}</span>
         </div>
         <div className={styles.dropzone_container}>
           <DropZone />
@@ -207,15 +208,56 @@ const Dashboard = ({ userSummaries, userName }) => {
         <h1 id="analitics">Your Analytics</h1>
         <p>Track your document processing performance and usage patterns</p>
         <div className={styles.analitics_greed}>
-          <div className={styles.analitics_greed_section}>Total Summaries</div>
           <div className={styles.analitics_greed_section}>
-            Avg Summary Length
+            <div>
+              <p>Documents Left in Your Plan</p>
+              <h1>{user.docsAmount ? user.docsAmount : ""}</h1>
+            </div>
+            <section className={styles.icon_circle}>
+              <DocIcon
+                width={24}
+                height={24}
+                strokeColor={"rgba(192, 132, 252, 1)"}
+              />
+            </section>
           </div>
           <div className={styles.analitics_greed_section}>
-            Summaries Made in the last 30 days.{" "}
+            <div>
+              <p>Summaries Made in the last 30 days.</p>
+              <h1>44</h1>
+            </div>
+            <section className={styles.icon_circle}>
+              <DocIcon
+                width={24}
+                height={24}
+                strokeColor={"rgba(112, 245, 132, 1)"}
+              />
+            </section>
           </div>
           <div className={styles.analitics_greed_section}>
-            Documents Left in Your Plan
+            <div>
+              <h1>345</h1> <p>Total Summaries</p>
+            </div>
+            <section className={styles.icon_circle}>
+              <DocIcon
+                width={24}
+                height={24}
+                strokeColor={"rgba(227, 246, 60, 1)"}
+              />
+            </section>
+          </div>
+          <div className={styles.analitics_greed_section}>
+            <div>
+              <h1>12345</h1>
+              <p>Total Words Processed</p>
+            </div>
+            <section className={styles.icon_circle}>
+              <DocIcon
+                width={24}
+                height={24}
+                strokeColor={"rgba(96, 165, 250, 1)"}
+              />
+            </section>
           </div>
         </div>
       </div>

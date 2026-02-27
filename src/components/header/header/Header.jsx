@@ -18,6 +18,7 @@ import {
   addUserSummary,
   clearUserSummaries,
 } from "@/redux/store";
+import Image from "next/image";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -74,7 +75,17 @@ const Header = () => {
         <div className={styles.container}>
           <div className={styles.flexContainer}>
             <Link href="/" className={styles.logoBox}>
-              <Doclitic2 width={30} height={30} />
+              {/* <Doclitic2 width={30} height={30} /> */}{" "}
+              <div className={styles.logoImgWrap}>
+                <Image
+                  src="/logod.png"
+                  width={40}
+                  height={40}
+                  alt="Doclitic"
+                  // priority
+                  style={{ display: "block" }}
+                />
+              </div>
               <span className={styles.logoText}>Doclitic</span>
             </Link>
 
